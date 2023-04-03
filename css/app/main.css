@@ -1,0 +1,42 @@
+body {
+  margin:0;
+  padding:0;
+  font-size:16pt;
+}
+header {
+  width:100%;
+  background-color:#000;
+  color: #FFF;
+  padding:0.5em;
+}
+
+header span#csv-file-name {
+  margin-left:2em;
+}
+
+div#ui-fields {
+  width:80%;
+}
+div#ui-fields {
+  position:fixed;
+  text-align:right;
+  bottom:0;
+  width:100%;
+  z-index:100;
+  background-color:black;
+}
+div#ui-fields button {
+  font-size: 20pt;
+  padding: 0.2em 1em;
+}
+
+.explication {
+  font-size:0.85em;
+  font-style:italic;
+  opacity:0.5;
+}
+.explication:hover {opacity:1}
+div.explication {padding:1em;}
+
+.fright {float:right;}
+.fleft {float:left;}

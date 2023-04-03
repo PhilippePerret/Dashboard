@@ -6,6 +6,7 @@
   <title>Dashboard</title>
   <link rel="stylesheet" type="text/css" href="css/app/main.css">
   <link rel="stylesheet" type="text/css" href="css/app/task.css">
+  <link rel="stylesheet" type="text/css" href="css/app/task_editor.css">
   <link rel="stylesheet" type="text/css" href="css/system/Finder.css">
   <link rel="stylesheet" type="text/css" href="css/system/main.css">
   <link rel="stylesheet" type="text/css" href="js/system/jquery/jquery-ui.min.css">
@@ -39,9 +40,22 @@
 
 <!-- CONTENEUR PRINCIPAL POUR LES TÂCHES DU JOUR -->
 <div id="container-tasks-main" class="task-conteneur"></div>
-<div id="todo-today" class="task-conteneur"></div>
+<!-- CONTENEUR DES TÂCHES ÉPINGLÉES (à faire aujourd'hui) -->
+<div id="container-tasks-pinned" class="task-conteneur"></div>
 <!-- CONTENEUR POUR METTRE LES TÂCHES DU JOUR ACCOMPLIES -->
 <div id="container-tasks-done" class="task-conteneur"></div>
+
+<div id="task-editor" class="hidden">
+  <form>
+    <input type="text" id="task-resume" class="plain">
+    <input type="text" id="task-start"><input type="text" id="task-end">
+    <textarea id="task-todo" class="plain"></textarea>
+  </form>
+  <div class="buttons">  
+    <button id="task-editor-btn-cancel">Annuler</button>
+    <button id="task-editor-btn-save">Enregistrer</button>
+  </div>
+</div>
 
 <div id="ui-fields">
 
@@ -54,6 +68,7 @@
 <script type="text/javascript" src="js/app/App/UI.js"></script>
 <script type="text/javascript" src="js/app/App/ready.js"></script>
 <script type="text/javascript" src="js/app/Task/AbstractTask.js"></script>
+<script type="text/javascript" src="js/app/Task/TaskEditor.js"></script>
 <script type="text/javascript" src="js/app/App/App.js" defer></script>
 <script type="text/javascript" src="js/app/Task/Todo.js" defer></script>
 </html>

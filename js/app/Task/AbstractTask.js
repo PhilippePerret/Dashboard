@@ -14,6 +14,9 @@ class AbstractTask {
   static get containerTasksDone(){
     return this._contdone || (this._contdone = DGet(`#container-tasks-done`))
   }
+  static get containerTasksPinned(){
+    return this._contpinned || (this._contpinned = DGet(`#container-tasks-pinned`))
+  }
 
   // --- INSTANCE ---
 
@@ -25,11 +28,16 @@ class AbstractTask {
   |  --- Méthodes d'évènements ---
   */
   onClickSpin(ev){
-    message("Je dois apprendre à épingler cette tâche")
+    if ( this.isPinned ) {
+      this.constructor.containerTasksToday.appendChild(this.obj)
+      this.isPinned = false
+    } else {
+      this.constructor.containerTasksPinned.appendChild(this.obj)
+      this.isPinned = true
+    }
     return stopEvent(ev)
   }
   onClickDone(ev){
-    message("Je dois apprendre à marquer la tâche faite")
     WAA.send({class:'Dashboard::Task',method:'mark_done',data:{task_id: this.id}})
     return stopEvent(ev)
   }
@@ -37,7 +45,7 @@ class AbstractTask {
     if ( !res.ok ) return erreur(res.msg) 
     try {
       this.isDone = true
-      this.constructor.containerTasksDone.append(this.obj)
+      this.constructor.containerTasksDone.appendChild(this.obj)
       this.buttons.classList.add('hidden')
     } catch(err) {
       console.error(err)
@@ -45,7 +53,7 @@ class AbstractTask {
     }
   }
   onClickEdit(ev){
-    message("Je dois apprendre à éditer la tâche")
+    TaskEditor.editTask(this)
     return stopEvent(ev)
   }
   onClickSup(ev){

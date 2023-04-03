@@ -1,8 +1,11 @@
 body {
   margin:0;
   padding:0;
+}
+body, input, button, textarea {
   font-size:16pt;
 }
+
 header {
   width:100%;
   background-color:#000;

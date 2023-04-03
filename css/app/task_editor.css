@@ -1,0 +1,30 @@
+div#task-editor {
+  position: fixed;
+  top:100px;
+  left: calc(50% - 500px);
+  width:500px;
+/*  height:700px;*/
+  z-index:100;
+  background-color:white;
+  box-shadow:25px 26px 50px grey;
+  padding:2em;
+}
+
+div#task-editor form > * {
+  margin-top:0.3em;
+}
+
+div#task-editor form input[type="text"] {
+  padding:0.2em 0.5em;
+}
+div#task-editor form .plain {
+  width: 100%;
+}
+div#task-editor form input:not(.plain) {
+  width: 44%;
+}
+
+div#task-editor div.buttons {
+  margin-top:1em;
+  text-align: right;
+}

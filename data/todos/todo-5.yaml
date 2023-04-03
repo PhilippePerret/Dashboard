@@ -1,0 +1,11 @@
+---
+id: 5
+resume: Poursuivre le Dashboard
+cate: Programme
+start: '2023-04-03'
+end: '2023-04-18'
+priority: 1
+todo:
+  - implémenter les méthodes des boutons
+  - bouton pour créer une nouvelle tâche (et implémentation)
+  - système de vérification quotidienne

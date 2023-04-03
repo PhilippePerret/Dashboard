@@ -2,8 +2,9 @@
 
 $(document).ready(e => {
   
-  Log.level = LOG_ALL
+  // Log.level = LOG_ALL
   
+  App.onReady()
   
 })
 

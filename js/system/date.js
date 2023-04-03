@@ -3,6 +3,12 @@
 * Pour la gestion des dates
 */
 
+const NOW = new Date()
+const d = NOW
+const TODAY_START = new Date(d.getFullYear(),d.getMonth(), d.getDate(),0,0,0)
+const TODAY_END   = new Date(d.getFullYear(),d.getMonth(), d.getDate(),23,59,59)
+
+
 const MOIS = {
   1:{court:'jan',long:'janvier'},
   2:{court:'fév',long:'février'},
@@ -17,3 +23,13 @@ const MOIS = {
   11:{court:'nov',long:'novembre'},
   12:{court:'déc',long:'décembre'},
 }
+
+class DateUtils {
+
+static revdate2date(revdate){
+  var [annee, mois, jour] = revdate.split('-')
+  return new Date(Number(annee), Number(mois)-1, Number(jour))
+}
+
+}
+

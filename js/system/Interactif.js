@@ -70,14 +70,14 @@ class InteractiveElement {
     /*
     |  Le bouton OK
     */
-    const dataBtnOk = {class:'btn-ok', text: this.btnOkName}
-    if ( not(this.params.buttonCancel.isDefault) ) { dataBtnOk.style = styleDefault }
+    const dataBtnOk = {class:'btn-ok', text: this.btnOkName, style:this.btnStyle}
+    if ( not(this.params.buttonCancel.isDefault) ) { dataBtnOk.style = styleDefault+this.btnStyle }
     this.btnOk      = DCreate('BUTTON', dataBtnOk)
     /*
     |  Le boutons Cancel
     */
-    const dataBtnCancel = {class:'btn-cancel fleft', text: this.btnCancelName}
-    if ( this.params.buttonCancel.isDefault ) { dataBtnCancel.style = styleDefault }
+    const dataBtnCancel = {class:'btn-cancel fleft', text: this.btnCancelName, style:this.btnStyle}
+    if ( this.params.buttonCancel.isDefault ) { dataBtnCancel.style = styleDefault+this.btnStyle }
     this.btnCancel  = DCreate('BUTTON', dataBtnCancel)
     btnsDiv.appendChild(this.btnOk)
     btnsDiv.appendChild(this.btnCancel)
@@ -126,9 +126,13 @@ class InteractiveElement {
   get divButtonsStyle(){
     return 'text-align:right;'
   }
+  get btnStyle(){
+    return 'padding:0.5em 1.5em;font-size:16pt;'
+  }
 
   defaultizeParams(params){
-    params.poursuivre         || raise("Il faut absolument définir la fonction pour suivre…")
+    params = params || {}
+    params.poursuivre         || raise("Il faut absolument définir la fonction pour suivre… (params.poursuivre")
     params.buttonOk           || Object.assign(params, {buttonOk: {name:'OK'}})
     params.buttonOk.name      || Object.assign(params.buttonOk, {name: 'OK'})
     params.buttonCancel       || Object.assign(params, {buttonCancel: {name:'Cancel'}})
@@ -137,7 +141,7 @@ class InteractiveElement {
   }
 }
 
-const confirmer = confirm = function(question, params){
+const confirmer = function(question, params){
   new InteractiveElement('confirm', question, params).show()
 }
 const demander = function(question, defaultResponse, params){

@@ -16,6 +16,17 @@ class App {
   }
   
 
+  static onReady(){
+    console.info("Ce qu'il faut faire au démarrage.")
+    /*
+    |  Préparation de l'interface
+    */
+    UI.prepare()
+    /*
+    |  Affichage de ce qu'il y a à faire aujourd'hui
+    */
+    Todo.loadAndDisplayTodayTasks()
+  }
 } // /class App
 
 

@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CSVReader</title>
+  <title>Dashboard</title>
   <link rel="stylesheet" type="text/css" href="css/app/main.css">
-  <link rel="stylesheet" type="text/css" href="css/app/csv.css">
+  <link rel="stylesheet" type="text/css" href="css/app/task.css">
   <link rel="stylesheet" type="text/css" href="css/system/Finder.css">
   <link rel="stylesheet" type="text/css" href="css/system/main.css">
   <link rel="stylesheet" type="text/css" href="js/system/jquery/jquery-ui.min.css">
@@ -27,10 +27,9 @@
   <script type="text/javascript" src="js/system/dom.js"></script>
   <script type="text/javascript" src="js/system/date.js"></script>
   <script type="text/javascript" src="js/system/Finder.js"></script>
-  <!-- <script type="text/javascript" src="js/system/Tooltip.js"></script> -->
   <script type="text/javascript" src="js/system/TableDisplay.js"></script>
   <script type="text/javascript" src="js/system/SelectionManager.js"></script>
-  <!-- <script type="text/javascript" src="js/system/ListManager.js"></script> -->
+  <script type="text/javascript" src="js/system/interactif.js"></script>
 </head>
 <body>
 
@@ -38,13 +37,23 @@
   <span id="app-name">Dashboard</span>
 </header>
 
+<!-- CONTENEUR PRINCIPAL POUR LES TÂCHES DU JOUR -->
+<div id="container-tasks-main" class="task-conteneur"></div>
+<div id="todo-today" class="task-conteneur"></div>
+<!-- CONTENEUR POUR METTRE LES TÂCHES DU JOUR ACCOMPLIES -->
+<div id="container-tasks-done" class="task-conteneur"></div>
+
 <div id="ui-fields">
 
 </div>
 
 </body>
 <script type="text/javascript" src="js/app/constants.js"></script>
-<script type="text/javascript" src="js/app/errors_and_messages.fr.js"></script>
-<script type="text/javascript" src="js/app/ready.js"></script>
-<script type="text/javascript" src="js/app/App.js" defer></script>
+<script type="text/javascript" src="js/app/Messages/errors_and_messages.fr.js"></script>
+<script type="text/javascript" src="js/app/Messages/Messages_et_errors.js"></script>
+<script type="text/javascript" src="js/app/App/UI.js"></script>
+<script type="text/javascript" src="js/app/App/ready.js"></script>
+<script type="text/javascript" src="js/app/Task/AbstractTask.js"></script>
+<script type="text/javascript" src="js/app/App/App.js" defer></script>
+<script type="text/javascript" src="js/app/Task/Todo.js" defer></script>
 </html>

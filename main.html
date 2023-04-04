@@ -7,6 +7,7 @@
   <link rel="stylesheet" type="text/css" href="css/app/main.css">
   <link rel="stylesheet" type="text/css" href="css/app/task.css">
   <link rel="stylesheet" type="text/css" href="css/app/task_editor.css">
+  <link rel="stylesheet" type="text/css" href="css/app/task_conteneur.css">
   <link rel="stylesheet" type="text/css" href="css/system/Finder.css">
   <link rel="stylesheet" type="text/css" href="css/system/main.css">
   <link rel="stylesheet" type="text/css" href="js/system/jquery/jquery-ui.min.css">
@@ -39,17 +40,39 @@
 </header>
 
 <!-- CONTENEUR PRINCIPAL POUR LES TÂCHES DU JOUR -->
-<div id="container-tasks-main" class="task-conteneur"></div>
+<div id="container-tasks-main" class="task-conteneur">
+  <div class="task-list"></div>
+  <div class="buttons main-buttons">
+    <button class="btn-add">➕</button>
+  </div>
+</div>
 <!-- CONTENEUR DES TÂCHES ÉPINGLÉES (à faire aujourd'hui) -->
-<div id="container-tasks-pinned" class="task-conteneur"></div>
+<div id="container-tasks-pinned" class="task-conteneur">
+  <div class="task-list"></div>
+</div>
 <!-- CONTENEUR POUR METTRE LES TÂCHES DU JOUR ACCOMPLIES -->
-<div id="container-tasks-done" class="task-conteneur"></div>
+<div id="container-tasks-done" class="task-conteneur">
+  <div class="task-list"></div>
+</div>
 
 <div id="task-editor" class="hidden">
   <form>
+    <label class="main">Tâche #<span id="task-displayed-id"></span></label>
+    <input type="hidden" id="task-id">
     <input type="text" id="task-resume" class="plain">
     <input type="text" id="task-start"><input type="text" id="task-end">
+    <div>
+      <select id="task-priority">
+        <option value="">Priorité…</option>
+        <option value="1">Faible</option>
+        <option value="3">Moyenne</option>
+        <option value="5">Élevée</option>
+      </select>
+    </div>
+    <label class="main">Sous-tâches</label>
     <textarea id="task-todo" class="plain"></textarea>
+    <label class="main">Runner</label>
+    <textarea id="task-run" class="plain"></textarea>
   </form>
   <div class="buttons">  
     <button id="task-editor-btn-cancel">Annuler</button>
@@ -69,6 +92,7 @@
 <script type="text/javascript" src="js/app/App/ready.js"></script>
 <script type="text/javascript" src="js/app/Task/AbstractTask.js"></script>
 <script type="text/javascript" src="js/app/Task/TaskEditor.js"></script>
+<script type="text/javascript" src="js/app/Task/TaskConteneur.js"></script>
 <script type="text/javascript" src="js/app/App/App.js" defer></script>
 <script type="text/javascript" src="js/app/Task/Todo.js" defer></script>
 </html>

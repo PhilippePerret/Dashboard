@@ -1,8 +1,8 @@
 div#task-editor {
   position: fixed;
   top:100px;
-  left: calc(50% - 500px);
-  width:500px;
+  left: calc(50% - 300px);
+  width:600px;
 /*  height:700px;*/
   z-index:100;
   background-color:white;
@@ -10,8 +10,16 @@ div#task-editor {
   padding:2em;
 }
 
-div#task-editor form > * {
-  margin-top:0.3em;
+div#task-editor form > *:not(label) {
+  margin-bottom:0.3em;
+}
+
+div#task-editor form > label {
+  font-style: italic;
+  color: grey;
+}
+div#task-editor form > label.main {
+  display:block;
 }
 
 div#task-editor form input[type="text"] {
@@ -22,6 +30,12 @@ div#task-editor form .plain {
 }
 div#task-editor form input:not(.plain) {
   width: 44%;
+}
+div#task-editor form textarea {
+  resize: none;
+}
+div#task-editor form textarea#task-todo {
+  height:120px;
 }
 
 div#task-editor div.buttons {

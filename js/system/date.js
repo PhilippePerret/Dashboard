@@ -26,10 +26,52 @@ const MOIS = {
 
 class DateUtils {
 
-static revdate2date(revdate){
-  var [annee, mois, jour] = revdate.split('-')
-  return new Date(Number(annee), Number(mois)-1, Number(jour))
-}
+  static revdate2date(revdate){
+    var [annee, mois, jour] = revdate.split('-')
+    return new Date(Number(annee), Number(mois)-1, Number(jour))
+  }
+  static get today(){return new DateUtils(NOW)}
+  static get tomorrow(){
+    if ( undefined == this._tomorrow ) {
+      let d = new Date()
+      d.setDate( NOW.getDate() + 1)
+      this._tomorrow = new DateUtils(d)
+    } return this._tomorrow
+  }
+  static get afterTomorrow(){
+    if ( undefined == this._aftertom ) {
+      let d = new Date()
+      d.setDate( NOW.getDate() + 2)
+      this._aftertom = new DateUtils(d)
+    } return this._aftertom
+  }
+
+
+  constructor(date){
+    this.date = date
+  }
+
+  get year(){ return this.date.getFullYear() }
+  get mois2(){
+    if ( undefined == this._mois2 ) {
+      let m = this.date.getMonth() + 1
+      m > 9 || (m = `0${m}`)
+      this._mois2 = m
+    } return this._mois2
+  }
+  get jour2(){
+    if ( undefined == this._jour2 ) {
+      let j = this.date.getDate()
+      j > 9 || (j = `0${j}`)
+      this._jour2 = j
+    } return this._jour2
+  }
+
+  asRevdate(){
+    if ( undefined == this._revdate ) {
+      this._revdate = [this.year,this.mois2,this.jour2].join('-')
+    }; return this._revdate
+  }
 
 }
 

@@ -8,15 +8,30 @@ class AbstractTask {
     return this.table[task_id]
   }
 
-  static get containerTasksToday(){
-    return this._conttoday || (this._conttoday = DGet(`#container-tasks-main`))
+  /**
+  * Méthode appelée pour créer une nouvelle tâche
+  */
+  static createNew(){
+    const data = { 
+      id:     this.getNewId(),
+      resume: `Résumé de la tâche #${this.lastId}`,
+      start:  DateUtils.today.asRevdate(), 
+      end:    DateUtils.afterTomorrow.asRevdate(),
+      todo:   "- première sous-tâche\n- deuxième sous-tâche\n- 3e sous-tâche",
+    }
+    const newTask = new this(data)
+    newTask.edit()
   }
-  static get containerTasksDone(){
-    return this._contdone || (this._contdone = DGet(`#container-tasks-done`))
+
+  /**
+  * À la création d'une tâche, on doit l'ajouter à sa liste
+  */
+  static add(task){
+    this.items.push(task)
+    Object.assign(this.table, {[task.id]: task})
   }
-  static get containerTasksPinned(){
-    return this._contpinned || (this._contpinned = DGet(`#container-tasks-pinned`))
-  }
+
+  static getNewId(){ return ++ this.lastId }
 
   // --- INSTANCE ---
 
@@ -24,15 +39,61 @@ class AbstractTask {
     this.data = data;
   }
 
+  /**
+  * Pour enregistrer la tâche
+  */
+  save(){
+    WAA.send({class:'Dashboard::Task',method:'save',data:{task_data:this.data}})
+  }
+  onSaved(retour){
+    if (retour.ok){
+      message(`Tâche #${this.id} enregistrée avec succès.`)
+    } else {
+      erreur(retour.msg)
+    }
+  }
+
+  /**
+  * Pour éditer la tâche
+  */
+  edit(){
+    return TaskEditor.editTask(this)
+  }
+
+  /**
+  * Pour actualiser les données de la tâche
+  * 
+  * @note
+  *   Si les données ont changé, on enregistre le tâche
+  */
+  update(newData){
+    var isUpdated = false
+    for(var prop in newData){
+      if ( newData[prop] != this.data[prop] ) {
+        this.set(prop, newData[prop])
+        isUpdated = true
+      }
+    }
+    isUpdated && this.save()
+  }
+
+  set(property, newValue){
+    this.data[property] = newValue
+    switch(property){
+    case 'resume': 
+      DGet('.resume',this.obj).innerHTML = newValue
+    }
+  }
+
   /*
   |  --- Méthodes d'évènements ---
   */
   onClickSpin(ev){
     if ( this.isPinned ) {
-      this.constructor.containerTasksToday.appendChild(this.obj)
+      TaskConteneur.Today.appendTask(this)
       this.isPinned = false
     } else {
-      this.constructor.containerTasksPinned.appendChild(this.obj)
+      TaskConteneur.Pinned.appendTask(this)
       this.isPinned = true
     }
     return stopEvent(ev)
@@ -45,13 +106,17 @@ class AbstractTask {
     if ( !res.ok ) return erreur(res.msg) 
     try {
       this.isDone = true
-      this.constructor.containerTasksDone.appendChild(this.obj)
-      this.buttons.classList.add('hidden')
+      TaskConteneur.Done.appendTask(this)
+      this.hideButtons()
     } catch(err) {
       console.error(err)
       erreur("Une erreur est survenue, consulter la console.")
     }
   }
+
+  hideButtons(){this.buttons.classList.add('hidden')}
+  showButtons(){this.buttons.classList.remove('hidden')}
+  
   onClickEdit(ev){
     TaskEditor.editTask(this)
     return stopEvent(ev)
@@ -78,15 +143,20 @@ class AbstractTask {
   * Affichage de la tâche dans le div +ctype+
   */
   display(ctype){
-
-    const conteneur = ((containerType) => {
-      switch(containerType){
-      case 'main': return this.constructor.containerTasksToday;
-      case 'done': return this.constructor.containerTasksDone;
+    if ( !ctype ) {
+      if ( this.isCurrent ) {
+        ctype = 'main'
+      } else {
+        // Pour le moment on ne l'affiche pas
+        return
       }
-    })(ctype);
-    const div = DCreate('DIV', {class:'task', text: this.resume})
+    }
+    const conteneur = TaskConteneur.conteneur(ctype)
+    const div = DCreate('DIV', {class:'task'})
     this.obj = div
+    const resu = DCreate('SPAN', {class:'resume', text: this.resume})
+    listen(resu,'dblclick', this.edit.bind(this))
+    div.appendChild(resu)
     this.buttons = DCreate('DIV',{class:'buttons'})
     const btnSup = DCreate('DIV',{class:'btn', text:'🗑️', title:`${MGTIT}Détruire définitivement ${this.ref} (sans l'archiver)`})
     listen(btnSup,'click',this.onClickSup.bind(this))
@@ -102,12 +172,12 @@ class AbstractTask {
     this.buttons.appendChild(btnSpin)
 
     div.appendChild(this.buttons)
-    conteneur.appendChild(div)
+    conteneur.appendTask(this)
   }
 
 
-  get resume(){return this.data.resume}
-  get id(){return this.data.id}
+  get id()    { return this.data.id }
+  get resume(){ return this.data.resume }
 
   get end_at(){
     return this._end_at || (this._end_at = DateUtils.revdate2date(this.data.end))

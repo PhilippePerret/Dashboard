@@ -16,20 +16,57 @@ class TaskEditor {
   }
 
   edit(task){
+    this.task = task
     /*
     |  Mettre ses données dans les champs
     */
-    ['resume','start','end', 'todo'].forEach(prop => {
-      this.field(prop).value = task[prop]
-    })
+    this.setValues()
     /*
     |  Afficher l'éditeur
     */
     this.show()
   }
 
+  /**
+  * Mettre les valeurs dans les champs
+  */
+  setValues(){
+    this.field('displayed-id').innerHTML = this.task.id
+    Todo.PROPERTIES.forEach(prop => {
+      this.field(prop).value = this.task.data[prop] || ''
+    })
+  }
+  /**
+  * Prendre les valeurs des champs
+  */
+  getValues(){
+    let newData = {}
+    Todo.PROPERTIES.forEach(prop => {
+      Object.assign(newData, {[prop]: this.field(prop).value})
+    })
+    return newData;
+  }
+
   show(){
     this.obj.classList.remove('hidden')
+    this.focusOn('resume')
+  }
+  hide(){
+    this.obj.classList.add('hidden')
+    this.task = null
+    delete this.task
+  }
+
+  /**
+  * Mettre le focus (et tout sélectionner) dans le champ +fieldId+
+  * 
+  * @note
+  *   Si +fieldId+ vaut 'id', l'identifiant du champ est 'task-id'
+  */
+  focusOn(fieldId){
+    const field = this.field(fieldId)
+    field.focus()
+    field.select()
   }
 
   /**
@@ -42,11 +79,27 @@ class TaskEditor {
 
   // --- Gestionnaires d'Events ---
   onClickSave(ev){
-    console.warn("Je dois apprendre à enregistrer la tâche")
+    const newData = this.getValues()
+    if ( this.task.obj ) {
+      /*
+      |  Tâche existante
+      */
+      this.task.update(newData)
+      
+    } else {
+      /*
+      |  Nouvelle tâche
+      */
+      this.task.data = this.getValues()
+      this.task.constructor.add(this.task)
+      this.task.display(null/* pour rechercher où elle doit se mettre*/)
+      this.task.save()
+    }
+    this.hide()
     return stopEvent(ev)
   }
   onClickCancel(ev){
-    console.warn("Je dois apprendre à annuler")
+    this.hide()
     return stopEvent(ev)
   }
 

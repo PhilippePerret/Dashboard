@@ -1,0 +1,26 @@
+div.task-conteneur {
+  width:700px;
+  display:inline-block;
+  padding:2em;
+  border:1px solid #555;
+  position: relative;
+}
+div.task-conteneur div.buttons.main-buttons {
+  position:absolute;
+  bottom:0;
+  left:0;
+  width:100%;
+}
+div.task-conteneur div.buttons button {
+  width:40px;
+  height: 40px;
+  border:1px solid grey;
+}
+
+div#container-tasks-main {
+  padding-bottom:3em;
+}
+div#container-tasks-done {
+  opacity: 0.4;
+}
+

@@ -28,6 +28,18 @@ class << self
     }})
   end
 
+  ##
+  # Enregistrement d'une tâche
+  # 
+  def save(params)
+    data = params['task_data']
+    task = new(data['id'], data)
+    task.save
+    ok = File.exist?(task.path)
+    msg = ok ? nil : "Le fichier #{task.name} est introuvable…"
+    WAA.send({class:"Todo.get(#{task.id})", method:'onSaved', data:{ok:ok, msg:msg}})
+  end
+
 
   def get_all_tasks
     Dir["#{folder}/*.yaml"].map do |fpath|
@@ -47,8 +59,9 @@ end #/<< self
 ###################       INSTANCE      ###################
 
 attr_reader :id
-def initialize(id)
-  @id = id
+def initialize(id, data = nil)
+  @id   = id
+  @data = data
 end
 
 def mark_done
@@ -58,6 +71,12 @@ def mark_done
   File.write(path, new_data.to_yaml)
   sleep 0.1
   FileUtils.mv(path, archive_path)
+end
+
+def save
+  data.key?('created_at') || data.merge!('created_at' => Time.now.to_s)
+  data.merge!('updated_at' => Time.now.to_s)
+  File.write(path, data.to_yaml)
 end
 
 def data

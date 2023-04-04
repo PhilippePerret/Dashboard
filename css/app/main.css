@@ -1,9 +1,10 @@
 body {
   margin:0;
   padding:0;
-}
-body, input, button, textarea {
   font-size:16pt;
+}
+input, button, textarea, select, select option {
+  font-size: inherit;
 }
 
 header {

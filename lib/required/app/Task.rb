@@ -31,13 +31,26 @@ class << self
   ##
   # Enregistrement d'une tâche
   # 
-  def save(params)
+  def saveTask(params)
     data = params['task_data']
     task = new(data['id'], data)
     task.save
     ok = File.exist?(task.path)
     msg = ok ? nil : "Le fichier #{task.name} est introuvable…"
     WAA.send({class:"Todo.get(#{task.id})", method:'onSaved', data:{ok:ok, msg:msg}})
+  end
+
+  ##
+  # Jouer l'action (run) d'une tâche
+  # 
+  def runTask(params)
+    task = new(params['task_id'])
+    task.run
+  end
+
+  def removeTask(params)
+    task = new(params['task_id'])
+    task.remove
   end
 
 
@@ -76,7 +89,29 @@ end
 def save
   data.key?('created_at') || data.merge!('created_at' => Time.now.to_s)
   data.merge!('updated_at' => Time.now.to_s)
-  File.write(path, data.to_yaml)
+  # File.write(path, data.to_yaml)
+  File.write(path, YAML.dump(data))
+end
+
+def run
+  if data[:run].nil?
+    ok  = false
+    msg = "Aucune action n'est définie pour cette tâche ##{id}…"
+  else
+    ok = true
+    msg = nil
+    puts "Je dois apprendre à jouer une action".jaune
+  end
+  WAA.send({class:"Todo.get(#{self.id})",method:'onRan',data:{ok:ok,msg:msg}})
+end
+
+def remove
+  File.delete(path)
+  ok = not(File.exist?(path))
+  WAA.send(class:"Todo.get(#{self.id})",method:'onRemoved', data:{
+    ok: ok,
+    msg: ok ? nil : "Le fichier #{self.name.inspect} aurait dû être détruit…"
+  })
 end
 
 def data

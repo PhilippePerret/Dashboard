@@ -24,9 +24,19 @@ class AbstractTask {
   }
 
   /**
+  * Destruction d'une tâche
+  */
+  static removeTask(task){
+    delete this.table[task.id]
+    this.items.splice(task.index,1)
+    task.obj.remove()
+  }
+
+  /**
   * À la création d'une tâche, on doit l'ajouter à sa liste
   */
   static add(task){
+    task.index = this.items.length
     this.items.push(task)
     Object.assign(this.table, {[task.id]: task})
   }
@@ -39,11 +49,13 @@ class AbstractTask {
     this.data = data;
   }
 
+  get isCurrent(){ return this.start_at < TODAY_END }
+
   /**
   * Pour enregistrer la tâche
   */
   save(){
-    WAA.send({class:'Dashboard::Task',method:'save',data:{task_data:this.data}})
+    WAA.send({class:'Dashboard::Task',method:'saveTask',data:{task_data:this.data}})
   }
   onSaved(retour){
     if (retour.ok){
@@ -121,16 +133,32 @@ class AbstractTask {
     TaskEditor.editTask(this)
     return stopEvent(ev)
   }
+  onClickRun(ev){
+    WAA.send({class:'Dashboard::Task', method:'runTask', data:{task_id: this.id}})
+    return stopEvent(ev)
+  }
+  onRan(retour){
+    if (retour.ok) { message("Action jouée avec succès") }
+    else { erreur(retour.msg)}
+  }
   onClickSup(ev){
     confirmer("Veux-tu vraiment détruire cette tâche ?",{buttonCancel:{isDefault:true}, poursuivre:this.onConfirmSup.bind(this)})
     return stopEvent(ev)
   }
   // - après confirmation de la destruction -
-  onConfirmSup(dontDoIt){
-    if ( dontDoIt ) {
-      return
+  onConfirmSup(doIt){
+    if ( doIt ) {
+      WAA.send({class:'Dashboard::Task', method:'removeTask', data:{task_id: this.id}})
     } else {
-      message("Je dois apprendre à supprimer la tâche")
+      return
+    }
+  }
+  onRemoved(retour){
+    if ( retour.ok ) {
+      message("Tâche détruite avec succès.")
+      this.constructor.removeTask(this)
+    } else {
+      erreur(retour.msg)
     }
   }
 
@@ -170,6 +198,9 @@ class AbstractTask {
     const btnSpin = DCreate('DIV',{class:'btn', text:'📌', title:`${MGTIT}Épingler ${this.ref}`})
     listen(btnSpin,'click',this.onClickSpin.bind(this))
     this.buttons.appendChild(btnSpin)
+    const btnRun = DCreate('DIV', {class:'btn', text:'', title:`${MGTIT}Jouer l'action de cette tâche`})
+    listen(btnRun,'click',this.onClickRun.bind(this))
+    this.buttons.appendChild(btnRun)
 
     div.appendChild(this.buttons)
     conteneur.appendTask(this)

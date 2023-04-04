@@ -88,14 +88,8 @@ class InteractiveElement {
     this.observe()
   }
   observe(){
-    if ( this.params.buttonCancel.isDefault ) {
-      this.btnOk    .addEventListener('click', this.onClickCancel.bind(this))
-      this.btnCancel.addEventListener('click', this.onClickOk.bind(this))      
-    } else {
-      this.btnOk    .addEventListener('click', this.onClickOk.bind(this))
-      this.btnCancel.addEventListener('click', this.onClickCancel.bind(this))      
-    }
-
+    this.btnOk    .addEventListener('click', this.onClickOk.bind(this))
+    this.btnCancel.addEventListener('click', this.onClickCancel.bind(this))      
     this.observeKeys()
   }
 

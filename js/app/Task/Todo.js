@@ -30,6 +30,7 @@ static onLoad(retour){
   if ( retour.ok ) {
     retour.todos.forEach(dtodo => {
       const item = new Todo(dtodo)
+      item.index = this.items.length
       this.items.push(item)
       Object.assign(this.table, {[item.id]: item})
       if ( Number(item.id) > this.lastId ) { this.lastId = Number(item.id) }

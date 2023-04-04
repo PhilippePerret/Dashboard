@@ -7,6 +7,9 @@
 */
 class InteractiveElement {
 
+  static get TopWindow(){ return '200px' }
+  static get LeftWindow(){ return 'calc(50% - 250px)'}
+
   /**
   * @param params {Hash} Les paramètres
   *           params.poursuivre     
@@ -131,7 +134,9 @@ class InteractiveElement {
   }
 
   get divStyle(){
-    return "background-color:#EFEFEF;user-select:none;position:fixed;z-index:1010;bottom:200px;left:calc(50% - 250px);width:500px;box-shadow:25px 26px 50px grey;border:1px solid grey;border-radius:0.5em;padding:1.5em;font-size:18pt;font-family:'Arial Narrow', Arial, Helvetica, Geneva;"
+    const top   = this.constructor.TopWindow
+    const left  = this.constructor.LeftWindow
+    return "background-color:#EFEFEF;user-select:none;position:fixed;z-index:1010;top:"+top+";left:"+left+";width:500px;box-shadow:25px 26px 50px grey;border:1px solid grey;border-radius:0.5em;padding:1.5em;font-size:18pt;font-family:'Arial Narrow', Arial, Helvetica, Geneva;"
   }
   get msgFieldStyle(){
     return 'padding:2em 1em;border:1px solid #CCC;border-radius:0.5em;margin-bottom:2em;font-size:inherit;font-family:inherit;'

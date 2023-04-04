@@ -35,7 +35,7 @@ div#task-editor form textarea {
   resize: none;
 }
 div#task-editor form textarea#task-todo {
-  height:120px;
+  height:200px;
 }
 
 div#task-editor div.buttons {

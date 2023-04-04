@@ -21,17 +21,17 @@
 
 
 function message(str, options){
-  Message.showMessage.call(Message, str, options || {})
+  new MessageClass(str, options).showMessage()
   return true
 }
 function error(err){
-  Message.showError.call(Message, err)
+  new MessageClass(err).showError()
   return false
 }
 function erreur(err){return error(err)}
 
 function action(str){
-  Message.showAction.call(Message, str)
+  new MessageClass(str).showAction()
 }
 
 function log(...args){
@@ -40,28 +40,27 @@ function log(...args){
 
 class MessageClass {
 
-  init(){
+  constructor(str, options){
+    this.content = str
+    this.options = options || {}
     this.build()
+  }
+
+  init(){
     listen(this.panneauMessage, 'click', this.hideMessage.bind(this))
   }
 
-  showMessage(msg, options){ 
-    this.panneauMessage || this.build()
-    this.showText(msg, 'notice', options) 
+  showMessage(){ 
+    this.showText(this.content, 'notice', this.options) 
   }
-  showError(err, options){   
-    this.panneauMessage || this.build()
-    this.showText(err, 'error', options) 
+  showError(){   
+    this.showText(this.content, 'error', this.options) 
   }
-  showAction(msg, options){
-    this.panneauMessage || this.build()
-    this.showText(msg, 'doaction', options)
+  showAction(){
+    this.showText(this.content, 'doaction', this.options)
   }
 
   showText(str,type, options){
-    options = options || {}
-    this.clearTimerMessage()
-    this.divContent.innerHTML = str
     this.panneauMessage.className = `${type} ${this.position}`
     if ( type !== 'error' && !options.keep ) this.msgTimer = setTimeout(this.hideMessage.bind(this),20*1000)
   }
@@ -83,14 +82,13 @@ class MessageClass {
    * 
    */
   build(){
-    const script = DCreate('STYLE',{type:'text/css', text: this.stylesCSS})
-    document.head.appendChild(script)
+    DGet('style#message-styles') || this.grave_balise_styles()
 
     this.closeBox = DCreate('SPAN', {
         text:'❌'
       , class:'close-btn'
     })
-    this.divContent  = DCreate('DIV', {style:'font-family:"Arial Narrow",Geneva,Helvetica;font-size:14pt;'})
+    this.divContent  = DCreate('DIV', {text:this.content,style:'font-family:"Arial Narrow",Geneva,Helvetica;font-size:14pt;'})
     const o = DCreate('DIV', {
         id:     'message'
       , class:  `hidden ${this.position}`
@@ -117,6 +115,11 @@ class MessageClass {
   }
 
   get panneauMessage(){ return this._msgpanel }
+
+  grave_balise_styles(){
+    const script = DCreate('STYLE',{id:'message-styles', type:'text/css', text: this.stylesCSS})
+    document.head.appendChild(script)
+  }
 
   get stylesCSS(){
     return `
@@ -155,4 +158,3 @@ div#message.doaction {
     `
   }
 }
-const Message = new MessageClass()

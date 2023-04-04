@@ -80,6 +80,7 @@ class TaskEditor {
     listen(this.btnSave,'click',this.onClickSave.bind(this))
     listen(this.btnCancel,'click',this.onClickCancel.bind(this))
     listen(this.btnTryAction,'click',this.onTryAction.bind(this))
+    listen(this.actionField,'change', this.onChangeAction.bind(this))
   }
 
   prepare(){
@@ -145,12 +146,36 @@ class TaskEditor {
     return this.task.onClickRun(ev)
   }
 
+  /**
+  * Méthode évènement appelée quand on change le code de l'action
+  * à jouer
+  */
+  onChangeAction(ev){
+    const actio = this.actionField.value
+    this.setVisibilityTryAction(actio)
+    const atype = this.field('atype').value
+    /*
+    |  Les vérifications à faire en fonction du type choisi
+    */
+    try {
+      switch(atype){
+      case 'run':
+        if ( actio.padStart('run ') ) { throw "Ne pas mettre 'run' au début de la commande, juste l'argument" }
+        break;
+      }
+    } catch(err) {
+      erreur(err) 
+      this.actionField.focus()
+      this.actionField.select()
+    }
+  }
+
 
   // --- Build/Interface Methods ---
 
-  setVisibilityTryAction(){
-    console.log("this.task.action = ", this.task.data.action)
-    this.btnTryAction.classList[this.task.data.action ? 'remove' : 'add']('invisible')
+  setVisibilityTryAction(action){
+    action = action || this.task.data.action
+    this.btnTryAction.classList[action ? 'remove' : 'add']('invisible')
   }
 
   peupleCategories(){
@@ -175,6 +200,9 @@ class TaskEditor {
     return DGet(`#task-${prop}`, this.obj)
   }
 
+  get actionField(){
+    return this._actfield || (this._actfield = this.field('action'))
+  }
   get btnTryAction(){
     return this._btntryact ||= (this._btntryact = DGet('#btn-try-action', this.obj))
   }

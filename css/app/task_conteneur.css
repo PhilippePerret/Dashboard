@@ -4,12 +4,20 @@ div.task-conteneur {
   padding:2em;
   border:1px solid #555;
   position: relative;
+  vertical-align:top;
 }
+div.task-conteneur.main {
+  height: 600px;
+  max-height:600px;
+  overflow:auto;
+}
+
 div.task-conteneur div.buttons.main-buttons {
   position:absolute;
   bottom:0;
   left:0;
   width:100%;
+  border-top:1px solid #777;
 }
 div.task-conteneur div.buttons button {
   width:40px;

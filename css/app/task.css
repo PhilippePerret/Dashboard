@@ -6,6 +6,9 @@ div.task {
   margin:2px;
   cursor:pointer;
 }
+div.task.selected {
+  background-color:#B3EDFF;
+}
 div.task div.buttons {
   float: right;
   clear:both;
@@ -16,4 +19,9 @@ div.task div.buttons div.btn {
   display:inline-block;
   cursor: pointer;
   margin-left:8px;
+}
+
+select#task-filter {
+  height: 40px;
+  padding: 0 1em;
 }

@@ -106,23 +106,27 @@ def run
   else
     ok = true
     msg = nil
+    action = data[:action]
     begin
       case data[:atype]
       when 'open_edi'
-        `subl "#{data[:action]}"`
+        `subl "#{action}"`
       when 'run'
-        cmd = "run #{data[:action]} 2>&1\n"
-        # cmd = "/usr/local/bin/run #{data[:action]} 2>&1\n"
+        cmd = "run #{action} 2>&1\n"
+        # cmd = "/usr/local/bin/run #{action} 2>&1\n"
         puts "Bash-commande jouée : #{cmd.inspect}".bleu
         res = nil
         keys = []
         keys << {key:'n',modifiers:[:command]} if Osascript.on?('Terminal')
         keys << cmd
         Osascript::Key.press(keys, 'Terminal')
+      when 'url_kpd'
+        ok = false
+        "/Applications/Firefox.app/Contents/MacOS/firefox -P \"KDP Amazon\" --class \"KDP AmazonProfile\" #{action}"
       when 'rcode'
-        eval(data[:action])
+        eval(action)
       when 'bcode'
-        `#{data[:action]}`
+        `#{action}`
       when 'open'
         msg = "Je dois apprendre à ouvrir un fichier ou un dossier"
       when 'url'

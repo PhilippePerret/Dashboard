@@ -28,6 +28,12 @@ class AbstractTask extends AbstractTableClass {
     task.obj.remove()
   }
 
+  static set selectedTask(task){
+    this.selectedTask && this.selectedTask.unsetSelected()
+    this._selectedtask = task
+  }
+  static get selectedTask(){ return this._selectedtask }
+
 
   // --- INSTANCE ---
 
@@ -36,7 +42,8 @@ class AbstractTask extends AbstractTableClass {
     this.data = data;
   }
 
-  get isCurrent(){ return this.start_at < TODAY_END }
+  get isCurrent() { return this.start_at < TODAY_END }
+  get isFuture()  { return this.start_at > TODAY_END }
 
   /**
   * Pour enregistrer la tâche
@@ -51,6 +58,9 @@ class AbstractTask extends AbstractTableClass {
       erreur(retour.msg)
     }
   }
+
+  show(){this.obj.classList.remove('hidden')}
+  hide(){this.obj.classList.add('hidden')}
 
   /**
   * Pour éditer la tâche
@@ -85,9 +95,26 @@ class AbstractTask extends AbstractTableClass {
     }
   }
 
+  setSelected(){
+    this.obj.classList.add('selected')
+    this.isSelected = true
+    this.constructor.selectedTask = this
+  }
+  unsetSelected(){
+    this.obj.classList.remove('selected')
+    this.isSelected = false
+    this.constructor._selectedtask = null
+  }
+
   /*
   |  --- Méthodes d'évènements ---
   */
+
+  onClickTask(ev){
+    this.setSelected()
+    return stopEvent(ev)
+  }
+
   onClickSpin(ev){
     if ( this.isPinned ) {
       TaskConteneur.Today.appendTask(this)
@@ -190,8 +217,9 @@ class AbstractTask extends AbstractTableClass {
     listen(this.btnRun,'click',this.onClickRun.bind(this))
     this.buttons.appendChild(this.btnRun)
     this.setVisibilityRunButton()
-
     div.appendChild(this.buttons)
+    listen(div,'click',this.onClickTask.bind(this))
+
     conteneur.appendTask(this)
   }
 

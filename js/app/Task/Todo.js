@@ -8,6 +8,7 @@ static get ACTION_TYPES(){
       'run':      "Run à lancer (set-up d'application)", 
       'open':     'Fichier ou dossier à ouvrir', 
       'url':      'URL à rejoindre',
+      'url_kpd':  'URL Kindle Direct Publishing (KDP)',
       'open_edi': "Ouvrir dossier dans EDI",
       'rcode':    'Code ruby à évaluer', 
       'bcode':    'Code bash à évalue', 
@@ -52,11 +53,11 @@ static onLoad(retour){
 }
 
 static displayTodayTasks(){
-  this.items.forEach(todo => {
-    if ( todo.start_at < TODAY_END) {
-      todo.display('main')
-    }
-  })
+  this.displayAllTask()
+  TaskFilter.applyFilter('current')
+}
+static displayAllTask(){
+  this.items.forEach( todo => todo.display('main') )
 }
 
 

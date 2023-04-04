@@ -42,10 +42,16 @@
 </header>
 
 <!-- CONTENEUR PRINCIPAL POUR LES TÂCHES DU JOUR -->
-<div id="container-tasks-main" class="task-conteneur">
+<div id="container-tasks-main" class="task-conteneur main">
   <div class="task-list"></div>
   <div class="buttons main-buttons">
     <button class="btn-add">➕</button>
+    <select id="task-filter">
+      <option id="task-filter-current" value="current">tâches courantes</option>
+      <option id="task-filter-same-categorie" value="same-categorie">tâches de la même catégorie</option>
+      <option id="task-filter-future" value="future">tâches futures</option>
+      <option id="task-filter-linked" value="linked">tâches liées à sélectionnée</option>
+    </select>
   </div>
 </div>
 <!-- CONTENEUR DES TÂCHES ÉPINGLÉES (à faire aujourd'hui) -->
@@ -84,6 +90,7 @@
     <button id="task-editor-btn-save">Enregistrer</button>
   </div>
 </div>
+<!-- /ÉDITEUR DE TÂCHE -->
 
 <div id="ui-fields">
 
@@ -98,6 +105,7 @@
 <script type="text/javascript" src="js/app/Task/AbstractTask.js"></script>
 <script type="text/javascript" src="js/app/Task/TaskEditor.js"></script>
 <script type="text/javascript" src="js/app/Task/TaskConteneur.js"></script>
+<script type="text/javascript" src="js/app/Task/TaskFilter.js"></script>
 <script type="text/javascript" src="js/app/Task/Categorie.js" defer></script>
 <script type="text/javascript" src="js/app/App/App.js" defer></script>
 <script type="text/javascript" src="js/app/Task/Todo.js" defer></script>

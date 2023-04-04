@@ -5,8 +5,9 @@ class TaskConteneur {
     this.table = {}
     this.Today  = this.table['main'] = new MainTaskConteneur('main')
     this.Today.observe()
-    this.Done   = this.table['done'] = new TaskConteneur('done')
-    this.Pinned = this.table['pinned'] = new TaskConteneur('pinned')
+    this.Done   = this.table['done']    = new TaskConteneur('done')
+    this.Pinned = this.table['pinned']  = new TaskConteneur('pinned')
+    DGetAll('.task-list').forEach(div => $(div).sortable({axis:'y'}))
   }
 
   static conteneur(type){

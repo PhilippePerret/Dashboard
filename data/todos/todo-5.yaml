@@ -1,11 +1,16 @@
 ---
 id: 5
 resume: Poursuivre le Dashboard
-cate: Programme
+cat: Programme
 start: '2023-04-03'
 end: '2023-04-18'
 priority: 1
-todo:
-  - implémenter les méthodes des boutons
-  - bouton pour créer une nouvelle tâche (et implémentation)
-  - système de vérification quotidienne
+todo: |-
+  - update de tâche: visibilité du bouton run si action
+  - gestion de l'action d'une tâche
+  - (puisque ouvert tous les jours) système de vérification quotidienne
+  - [éditeur] Raccourci Enter/Escape pour Enregistrer/Annuler
+action: ''
+atype: ''
+created_at: '2023-04-04 07:15:23 +0200'
+updated_at: '2023-04-04 07:20:52 +0200'

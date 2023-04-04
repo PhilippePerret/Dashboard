@@ -27,9 +27,14 @@ class InteractiveElement {
     this.params   = this.defaultizeParams(params)
     this.build()
   }
+  get isPrompt() { return this.type == 'prompt' }
   onClickOk(e){
     this.hide()
-    this.params.poursuivre.call(null, true)
+    if ( this.isPrompt ) {
+      this.params.poursuivre.call(null, true, this.promptField.value)
+    } else {
+      this.params.poursuivre.call(null, true)
+    }
     return stopEvent(e)
   }
   onClickCancel(e){
@@ -46,12 +51,17 @@ class InteractiveElement {
     } else if ( e.key == 'Escape') {
       return this.onClickCancel(e)
     } else {
-      return stopEvent(e)
+      if ( this.isPrompt ) { return true }
+      else { return stopEvent(e) }
     }
   }
   
   show(){
     this.obj.classList.remove('hidden')
+    if ( this.isPrompt ) {
+      this.promptField.focus()
+      this.promptField.select()
+    }
   }
   hide(){
     this.unobserveKeys()
@@ -62,6 +72,13 @@ class InteractiveElement {
     const o = DCreate('DIV', {class:'hidden', style:this.divStyle})
     this.obj = o
     this.msgField   = DCreate('DIV', {class:'inter-message', text: this.question, style:this.msgFieldStyle})
+    /*
+    |  Le champ pour recevoir une réponse
+    */
+    if ( this.isPrompt ) {
+      this.promptField = DCreate('INPUT', {class:'prompt-field', value: this.params.default, style:this.promptFieldStyle})
+
+    }
     /*
     |  --- Les boutons ---
     */
@@ -83,8 +100,10 @@ class InteractiveElement {
     btnsDiv.appendChild(this.btnCancel)
     
     o.appendChild(this.msgField)
+    this.isPrompt && this.msgField.appendChild(this.promptField)
     o.appendChild(btnsDiv)
     document.body.appendChild(o)
+
     this.observe()
   }
   observe(){
@@ -117,6 +136,9 @@ class InteractiveElement {
   get msgFieldStyle(){
     return 'padding:2em 1em;border:1px solid #CCC;border-radius:0.5em;margin-bottom:2em;font-size:inherit;font-family:inherit;'
   }
+  get promptFieldStyle(){
+    return 'margin-top:1em;width:80%;font-size:inherit;font-family:inherit;padding:0.2em 0.5em;'
+  }
   get divButtonsStyle(){
     return 'text-align:right;'
   }
@@ -139,5 +161,6 @@ const confirmer = function(question, params){
   new InteractiveElement('confirm', question, params).show()
 }
 const demander = function(question, defaultResponse, params){
-  console.warn("Il faut que j'apprenne à prompter une valeur")
+  Object.assign(params, {default: defaultResponse})
+  new InteractiveElement('prompt', question, params).show()
 }

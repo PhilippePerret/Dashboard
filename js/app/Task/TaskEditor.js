@@ -12,6 +12,7 @@ class TaskEditor {
   }
 
   constructor(){
+    this.prepare()
     this.observe()
   }
 
@@ -77,7 +78,13 @@ class TaskEditor {
     listen(this.btnCancel,'click',this.onClickCancel.bind(this))
   }
 
+  prepare(){
+    this.peupleCategories()
+    this.peupleTypesAction()
+  }
+
   // --- Gestionnaires d'Events ---
+
   onClickSave(ev){
     const newData = this.getValues()
     if ( this.task.obj ) {
@@ -102,6 +109,48 @@ class TaskEditor {
     this.hide()
     return stopEvent(ev)
   }
+
+  /**
+  * Méthode appelée :
+  *   1) lorsqu'on choisit une catégorie
+  *   2) lorsqu'on revient après avoir donné le nom d'une nouvelle catégorie
+  *       ok est alors true si on veut l'enregistrer
+  */
+  onChooseCategorie(ev, ok, newCatName){
+    const menu = this.field('cat')
+    if ( menu.value == '__new__cate__'){
+      ok = ok && newCatName && newCatName.length > 0
+      if ( ok ) {
+        const icate = Categorie.add(new Categorie({name: newCatName, id: Categorie.getNewId()}))
+        this.peupleCategories()
+        menu.selectedIndex = icate.index + 1
+      } else if ( ok === false ) {
+        menu.selectedIndex = 0
+      } else {
+        demander("Nom de la nouvelle catégorie", "Nouvelle catégorie", {poursuivre:this.onChooseCategorie.bind(this,ev)})
+      }
+    }
+    return stopEvent(ev)
+  }
+
+
+  // --- Build Methods ---
+
+  peupleCategories(){
+    const mCate = this.field('cat')
+    mCate.innerHTML = ''
+    mCate.appendChild(DCreate('OPTION',{value:'',text:'Catégorie…'}))
+    Categorie.each(cate => mCate.appendChild(DCreate('OPTION',{value:cate.id, text:cate.name})))
+    mCate.appendChild(DCreate('OPTION',{value:'__new__cate__',text:'Autre…'}))
+    listen(mCate,'change', this.onChooseCategorie.bind(this))
+  }
+
+  peupleTypesAction(){
+    const mAType = this.field('atype')
+    mAType.innerHTML = ""
+    Todo.ACTION_TYPES.forEach(type => mAType.appendChild(DCreate('OPTION',{value:type, text:type})))
+  }
+
 
   field(prop){
     return DGet(`#task-${prop}`, this.obj)

@@ -2,11 +2,7 @@
 /**
 * La class abstraite pour les tâches quelconque
 */
-class AbstractTask {
-
-  static get(task_id){
-    return this.table[task_id]
-  }
+class AbstractTask extends AbstractTableClass {
 
   /**
   * Méthode appelée pour créer une nouvelle tâche
@@ -32,20 +28,11 @@ class AbstractTask {
     task.obj.remove()
   }
 
-  /**
-  * À la création d'une tâche, on doit l'ajouter à sa liste
-  */
-  static add(task){
-    task.index = this.items.length
-    this.items.push(task)
-    Object.assign(this.table, {[task.id]: task})
-  }
-
-  static getNewId(){ return ++ this.lastId }
 
   // --- INSTANCE ---
 
   constructor(data){
+    super()
     this.data = data;
   }
 
@@ -198,17 +185,23 @@ class AbstractTask {
     const btnSpin = DCreate('DIV',{class:'btn', text:'📌', title:`${MGTIT}Épingler ${this.ref}`})
     listen(btnSpin,'click',this.onClickSpin.bind(this))
     this.buttons.appendChild(btnSpin)
-    const btnRun = DCreate('DIV', {class:'btn', text:'', title:`${MGTIT}Jouer l'action de cette tâche`})
-    listen(btnRun,'click',this.onClickRun.bind(this))
-    this.buttons.appendChild(btnRun)
+    this.btnRun = DCreate('DIV', {class:'btn', text:'▶️', title:`${MGTIT}Jouer l'action de cette tâche`})
+    listen(this.btnRun,'click',this.onClickRun.bind(this))
+    this.buttons.appendChild(this.btnRun)
+    this.setVisibilityRunButton()
 
     div.appendChild(this.buttons)
     conteneur.appendTask(this)
   }
 
+  setVisibilityRunButton(){
+    this.btnRun.classList[this.data.run == ''?'add':'remove']('invisible')
+  }
 
-  get id()    { return this.data.id }
-  get resume(){ return this.data.resume }
+
+  get id()        { return this.data.id }
+  get resume()    { return this.data.resume }
+  get categorie() { return this.data.cat }
 
   get end_at(){
     return this._end_at || (this._end_at = DateUtils.revdate2date(this.data.end))

@@ -42,3 +42,7 @@ div#task-editor div.buttons {
   margin-top:1em;
   text-align: right;
 }
+div#task-editor div.buttons button {
+  padding: 0.4em 1.5em;
+  margin-left: 1em;  
+}

@@ -9,7 +9,8 @@
   <link rel="stylesheet" type="text/css" href="css/app/task_editor.css">
   <link rel="stylesheet" type="text/css" href="css/app/task_conteneur.css">
   <link rel="stylesheet" type="text/css" href="css/system/Finder.css">
-  <link rel="stylesheet" type="text/css" href="css/system/main.css">
+  <!-- <link rel="stylesheet" type="text/css" href="css/system/main.css"> -->
+  <link rel="stylesheet" type="text/css" href="css/system/common.css">
   <link rel="stylesheet" type="text/css" href="js/system/jquery/jquery-ui.min.css">
   <link rel="stylesheet" type="text/css" href="js/system/jquery/jquery-jquery-ui.structure.min.css">
   <link rel="stylesheet" type="text/css" href="js/system/jquery/jquery-jquery-ui.theme.min.css">
@@ -26,6 +27,7 @@
   <script type="text/javascript" src="js/system/common.js"></script>
   <script type="text/javascript" src="js/system/Message.js"></script>
   <script type="text/javascript" src="js/system/WAA.js"></script>
+  <script type="text/javascript" src="js/system/AbstractTableClass.js"></script>
   <script type="text/javascript" src="js/system/dom.js"></script>
   <script type="text/javascript" src="js/system/date.js"></script>
   <script type="text/javascript" src="js/system/Finder.js"></script>
@@ -69,11 +71,13 @@
         <option value="3">Moyenne</option>
         <option value="5">Élevée</option>
       </select>
+      <select id="task-cat"></select>
     </div>
     <label class="main">Sous-tâches</label>
     <textarea id="task-todo" class="plain"></textarea>
     <label class="main">Action</label>
-    <textarea id="task-run" class="plain"></textarea>
+    <select id="task-atype"></select>
+    <textarea id="task-action" class="plain"></textarea>
   </form>
   <div class="buttons">  
     <button id="task-editor-btn-cancel">Annuler</button>
@@ -94,6 +98,7 @@
 <script type="text/javascript" src="js/app/Task/AbstractTask.js"></script>
 <script type="text/javascript" src="js/app/Task/TaskEditor.js"></script>
 <script type="text/javascript" src="js/app/Task/TaskConteneur.js"></script>
+<script type="text/javascript" src="js/app/Task/Categorie.js" defer></script>
 <script type="text/javascript" src="js/app/App/App.js" defer></script>
 <script type="text/javascript" src="js/app/Task/Todo.js" defer></script>
 </html>

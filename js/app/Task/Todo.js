@@ -2,12 +2,18 @@
 
 class Todo extends AbstractTask {
 
+static get ACTION_TYPES(){
+  if (undefined == this._actionTypes) {
+    this._actionTypes = ['Code à évaluer', 'Fichier à ouvrir', 'Dossier à ouvrir']
+  } return this._actionTypes
+}
+
 /**
 * Listes des propriétés d'une tâche Todo
 */
 static get PROPERTIES(){
   if (undefined == this._properties){
-    this._properties = ['id','resume','start','end', 'todo', 'run', 'priority']
+    this._properties = ['id','resume','cat','start','end', 'todo', 'action', 'atype', 'priority']
   } return this._properties
 }
 
@@ -24,16 +30,12 @@ static loadAll(){
 }
 static onLoad(retour){
   // console.log("retour = ", retour)
-  this.items  = []
-  this.table  = {}
-  this.lastId = 0
+  this.reset()
+  Categorie.reset()
   if ( retour.ok ) {
     retour.todos.forEach(dtodo => {
-      const item = new Todo(dtodo)
-      item.index = this.items.length
-      this.items.push(item)
-      Object.assign(this.table, {[item.id]: item})
-      if ( Number(item.id) > this.lastId ) { this.lastId = Number(item.id) }
+      const item = this.add(new Todo(dtodo))
+      Categorie.addTask(item)
     })
     this.onOkLoading(true)
   } else {

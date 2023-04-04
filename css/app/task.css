@@ -4,6 +4,7 @@ div.task {
   background-color:white;
   border-radius:12px;
   margin:2px;
+  cursor:pointer;
 }
 div.task div.buttons {
   float: right;

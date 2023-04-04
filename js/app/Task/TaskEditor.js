@@ -5,7 +5,9 @@ class TaskEditor {
   static editTask(task){
     this.editor.edit(task)
   }
-  static prepare(){}
+  static prepare(){
+
+  }
 
   static get editor(){
     return this._editor || (this._editor = new TaskEditor())
@@ -49,6 +51,7 @@ class TaskEditor {
   }
 
   show(){
+    this.setVisibilityTryAction()
     this.obj.classList.remove('hidden')
     this.focusOn('resume')
   }
@@ -76,6 +79,7 @@ class TaskEditor {
   observe(){
     listen(this.btnSave,'click',this.onClickSave.bind(this))
     listen(this.btnCancel,'click',this.onClickCancel.bind(this))
+    listen(this.btnTryAction,'click',this.onTryAction.bind(this))
   }
 
   prepare(){
@@ -133,8 +137,21 @@ class TaskEditor {
     return stopEvent(ev)
   }
 
+  /**
+  * Méthode appelée quand on clique sur le bouton pour essai le
+  * code (action)
+  */
+  onTryAction(ev){
+    return this.task.onClickRun(ev)
+  }
 
-  // --- Build Methods ---
+
+  // --- Build/Interface Methods ---
+
+  setVisibilityTryAction(){
+    console.log("this.task.action = ", this.task.data.action)
+    this.btnTryAction.classList[this.task.data.action ? 'remove' : 'add']('invisible')
+  }
 
   peupleCategories(){
     const mCate = this.field('cat')
@@ -148,7 +165,9 @@ class TaskEditor {
   peupleTypesAction(){
     const mAType = this.field('atype')
     mAType.innerHTML = ""
-    Todo.ACTION_TYPES.forEach(type => mAType.appendChild(DCreate('OPTION',{value:type, text:type})))
+    for(var atype in Todo.ACTION_TYPES) {
+      mAType.appendChild(DCreate('OPTION',{value:atype, text:Todo.ACTION_TYPES[atype]}))
+    }
   }
 
 
@@ -156,6 +175,9 @@ class TaskEditor {
     return DGet(`#task-${prop}`, this.obj)
   }
 
+  get btnTryAction(){
+    return this._btntryact ||= (this._btntryact = DGet('#btn-try-action', this.obj))
+  }
   get btnSave(){
     return this._btnsave || (this._btnsave = DGet('#task-editor-btn-save'))
   }

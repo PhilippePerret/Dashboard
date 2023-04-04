@@ -4,7 +4,14 @@ class Todo extends AbstractTask {
 
 static get ACTION_TYPES(){
   if (undefined == this._actionTypes) {
-    this._actionTypes = ['Code à évaluer', 'Fichier à ouvrir', 'Dossier à ouvrir']
+    this._actionTypes = {
+      'run':      "Run à lancer (set-up d'application)", 
+      'open':     'Fichier ou dossier à ouvrir', 
+      'url':      'URL à rejoindre',
+      'open_edi': "Ouvrir dossier dans EDI",
+      'rcode':    'Code ruby à évaluer', 
+      'bcode':    'Code bash à évalue', 
+    }
   } return this._actionTypes
 }
 

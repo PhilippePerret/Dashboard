@@ -24,7 +24,6 @@ class AbstractTableClass {
   */
   static add(item) {
     item.index = this.items.length
-    console.info("item.index = ", item.index, item)
     this.items.push(item)
     Object.assign(this.table, {[item.id]: item})
     if ( Number(item.id) > this.lastId ) { this.lastId = Number(item.id) }

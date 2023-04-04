@@ -9,7 +9,7 @@ todo: |-
   - deuxième sous-tâche
   - 3e sous-tâche
 action: say 'Bonjour'
-atype: Code à évaluer
+atype: bcode
 priority: ''
 created_at: '2023-04-04 11:18:31 +0200'
-updated_at: '2023-04-04 11:18:31 +0200'
+updated_at: '2023-04-04 11:28:00 +0200'

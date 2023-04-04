@@ -1,1 +1,5 @@
 .invisible {visibility:hidden;}
+
+.small {
+  font-size: 0.85em;
+}

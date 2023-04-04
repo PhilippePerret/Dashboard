@@ -1,3 +1,5 @@
+require 'date'
+require 'osascript'
 module Dashboard
 class Task
 class << self
@@ -56,8 +58,12 @@ class << self
 
   def get_all_tasks
     Dir["#{folder}/*.yaml"].map do |fpath|
-      YAML.load_file(fpath)
+      YAML.load_file(fpath, **options_yaml)
     end
+  end
+
+  def options_yaml
+    @options_yaml ||= {permitted_classes: [Date, Time, Symbol], symbolize_names:true}
   end
 
   def folder
@@ -94,13 +100,46 @@ def save
 end
 
 def run
-  if data[:run].nil?
+  if data[:action].nil?
     ok  = false
     msg = "Aucune action n'est définie pour cette tâche ##{id}…"
   else
     ok = true
     msg = nil
-    puts "Je dois apprendre à jouer une action".jaune
+    begin
+      case data[:atype]
+      when 'open_edi'
+        `subl "#{data[:action]}"`
+      when 'run'
+        cmd = "/usr/local/bin/run #{data[:action]} 2>&1\n"
+        puts "Bash-commande jouée : #{cmd.inspect}".bleu
+        res = nil
+        if Osascript.on?('Terminal')
+          Osascript::Key.press([
+            {key:'n',modifiers:[:command]}
+          ], 'Terminal')
+        end
+        res = Osascript::Key.press([cmd], 'Terminal')
+        # thr = Thread.new { res = system(cmd) } # fonctionne, mais dans la même fenêtre
+        # thr.join
+        if res != ''
+          ok = false
+          msg = res
+        end
+      when 'rcode'
+        eval(data[:action])
+      when 'bcode'
+        `#{data[:action]}`
+      when 'open'
+        msg = "Je dois apprendre à ouvrir un fichier ou un dossier"
+      when 'url'
+        msg = "Je dois apprendre à rejoindre une URL"
+      end
+    rescue Exception => e
+      ok = false
+      msg = e.message + "\n" + e.backtrace.join("\n")
+      puts msg.rouge
+    end
   end
   WAA.send({class:"Todo.get(#{self.id})",method:'onRan',data:{ok:ok,msg:msg}})
 end
@@ -115,7 +154,7 @@ def remove
 end
 
 def data
-  @data ||= YAML.load_file(path, **{symbolize_names:true})
+  @data ||= YAML.load_file(path, **self.class.options_yaml)
 end
 
 def archive_path

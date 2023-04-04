@@ -73,6 +73,7 @@ class AbstractTask extends AbstractTableClass {
         isUpdated = true
       }
     }
+    this.setVisibilityRunButton()
     isUpdated && this.save()
   }
 
@@ -185,7 +186,7 @@ class AbstractTask extends AbstractTableClass {
     const btnSpin = DCreate('DIV',{class:'btn', text:'📌', title:`${MGTIT}Épingler ${this.ref}`})
     listen(btnSpin,'click',this.onClickSpin.bind(this))
     this.buttons.appendChild(btnSpin)
-    this.btnRun = DCreate('DIV', {class:'btn', text:'▶️', title:`${MGTIT}Jouer l'action de cette tâche`})
+    this.btnRun = DCreate('DIV', {class:'btn', text:'▶️', title:`${MGTIT}Jouer l'action de cette tâche :\n${this.data.action}`})
     listen(this.btnRun,'click',this.onClickRun.bind(this))
     this.buttons.appendChild(this.btnRun)
     this.setVisibilityRunButton()
@@ -195,7 +196,7 @@ class AbstractTask extends AbstractTableClass {
   }
 
   setVisibilityRunButton(){
-    this.btnRun.classList[this.data.run == ''?'add':'remove']('invisible')
+    this.btnRun.classList[this.data.action ? 'remove' : 'add']('invisible')
   }
 
 

@@ -8,6 +8,14 @@
 class TaskFilter {
 
   /**
+  * @return [Array] la liste des clés de menu (OPTION) qui ne sont
+  * utilisables que si une tâche est sélectionnée
+  */
+  static get KeysOptionsWithSelected(){
+    return ['same-categorie', 'linked']
+  }
+
+  /**
   * Méthode principale qui applique le filtre, c'est-à-dire, 
   * concrètement, qui affiche les tâches voulues, par exemple toutes
   * les tâches futures ou toutes les tâches courantes
@@ -31,6 +39,14 @@ class TaskFilter {
     default:
       console.error("Je ne connais pas la clé de filtre des tâches '%s'", key_filter)
     }
+  }
+
+
+  static disableOptionsWithSelected(){
+    this.KeysOptionsWithSelected.forEach(key => this.option(key).disabled = true)
+  }
+  static enableOptionsWithSelected(){
+    this.KeysOptionsWithSelected.forEach(key => this.option(key).disabled = false)
   }
 
   /**

@@ -31,8 +31,14 @@ class AbstractTask extends AbstractTableClass {
   static set selectedTask(task){
     this.selectedTask && this.selectedTask.unsetSelected()
     this._selectedtask = task
+    TaskFilter.enableOptionsWithSelected()
   }
   static get selectedTask(){ return this._selectedtask }
+  
+  static unselectTask(){
+    TaskFilter.disableOptionsWithSelected()
+    this._selectedtask = null
+  }
 
 
   // --- INSTANCE ---
@@ -103,7 +109,7 @@ class AbstractTask extends AbstractTableClass {
   unsetSelected(){
     this.obj.classList.remove('selected')
     this.isSelected = false
-    this.constructor._selectedtask = null
+    this.constructor.unselectTask()
   }
 
   /*

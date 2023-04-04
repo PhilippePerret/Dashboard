@@ -111,21 +111,14 @@ def run
       when 'open_edi'
         `subl "#{data[:action]}"`
       when 'run'
-        cmd = "/usr/local/bin/run #{data[:action]} 2>&1\n"
+        cmd = "run #{data[:action]} 2>&1\n"
+        # cmd = "/usr/local/bin/run #{data[:action]} 2>&1\n"
         puts "Bash-commande jouée : #{cmd.inspect}".bleu
         res = nil
-        if Osascript.on?('Terminal')
-          Osascript::Key.press([
-            {key:'n',modifiers:[:command]}
-          ], 'Terminal')
-        end
-        res = Osascript::Key.press([cmd], 'Terminal')
-        # thr = Thread.new { res = system(cmd) } # fonctionne, mais dans la même fenêtre
-        # thr.join
-        if res != ''
-          ok = false
-          msg = res
-        end
+        keys = []
+        keys << {key:'n',modifiers:[:command]} if Osascript.on?('Terminal')
+        keys << cmd
+        Osascript::Key.press(keys, 'Terminal')
       when 'rcode'
         eval(data[:action])
       when 'bcode'

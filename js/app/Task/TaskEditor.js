@@ -5,13 +5,12 @@ class TaskEditor {
   static editTask(task){
     this.editor.edit(task)
   }
-  static prepare(){
-
-  }
 
   static get editor(){
     return this._editor || (this._editor = new TaskEditor())
   }
+
+  // --- INSTANCE ---
 
   constructor(){
     this.prepare()
@@ -86,6 +85,8 @@ class TaskEditor {
   prepare(){
     this.peupleCategories()
     this.peupleTypesAction()
+    $(this.obj).draggable();
+
   }
 
   // --- Gestionnaires d'Events ---

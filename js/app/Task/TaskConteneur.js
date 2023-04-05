@@ -4,7 +4,6 @@ class TaskConteneur {
   static prepare(){
     this.table = {}
     this.Today  = this.table['main'] = new MainTaskConteneur('main')
-    this.Today.observe()
     this.Done   = this.table['done']    = new TaskConteneur('done')
     this.Pinned = this.table['pinned']  = new TaskConteneur('pinned')
     DGetAll('.task-list').forEach(div => $(div).sortable({axis:'y'}))
@@ -21,7 +20,8 @@ class TaskConteneur {
   static get Pinned() { return this._contpinned }
   static set Pinned(v){ this._contpinned = v }
 
-
+  // --- INSTANCE CONTENEUR DE TÂCHE ---
+  
   constructor(id){
     this.id = id
   }
@@ -35,19 +35,4 @@ class TaskConteneur {
 class MainTaskConteneur extends TaskConteneur {
   constructor(id){super(id)}
 
-  // --- Gestionnaires d'évènements ---
-
-  /**
-  * Méthode appelée quand on clique sur le bouton "+" pour ajouter
-  * une tâche.
-  */
-  onClickAdd(ev){
-    Todo.createNew()
-    return stopEvent(ev)
-  }
-  observe(){
-    listen(this.btnAdd,'click',this.onClickAdd.bind(this))
-  }
-
-  get btnAdd(){return this._btnadd || (this._btnadd = DGet('.btn-add', this.obj) )}
 }

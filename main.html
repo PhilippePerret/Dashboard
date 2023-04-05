@@ -42,24 +42,34 @@
 </header>
 
 <!-- CONTENEUR PRINCIPAL POUR LES TÂCHES DU JOUR -->
-<div id="container-tasks-main" class="task-conteneur main">
-  <div class="task-list"></div>
-  <div class="buttons main-buttons">
-    <button class="btn-add">➕</button>
+<div id="container-tasks-main" class="task-conteneur main" data-type="main">
+  <header>
     <select id="task-filter">
       <option id="task-filter-current" value="current">tâches courantes</option>
+      <option id="task-filter-outdated" value="outdated">tâches dépassées</option>
       <option id="task-filter-same-categorie" value="same-categorie">tâches de la même catégorie</option>
       <option id="task-filter-future" value="future">tâches futures</option>
       <option id="task-filter-linked" value="linked">tâches liées à sélectionnée</option>
     </select>
-  </div>
-</div>
+  </header>
+  <div class="task-list"></div>
+  <footer>
+    <button class="btn-add" title="Créer une nouvelle tâche">➕
+    </button><button class="btn-sup" disabled title="Détruire définitivement la tâche (sans l'archiver)">🗑️
+    </button><button class="btn-mod" disabled title="Éditer (modifier) la tâche sélectionnée">🖌️
+    </button><button class="btn-pin" disabled title="Épingler ou désépingler la tâche sélectionnée">📌
+    </button><button class="btn-acc" disabled title="Marquer la tâche sélectionnée comme accomplie">✅
+    </button><button class="btn-run" disabled title="Accomplir la tâche sélectionnée">▶️
+    </button>
+  </footer>
+</div><!-- /conteneur tâche principa -->
+
 <!-- CONTENEUR DES TÂCHES ÉPINGLÉES (à faire aujourd'hui) -->
-<div id="container-tasks-pinned" class="task-conteneur">
+<div id="container-tasks-pinned" class="task-conteneur" data-type="pinned">
   <div class="task-list"></div>
 </div>
 <!-- CONTENEUR POUR METTRE LES TÂCHES DU JOUR ACCOMPLIES -->
-<div id="container-tasks-done" class="task-conteneur">
+<div id="container-tasks-done" class="task-conteneur" data-type="done">
   <div class="task-list"></div>
 </div>
 
@@ -106,6 +116,7 @@
 <script type="text/javascript" src="js/app/Task/TaskEditor.js"></script>
 <script type="text/javascript" src="js/app/Task/TaskConteneur.js"></script>
 <script type="text/javascript" src="js/app/Task/TaskFilter.js"></script>
+<script type="text/javascript" src="js/app/Task/TaskButton.js"></script>
 <script type="text/javascript" src="js/app/Task/Categorie.js" defer></script>
 <script type="text/javascript" src="js/app/App/App.js" defer></script>
 <script type="text/javascript" src="js/app/Task/Todo.js" defer></script>

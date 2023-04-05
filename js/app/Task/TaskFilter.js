@@ -27,6 +27,9 @@ class TaskFilter {
     case 'current':
       Todo.each( task => {task[task.isCurrent ? 'show' : 'hide'].call(task) })
       break
+    case 'outdated':
+      Todo.each( task => {task[task.isOutDated ? 'show' : 'hide'].call(task) })
+      break
     case 'same-categorie':
       console.warn("Je dois apprendre à filtrer les tâches de la même catégorie")
       break
@@ -56,6 +59,7 @@ class TaskFilter {
   *   L'affichage des tâches correspondantes
   */
   static onFilterChange(ev){
+    Todo.unselectTask()
     this.applyFilter(this.filterKey)
     return stopEvent(ev)
   }

@@ -32,10 +32,15 @@ class AbstractTask extends AbstractTableClass {
     this.selectedTask && this.selectedTask.unsetSelected()
     this._selectedtask = task
     TaskFilter.enableOptionsWithSelected()
+    TaskButton.setButtonsState(task, true)
   }
   static get selectedTask(){ return this._selectedtask }
   
   static unselectTask(){
+    if (this.selectedTask) {
+      TaskButton.setButtonsState(this.selectedTask, false)
+      this.selectedTask.unmarkSelected()
+    }
     TaskFilter.disableOptionsWithSelected()
     this._selectedtask = null
   }
@@ -48,8 +53,9 @@ class AbstractTask extends AbstractTableClass {
     this.data = data;
   }
 
-  get isCurrent() { return this.start_at < TODAY_END }
-  get isFuture()  { return this.start_at > TODAY_END }
+  get isCurrent()   { return this.start_at < TODAY_END }
+  get isFuture()    { return this.start_at > TODAY_END }
+  get isOutDated()  { return this.end_at && this.end_at < TODAY_START }
 
   /**
   * Pour enregistrer la tâche
@@ -89,9 +95,18 @@ class AbstractTask extends AbstractTableClass {
         isUpdated = true
       }
     }
-    this.setVisibilityRunButton()
+    TaskButton.setVisibilityRunButton(this)
     isUpdated && this.save()
   }
+
+  // @return [String] le type actuel du conteneur
+  get conteneurType(){
+    if ( this.isDone ){ return 'done' }
+    else if (this.isPinned){ return 'pinned' }
+    else return 'main'
+  }
+  // Raccourci
+  get ctype(){return this.conteneurType}
 
   set(property, newValue){
     this.data[property] = newValue
@@ -107,9 +122,12 @@ class AbstractTask extends AbstractTableClass {
     this.constructor.selectedTask = this
   }
   unsetSelected(){
+    this.unmarkSelected()
+    this.constructor.unselectTask()
+  }
+  unmarkSelected(){
     this.obj.classList.remove('selected')
     this.isSelected = false
-    this.constructor.unselectTask()
   }
 
   /*
@@ -121,7 +139,7 @@ class AbstractTask extends AbstractTableClass {
     return stopEvent(ev)
   }
 
-  onClickSpin(ev){
+  onClickPin(){
     if ( this.isPinned ) {
       TaskConteneur.Today.appendTask(this)
       this.isPinned = false
@@ -129,11 +147,9 @@ class AbstractTask extends AbstractTableClass {
       TaskConteneur.Pinned.appendTask(this)
       this.isPinned = true
     }
-    return stopEvent(ev)
   }
-  onClickDone(ev){
+  onClickDone(){
     WAA.send({class:'Dashboard::Task',method:'mark_done',data:{task_id: this.id}})
-    return stopEvent(ev)
   }
   onMarkDone(res){
     if ( !res.ok ) return erreur(res.msg) 
@@ -150,21 +166,18 @@ class AbstractTask extends AbstractTableClass {
   hideButtons(){this.buttons.classList.add('hidden')}
   showButtons(){this.buttons.classList.remove('hidden')}
   
-  onClickEdit(ev){
+  onClickEdit(){
     TaskEditor.editTask(this)
-    return stopEvent(ev)
   }
-  onClickRun(ev){
+  onClickRun(){
     WAA.send({class:'Dashboard::Task', method:'runTask', data:{task_id: this.id}})
-    return stopEvent(ev)
   }
   onRan(retour){
     if (retour.ok) { message("Action jouée avec succès") }
     else { erreur(retour.msg)}
   }
-  onClickSup(ev){
+  onClickSup(){
     confirmer("Veux-tu vraiment détruire cette tâche ?",{buttonCancel:{isDefault:true}, poursuivre:this.onConfirmSup.bind(this)})
-    return stopEvent(ev)
   }
   // - après confirmation de la destruction -
   onConfirmSup(doIt){
@@ -206,31 +219,9 @@ class AbstractTask extends AbstractTableClass {
     const resu = DCreate('SPAN', {class:'resume', text: this.resume})
     listen(resu,'dblclick', this.edit.bind(this))
     div.appendChild(resu)
-    this.buttons = DCreate('DIV',{class:'buttons'})
-    const btnSup = DCreate('DIV',{class:'btn', text:'🗑️', title:`${MGTIT}Détruire définitivement ${this.ref} (sans l'archiver)`})
-    listen(btnSup,'click',this.onClickSup.bind(this))
-    this.buttons.appendChild(btnSup)
-    const btnEdit = DCreate('DIV',{class:'btn', text:'🖌️', title:`${MGTIT}Éditer ${this.ref}`})
-    listen(btnEdit,'click',this.onClickEdit.bind(this))
-    this.buttons.appendChild(btnEdit)
-    const btnDone = DCreate('DIV',{class:'btn', text:'✅', title:`${MGTIT}Marquer ${this.ref} comme accomplie`})
-    listen(btnDone,'click',this.onClickDone.bind(this))
-    this.buttons.appendChild(btnDone)
-    const btnSpin = DCreate('DIV',{class:'btn', text:'📌', title:`${MGTIT}Épingler ${this.ref}`})
-    listen(btnSpin,'click',this.onClickSpin.bind(this))
-    this.buttons.appendChild(btnSpin)
-    this.btnRun = DCreate('DIV', {class:'btn', text:'▶️', title:`${MGTIT}Jouer l'action de cette tâche :\n${this.data.action}`})
-    listen(this.btnRun,'click',this.onClickRun.bind(this))
-    this.buttons.appendChild(this.btnRun)
-    this.setVisibilityRunButton()
-    div.appendChild(this.buttons)
     listen(div,'click',this.onClickTask.bind(this))
 
     conteneur.appendTask(this)
-  }
-
-  setVisibilityRunButton(){
-    this.btnRun.classList[this.data.action ? 'remove' : 'add']('invisible')
   }
 
 

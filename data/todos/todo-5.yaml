@@ -6,13 +6,18 @@ start: '2023-04-03'
 end: '2023-04-18'
 priority: 1
 todo: |-
+  x Mettre le menu des types de tâche en entête
+  x mettre les boutons d'action de tâche (done, poubelle, etc.) en pied de page
+  x supprimer le fonctionnement actuel des boutons de tâche
+
   - mettre les dates (en tout petit) dans les infos de la tâche affichée
   - marquage des tâches dépassées (en rouge)
   - bouton pour faire un résumé oral de la journée à faire
   - gestion de l'action d'une tâche
   - (puisque ouvert tous les jours) système de vérification quotidienne
   - [éditeur] Raccourci Enter/Escape pour Enregistrer/Annuler
-action: ''
-atype: ''
+  - implémenter une aide pour l'interface
+action: "~/Programmes/Dashboard/"
+atype: open_edi
 created_at: '2023-04-04 07:15:23 +0200'
-updated_at: '2023-04-04 21:32:20 +0200'
+updated_at: '2023-04-05 05:04:18 +0200'

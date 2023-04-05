@@ -12,21 +12,43 @@ div.task-conteneur.main {
   overflow:auto;
 }
 
-div.task-conteneur div.buttons.main-buttons {
+div.task-conteneur header, 
+div.task-conteneur footer {
   position:absolute;
-  bottom:0;
   left:0;
-  width:100%;
-  border-top:1px solid #777;
+  width:100%;  
+  border-width: 1px;
+  border-color: #777;
+  height:40px !important;
+  background-color: #EFEFEF;
+  padding:0;
 }
-div.task-conteneur div.buttons button {
-  width:40px;
+div.task-conteneur header {
+  top: 0;
+  border-bottom-style:solid;
+
+}
+div.task-conteneur footer {
+  bottom:0;
+  border-top-style:solid;
+}
+div.task-conteneur header > *,
+div.task-conteneur footer > * {
   height: 40px;
+}
+
+div.task-conteneur header > button,
+div.task-conteneur footer > button {
+  width:40px;
   border:1px solid grey;
 }
+div.task-conteneur footer > button:disabled {
+  opacity: 0.2;
+} 
 
 div#container-tasks-main {
   padding-bottom:3em;
+  padding-top:3em;
 }
 div#container-tasks-done {
   opacity: 0.4;

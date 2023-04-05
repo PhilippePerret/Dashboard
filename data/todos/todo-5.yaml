@@ -7,7 +7,8 @@ end: '2023-04-18'
 priority: 1
 todo: |-
   - quand on double clique la tâche, la laisser sélectionnée
-  - ajouter les boutons (et leur comportement) au conteneur des épinglées
+  x ajouter les boutons (et leur comportement) au conteneur des épinglées
+  - quand on change la sélection de liste, il faut actualiser l'état des boutons des deux côtés (et modifier aussi les sélections ?)
   - mettre les dates (en tout petit) dans les infos de la tâche affichée
   - marquage des tâches dépassées (en rouge)
   - bouton pour faire un résumé oral de la journée à faire
@@ -15,7 +16,8 @@ todo: |-
   - (puisque ouvert tous les jours) système de vérification quotidienne
   - [éditeur] Raccourci Enter/Escape pour Enregistrer/Annuler
   - implémenter une aide pour l'interface
+  - un bouton de tâche pour dire de faire PROVISOIREMENT de toutes les sous-tâches (comme celle-ci) des tâches épinglées (quand on veut s'y atteler)
 action: "~/Programmes/Dashboard/"
 atype: open_edi
 created_at: '2023-04-04 07:15:23 +0200'
-updated_at: '2023-04-05 05:10:50 +0200'
+updated_at: '2023-04-05 05:38:45 +0200'

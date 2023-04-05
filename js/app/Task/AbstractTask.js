@@ -140,10 +140,12 @@ class AbstractTask extends AbstractTableClass {
   }
 
   onClickPin(){
+    console.info("-> onClickPin (this.isPinned = %s)", !!this.isPinned)
     if ( this.isPinned ) {
       TaskConteneur.Today.appendTask(this)
       this.isPinned = false
     } else {
+      console.info("Je place la tâche dans pinned")
       TaskConteneur.Pinned.appendTask(this)
       this.isPinned = true
     }

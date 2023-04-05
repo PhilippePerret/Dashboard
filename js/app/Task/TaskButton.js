@@ -17,8 +17,6 @@ class TaskButton {
   }
   static prepare(){
     this.observeButtons('main')
-    // this.observeButtons('pinned')
-    // this.observeButtons('done')
   }
 
   /**
@@ -37,13 +35,18 @@ class TaskButton {
   * @param [String] ctype Type du container ('main','pinned','done')
   */
   static observeButtons(ctype){
-    this.button(ctype,'add').observe()
+    console.log("observeButtons(%s)", ctype)
+    ctype == 'main' && this.button(ctype,'add').observe()
     this.ButtonTypes.forEach(btype => {
       const button = this.button(ctype,btype)
       /*
       |  On n'observe le bouton que s'il existe
       */
-      button.obj && button.observe()
+      if ( button.obj ) {
+        console.log("bouton observé : ", button)
+        button.observe()
+        button.setState(false)
+      }
     })
   }
 
@@ -70,7 +73,7 @@ class TaskButton {
   // --- INSTANCE ---
 
   constructor(conteneurType, buttonType){
-    this.conteneur = DGet(`div#container-task-${conteneurType}`)
+    this.conteneur = DGet(`div#container-tasks-${conteneurType}`)
     this.type = buttonType
   }
 
@@ -82,7 +85,9 @@ class TaskButton {
   }
 
   observe(){
+    if ( this.isObserved ) throw "Je suis observé deux fois…"
     listen(this.obj,'click', this.onClick.bind(this))
+    this.isObserved = true
   }
 
   /**
@@ -90,8 +95,9 @@ class TaskButton {
   * n'importe quel listing de tâches.
   */
   onClick(ev){
+    stopEvent(ev)
     this[`run_${this.type}`].call(this)
-    return stopEvent(ev)
+    return false
   }
 
   /*
@@ -100,7 +106,10 @@ class TaskButton {
   run_add(){Todo.createNew()}
   run_acc(){ this.task.onClickDone.call(this.task)}
   run_mod(){ this.task.onClickEdit.call(this.task)}
-  run_pin(){ this.task.onClickPin .call(this.task)}
+  run_pin(){ 
+    console.info("Je joue run_pin")
+    this.task.onClickPin .call(this.task)
+  }
   run_sup(){ this.task.onClickSup .call(this.task)}
   run_run(){ this.task.onCLickRun .call(this.task)}
 

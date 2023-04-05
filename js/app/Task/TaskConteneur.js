@@ -10,6 +10,26 @@ class TaskConteneur {
     DGetAll('.task-list').forEach(div => $(div).sortable({axis:'y'}))
   }
 
+  /**
+  * Méthode appelée pour déplacer la tâche +task+ du conteneur
+  * de type +fromCType+ vers le conteneur de type +toCType+
+  * 
+  * @note
+  *   Cela permet de gérer plus facilement l'état des boutons-tâche
+  *   dans le deux conteneurs
+  * 
+  * @param [Todo] task Instance de la tâche à déplacer
+  * @param [String] fromCType Type/id du conteneur de départ
+  * @param [String] toCType Type/id du conteneur de réception
+  */
+  static moveTask(task, fromCType, toCType){
+    const fromConteneur = this.conteneur(fromCType)
+    const toConteneur   = this.conteneur(toCType)
+    TaskButton.setButtonsState(task, false)
+    toConteneur.appendTask(task)
+    TaskButton.setButtonsState(task, true)
+  }
+
   static conteneur(type){
     return this.table[type]
   }
@@ -41,7 +61,10 @@ class TaskConteneur {
     }
   }
 
-  appendTask(task){ this.taskList.appendChild(task.obj) }
+  appendTask(task){ 
+    this.taskList.appendChild(task.obj)
+    task.ctype = this.id
+  }
 
   get taskList(){return this._tlist || (this._tlist = DGet('.task-list', this.obj)) }
 

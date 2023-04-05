@@ -107,7 +107,10 @@ class AbstractTask extends AbstractTableClass {
     else return 'main'
   }
   // Raccourci
-  get ctype(){return this.conteneurType}
+  get ctype(){
+    return this._ctype || this.conteneurType
+  }
+  set ctype(v){this._ctype = v}
 
   set(property, newValue){
     this.data[property] = newValue
@@ -148,10 +151,10 @@ class AbstractTask extends AbstractTableClass {
 
   onClickPin(){
     if ( this.isPinned ) {
-      TaskConteneur.Today.appendTask(this)
+      TaskConteneur.moveTask(this, 'pinned', 'main')
       this.isPinned = false
     } else {
-      TaskConteneur.Pinned.appendTask(this)
+      TaskConteneur.moveTask(this, this.ctype, 'pinned')
       this.isPinned = true
     }
   }
@@ -162,16 +165,12 @@ class AbstractTask extends AbstractTableClass {
     if ( !res.ok ) return erreur(res.msg) 
     try {
       this.isDone = true
-      TaskConteneur.Done.appendTask(this)
-      this.hideButtons()
+      TaskConteneur.moveTask(this, this.ctype, 'done')
     } catch(err) {
       console.error(err)
       erreur("Une erreur est survenue, consulter la console.")
     }
   }
-
-  hideButtons(){this.buttons.classList.add('hidden')}
-  showButtons(){this.buttons.classList.remove('hidden')}
   
   onClickEdit(){
     TaskEditor.editTask(this)

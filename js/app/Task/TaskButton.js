@@ -27,6 +27,7 @@ class TaskButton {
   */
   static setButtonsState(task, stateON){
     const ctype = task.ctype
+    console.log("ctype = ", ctype)
     this.ButtonTypes.forEach(btype => this.button(ctype,btype).setState(stateON))
     this.setVisibilityRunButton(task)
   }
@@ -35,7 +36,6 @@ class TaskButton {
   * @param [String] ctype Type du container ('main','pinned','done')
   */
   static observeButtons(ctype){
-    console.log("observeButtons(%s)", ctype)
     ctype == 'main' && this.button(ctype,'add').observe()
     this.ButtonTypes.forEach(btype => {
       const button = this.button(ctype,btype)

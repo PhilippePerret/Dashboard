@@ -6,7 +6,7 @@ start: '2023-04-03'
 end: '2023-04-18'
 priority: 1
 todo: |-
-  - quand on double clique la tâche, la laisser sélectionnée
+  x quand on double clique la tâche, la laisser sélectionnée
   x ajouter les boutons (et leur comportement) au conteneur des épinglées
   - quand on change la sélection de liste, il faut actualiser l'état des boutons des deux côtés (et modifier aussi les sélections ?)
   - mettre les dates (en tout petit) dans les infos de la tâche affichée
@@ -20,4 +20,4 @@ todo: |-
 action: "~/Programmes/Dashboard/"
 atype: open_edi
 created_at: '2023-04-04 07:15:23 +0200'
-updated_at: '2023-04-05 05:38:45 +0200'
+updated_at: '2023-04-05 05:48:58 +0200'

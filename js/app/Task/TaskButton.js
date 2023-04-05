@@ -43,7 +43,7 @@ class TaskButton {
       |  On n'observe le bouton que s'il existe
       */
       if ( button.obj ) {
-        console.log("bouton observé : ", button)
+        // console.log("bouton observé : ", button)
         button.observe()
         button.setState(false)
       }
@@ -85,9 +85,7 @@ class TaskButton {
   }
 
   observe(){
-    if ( this.isObserved ) throw "Je suis observé deux fois…"
     listen(this.obj,'click', this.onClick.bind(this))
-    this.isObserved = true
   }
 
   /**
@@ -106,10 +104,7 @@ class TaskButton {
   run_add(){Todo.createNew()}
   run_acc(){ this.task.onClickDone.call(this.task)}
   run_mod(){ this.task.onClickEdit.call(this.task)}
-  run_pin(){ 
-    console.info("Je joue run_pin")
-    this.task.onClickPin .call(this.task)
-  }
+  run_pin(){ this.task.onClickPin .call(this.task)}
   run_sup(){ this.task.onClickSup .call(this.task)}
   run_run(){ this.task.onCLickRun .call(this.task)}
 

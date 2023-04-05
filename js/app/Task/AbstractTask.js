@@ -29,6 +29,7 @@ class AbstractTask extends AbstractTableClass {
   }
 
   static set selectedTask(task){
+    if ( task == this.selectedTask ) return
     this.selectedTask && this.selectedTask.unsetSelected()
     this._selectedtask = task
     TaskFilter.enableOptionsWithSelected()
@@ -134,18 +135,22 @@ class AbstractTask extends AbstractTableClass {
   |  --- Méthodes d'évènements ---
   */
 
+  onDblClick(ev){
+    stopEvent(ev)
+    this.edit()
+    return false
+  }
+
   onClickTask(ev){
     this.setSelected()
     return stopEvent(ev)
   }
 
   onClickPin(){
-    console.info("-> onClickPin (this.isPinned = %s)", !!this.isPinned)
     if ( this.isPinned ) {
       TaskConteneur.Today.appendTask(this)
       this.isPinned = false
     } else {
-      console.info("Je place la tâche dans pinned")
       TaskConteneur.Pinned.appendTask(this)
       this.isPinned = true
     }
@@ -219,9 +224,9 @@ class AbstractTask extends AbstractTableClass {
     const div = DCreate('DIV', {class:'task'})
     this.obj = div
     const resu = DCreate('SPAN', {class:'resume', text: this.resume})
-    listen(resu,'dblclick', this.edit.bind(this))
     div.appendChild(resu)
     listen(div,'click',this.onClickTask.bind(this))
+    listen(this.obj,'dblclick', this.onDblClick.bind(this))
 
     conteneur.appendTask(this)
   }

@@ -27,6 +27,10 @@ class TaskEditor {
     |  Afficher l'éditeur
     */
     this.show()
+    /*
+    |  Sélectionner toujours la tâche
+    */
+    task.setSelected()
   }
 
   /**

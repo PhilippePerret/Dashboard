@@ -21,7 +21,7 @@ static get ACTION_TYPES(){
 */
 static get PROPERTIES(){
   if (undefined == this._properties){
-    this._properties = ['id','resume','cat','start','end', 'todo', 'action', 'atype', 'priority']
+    this._properties = ['id','resume','cat','start','end', 'duree', 'todo', 'action', 'atype', 'priority']
   } return this._properties
 }
 

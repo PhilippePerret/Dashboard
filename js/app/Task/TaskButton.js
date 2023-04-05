@@ -27,7 +27,7 @@ class TaskButton {
   */
   static setButtonsState(task, stateON){
     const ctype = task.ctype
-    console.log("ctype = ", ctype)
+    if ( ctype == 'done' ) return // pour le moment
     this.ButtonTypes.forEach(btype => this.button(ctype,btype).setState(stateON))
     this.setVisibilityRunButton(task)
   }

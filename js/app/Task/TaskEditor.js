@@ -28,9 +28,10 @@ class TaskEditor {
     */
     this.show()
     /*
-    |  Sélectionner toujours la tâche
+    |  Toujours sélectionner la tâche si elle est construite (donc
+    |  pas nouvelle)
     */
-    task.setSelected()
+    task.obj && task.setSelected()
   }
 
   /**
@@ -84,11 +85,14 @@ class TaskEditor {
     listen(this.btnCancel,'click',this.onClickCancel.bind(this))
     listen(this.btnTryAction,'click',this.onTryAction.bind(this))
     listen(this.actionField,'change', this.onChangeAction.bind(this))
+    listen(this.field('duree'),'change',this.onChangeDuree.bind(this))
+    listen(this.field('unite-duree'),'change',this.onChangeDuree.bind(this))
   }
 
   prepare(){
     this.peupleCategories()
     this.peupleTypesAction()
+    this.peupleDuree()
     $(this.obj).draggable();
 
   }
@@ -152,6 +156,36 @@ class TaskEditor {
   }
 
   /**
+  * Méthode appelée quand on change la durée de la tâche
+  */
+  onChangeDuree(ev){
+    stopEvent(ev)
+    const dureeField  = this.field('duree')
+    const start = DateUtils.revdate2date(this.field('start').value)
+    const dureeNombre = Number(dureeField.value)
+    const dureeUnite  = this.field('unite-duree').value
+    const end = new Date();
+    switch(dureeUnite){
+    case 'h':
+      end.setHours(end.getHours() + dureeNombre)
+      break
+    case 'd': // jours
+      end.setDate(end.getDate() + dureeNombre)
+      break
+    case 'w': // semaines
+      end.setDate(end.getDate() + 7 * dureeNombre)
+      break
+    case 'm': // mois
+      var m = (end.getMonth() + dureeNombre) % 11
+      end.setMonth(m)
+      break
+    }
+    // console.log("start / end", start, end)
+    this.field('end').value = DateUtils.date2revdate(end)
+    return false
+  }
+
+  /**
   * Méthode évènement appelée quand on change le code de l'action
   * à jouer
   */
@@ -187,7 +221,7 @@ class TaskEditor {
     const mCate = this.field('cat')
     mCate.innerHTML = ''
     mCate.appendChild(DCreate('OPTION',{value:'',text:'Catégorie…'}))
-    Categorie.each(cate => mCate.appendChild(DCreate('OPTION',{value:cate.id, text:cate.name})))
+    Categorie.each(cate => mCate.appendChild(DCreate('OPTION',{value:cate.name, text:cate.name})))
     mCate.appendChild(DCreate('OPTION',{value:'__new__cate__',text:'Autre…'}))
     listen(mCate,'change', this.onChooseCategorie.bind(this))
   }
@@ -197,6 +231,14 @@ class TaskEditor {
     mAType.innerHTML = ""
     for(var atype in Todo.ACTION_TYPES) {
       mAType.appendChild(DCreate('OPTION',{value:atype, text:Todo.ACTION_TYPES[atype]}))
+    }
+  }
+
+  peupleDuree(){
+    const menu = this.field('duree')
+    menu.innerHTML = ''
+    for(var i = 1; i < 20; ++i){
+      menu.appendChild(DCreate('OPTION',{value:i, text:String(i)}))
     }
   }
 

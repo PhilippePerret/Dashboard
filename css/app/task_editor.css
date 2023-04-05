@@ -28,9 +28,28 @@ div#task-editor form input[type="text"] {
 div#task-editor form .plain {
   width: 100%;
 }
-div#task-editor form input:not(.plain) {
-  width: 44%;
+/* Les champs start, end, durée */
+div#task-editor form div#task-dates * {
+  font-size:0.9em;
 }
+div#task-editor form div#task-dates input:not(.plain) {
+  width: 18%;
+}
+div#task-editor form div#task-dates span {
+  font-style:italic;
+}
+div#task-editor form input#task-start {
+  text-align:center;
+}
+div#task-editor form input#task-start:before {
+  content:'du ';
+}
+div#task-editor form input#task-end {
+}
+div#task-editor form input#task-duree {
+  width:22px;
+}
+
 div#task-editor form textarea {
   resize: none;
 }

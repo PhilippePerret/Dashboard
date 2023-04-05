@@ -10,7 +10,7 @@ class << self
   def load(params)
     WAA.send({class:'Todo',method:'onLoad',data:{
       ok: true,
-      msg:"Je dois apprendre à remonter les tâches.",
+      msg: nil,
       todos: get_all_tasks
     }})
   end
@@ -20,7 +20,7 @@ class << self
   #
   def mark_done(params)
     task = new(params['task_id'])
-    puts "Marquer la tâche ##{task.id} comme accomplie"
+    puts "Tâche ##{task.id} marquée accomplie".bleu
     task.mark_done
     ok = File.exist?(task.archive_path) && not(File.exist?(task.path))
     msg = ok ? nil : "Apparemment, le déplacement vers les archives n'a pas pu se faire…"

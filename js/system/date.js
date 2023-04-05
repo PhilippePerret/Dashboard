@@ -29,10 +29,15 @@ class DateUtils {
     return Math.abs(Number(date2 - date1)) / (24*3600*1000)
   }
 
-  // <Date> => "<annee>-<mois>-<jour>" (p.e. "2023-04-09")
+  // "<annee>-<mois>-<jour>" (p.e. "2023-04-09") ===> <Date>
   static revdate2date(revdate){
     var [annee, mois, jour] = revdate.split('-')
     return new Date(Number(annee), Number(mois)-1, Number(jour))
+  }
+
+  // <Date> ===> "<annee>-<mois>-<jour>" (p.e. "2023-04-09")
+  static date2revdate(date){
+    return new DateUtils(date).asRevdate()
   }
 
   // <Date> => "le <jour>" / "<jour> <mois>" / "<jour> <moi> <année>"

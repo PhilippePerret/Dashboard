@@ -79,7 +79,19 @@
     <label class="main">Tâche #<span id="task-displayed-id"></span></label>
     <input type="hidden" id="task-id">
     <input type="text" id="task-resume" class="plain">
-    <input type="text" id="task-start"><input type="text" id="task-end">
+    <div id="task-dates">
+      <span>Du </span><input type="text" id="task-start">
+      <span>au </span><input type="text" id="task-end">
+      <span>ou durée </span>
+      <select id="task-duree">
+      </select>
+      <select id="task-unite-duree">
+        <option value="d">jours</option>
+        <option value="h">heures</option>
+        <option value="w">semaines</option>
+        <option value="m">mois</option>
+      </select>
+    </div>
     <div>
       <select id="task-priority">
         <option value="">Priorité…</option>

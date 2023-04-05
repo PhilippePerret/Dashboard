@@ -66,9 +66,8 @@ class MessageClass {
   }
 
   hideMessage(){
-    this.panneauMessage.innerHTML = ""
-    this.panneauMessage.className = 'hidden'
     this.clearTimerMessage()
+    this.panneauMessage.remove()
   }
   clearTimerMessage(){
     if ( this.msgTimer ){

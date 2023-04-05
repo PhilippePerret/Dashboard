@@ -9,6 +9,9 @@ div.task {
 div.task.selected {
   background-color:#B3EDFF;
 }
+div.task.outdated {
+  background-color:#FFC7CF; 
+}
 div.task div.buttons {
   float: right;
   clear:both;
@@ -25,3 +28,30 @@ select#task-filter {
   height: 40px;
   padding: 0 1em;
 }
+
+div.task span.date {
+  float:right;
+  font-family: Georgia;
+  font-size: 10pt;
+}
+div.task span.date.later {
+  color: blue;
+}
+div.task span.date.ok {
+  color: green;
+}
+div.task span.date.end-near {
+  color: orange;
+}
+div.task span.date.outdated {
+  color: red;
+  font-weight: bold;
+  font-variant:all-small-caps;
+  font-size:1.1rem;
+}
+
+div.task span.date.start-at {
+  margin-right:0;
+}
+div.task span.date.start-at:before {content:'du '}
+div.task span.date.end-at:before   {content:' au '}

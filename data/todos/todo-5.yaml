@@ -6,10 +6,8 @@ start: '2023-04-03'
 end: '2023-04-18'
 priority: 1
 todo: |-
-  - mettre les dates (en tout petit) dans les infos de la tâche affichée
-  - marquage des tâches dépassées (en rouge)
+  - Gestionnaire de keypress dans l'éditeur de tâches
   - bouton pour faire un résumé oral de la journée à faire
-  - gestion de l'action d'une tâche
   - (puisque ouvert tous les jours) système de vérification quotidienne
   - [éditeur] Raccourci Enter/Escape pour Enregistrer/Annuler
   - implémenter une aide pour l'interface
@@ -17,4 +15,4 @@ todo: |-
 action: "~/Programmes/Dashboard/"
 atype: open_edi
 created_at: '2023-04-04 07:15:23 +0200'
-updated_at: '2023-04-05 06:04:08 +0200'
+updated_at: '2023-04-05 10:01:19 +0200'

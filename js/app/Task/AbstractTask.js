@@ -11,7 +11,7 @@ class AbstractTask extends AbstractTableClass {
     const data = { 
       id:     this.getNewId(),
       resume: `Résumé de la tâche #${this.lastId}`,
-      start:  DateUtils.today.asRevdate(), 
+      start:  DateUtils.today.asRevdate(),
       end:    DateUtils.afterTomorrow.asRevdate(),
       todo:   "- première sous-tâche\n- deuxième sous-tâche\n- 3e sous-tâche",
     }
@@ -54,9 +54,20 @@ class AbstractTask extends AbstractTableClass {
     this.data = data;
   }
 
+  // --- State Methods ---
+
   get isCurrent()   { return this.start_at < TODAY_END }
   get isFuture()    { return this.start_at > TODAY_END }
   get isOutDated()  { return this.end_at && this.end_at < TODAY_START }
+  get endIsNear()   { return DateUtils.dayCountBetween(TODAY_END, this.end_at) < 2 }
+
+
+  // --- Helpers Methods ---
+
+  get hstart_at(){return DateUtils.date2hdatemin(this.start_at,false) /* false pour court */}
+  get hend_at  (){return DateUtils.date2hdatemin(this.end_at  ,false) /* id. */}
+
+  // --- Fonctional Methods ---
 
   /**
   * Pour enregistrer la tâche
@@ -96,9 +107,29 @@ class AbstractTask extends AbstractTableClass {
         isUpdated = true
       }
     }
+    this.resetDates()
+    this.checkClassesByStates()
     TaskButton.setVisibilityRunButton(this)
     isUpdated && this.save()
   }
+
+
+  /**
+  * Méthode chargée de vérifier les styles (tâche et dates) en 
+  * fonction du statut de la tâche (dépassée, future, etc.)
+  */
+  checkClassesByStates(){
+    // - Classe générale de la tâche -
+    this.obj.classList[this.isOutDated?'add':'remove']('outdated')
+    // - Classe/aspect des dates
+    this.spanStart.className = 'date start-at ' + this.colorClassTask
+    this.spanStart.innerHTML = this.hstart_at
+    this.spanEnd.className = 'date end-at ' + this.colorClassTask
+    this.spanEnd.innerHTML = this.hend_at
+  }
+
+
+
 
   // @return [String] le type actuel du conteneur
   get conteneurType(){
@@ -207,6 +238,7 @@ class AbstractTask extends AbstractTableClass {
   /*
   |  --- Display Methods ---
   */
+
   /**
   * Affichage de la tâche dans le div +ctype+
   */
@@ -223,13 +255,30 @@ class AbstractTask extends AbstractTableClass {
     const div = DCreate('DIV', {class:'task'})
     this.obj = div
     const resu = DCreate('SPAN', {class:'resume', text: this.resume})
+
+    // - Les dates -
+    this.spanStart = DCreate('SPAN',{class:'date start-at', text:this.hstart_at })
+    this.spanEnd   = DCreate('SPAN',{class:'date end-at', text:  this.hend_at })
+
+    div.appendChild(this.spanEnd)
+    div.appendChild(this.spanStart)
     div.appendChild(resu)
+    conteneur.appendTask(this)
+
+    this.checkClassesByStates()
+
     listen(div,'click',this.onClickTask.bind(this))
     listen(this.obj,'dblclick', this.onDblClick.bind(this))
-
-    conteneur.appendTask(this)
   }
 
+  get colorClassTask(){
+         if ( this.isOutDated ) { return 'outdated' }
+    else if ( this.endIsNear  ) { return 'end-near' }
+    else if ( this.isFuture   ) { return 'later'    }
+    else                        { return 'ok'       }
+  }
+
+  // --- Data Methods ---
 
   get id()        { return this.data.id }
   get resume()    { return this.data.resume }
@@ -240,5 +289,9 @@ class AbstractTask extends AbstractTableClass {
   }
   get start_at(){
     return this._start_at || (this._start_at = DateUtils.revdate2date(this.data.start))
+  }
+  resetDates(){ 
+    this._start_at = null
+    this._end_at = null
   }
 }

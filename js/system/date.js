@@ -1,12 +1,11 @@
 'use strict';
 /**
 * Pour la gestion des dates
+* 
+* Contient la classe DateUtils (cf. plus bas)
 */
 
-const NOW = new Date()
-const d = NOW
-const TODAY_START = new Date(d.getFullYear(),d.getMonth(), d.getDate(),0,0,0)
-const TODAY_END   = new Date(d.getFullYear(),d.getMonth(), d.getDate(),23,59,59)
+
 
 
 const MOIS = {
@@ -26,11 +25,32 @@ const MOIS = {
 
 class DateUtils {
 
+  static dayCountBetween(date1, date2){
+    return Math.abs(Number(date2 - date1)) / (24*3600*1000)
+  }
+
+  // <Date> => "<annee>-<mois>-<jour>" (p.e. "2023-04-09")
   static revdate2date(revdate){
     var [annee, mois, jour] = revdate.split('-')
     return new Date(Number(annee), Number(mois)-1, Number(jour))
   }
-  static get today(){return new DateUtils(NOW)}
+
+  // <Date> => "le <jour>" / "<jour> <mois>" / "<jour> <moi> <année>"
+  // @reçoit une [Date] et retourne la date minimale suivant la
+  // date courante. Par exemple, si on est le 8 mars 2023, le 16 mars
+  // 2023 sera marqué "le 16", le 10 avril 2023 sera marqué "10 avril"
+  // et le 12 mars 2024 sera marqué "12 mars 2024"
+  static date2hdatemin(date, long){
+    const udate = new DateUtils(date)
+    if ( long ) {
+      return udate.date2hdatemin_long
+    } else {
+      return udate.date2hdatemin_court
+    }
+  }
+
+
+  static get today(){return NOW}
   static get tomorrow(){
     if ( undefined == this._tomorrow ) {
       let d = new Date()
@@ -41,7 +61,7 @@ class DateUtils {
   static get afterTomorrow(){
     if ( undefined == this._aftertom ) {
       let d = new Date()
-      d.setDate( NOW.getDate() + 2)
+      d.setDate( NOW.day + 2)
       this._aftertom = new DateUtils(d)
     } return this._aftertom
   }
@@ -51,10 +71,35 @@ class DateUtils {
     this.date = date
   }
 
-  get year(){ return this.date.getFullYear() }
-  get mois2(){
+  date2hdatemin(long){
+    if ( this.mois == NOW.mois && this.year == NOW.year ) {
+      return this.day
+    }
+    var pars = [this.hday]
+    pars.push(long ? this.hmois_long : this.hmois_court)
+    if ( this.year != NOW.year ) { pars.push(this.year) }
+    return pars.join(' ')
+  }
+
+  get date2hdatemin_long(){
+    return this.date2hdatemin(true)
+  }
+  get date2hdatemin_court(){
+    return this.date2hdatemin(false)
+  }
+
+
+  get day     (){return this.date.getDate()}
+  get hday    (){return this.day == 1 ? '1er' : this.day}
+  get wday    (){throw "Je ne sais pas encore calculer le jour de la semaine."}
+  get year    (){return this.date.getFullYear() }
+  get month   (){return this.date.getMonth()}
+  get mois    (){return this.month + 1 }
+  get hmois_court (){return MOIS[this.mois].court}
+  get hmois_long  (){return MOIS[this.mois].long}
+  get mois2   (){
     if ( undefined == this._mois2 ) {
-      let m = this.date.getMonth() + 1
+      let m = this.mois
       m > 9 || (m = `0${m}`)
       this._mois2 = m
     } return this._mois2
@@ -72,6 +117,11 @@ class DateUtils {
       this._revdate = [this.year,this.mois2,this.jour2].join('-')
     }; return this._revdate
   }
-
 }
 
+const NOW = new DateUtils(new Date())
+const d = NOW
+// const TODAY_START = new Date(d.getFullYear(),d.getMonth(), d.getDate(),0,0,0)
+// const TODAY_END   = new Date(d.getFullYear(),d.getMonth(), d.getDate(),23,59,59)
+const TODAY_START = new Date(d.year, d.month, d.day, 0,0,0)
+const TODAY_END   = new Date(d.year, d.month, d.day, 23,59,59)

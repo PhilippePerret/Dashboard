@@ -25,6 +25,10 @@ const MOIS = {
 
 class DateUtils {
 
+  static currentTime(){
+    const now = new DateUtils(new Date())
+    return now.htime
+  }
   static dayCountBetween(date1, date2){
     return Math.abs(Number(date2 - date1)) / (24*3600*1000)
   }
@@ -92,6 +96,14 @@ class DateUtils {
   get date2hdatemin_court(){
     return this.date2hdatemin(false)
   }
+
+  get htime(){return `${this.hours}:${this.hminutes}:${this.hseconds}`}
+
+  get hours  (){return this.date.getHours()}
+  get minutes(){return this.date.getMinutes()}
+  get hminutes(){return String(this.minutes).padStart(2,'0')}
+  get seconds(){return this.date.getSeconds()}
+  get hseconds(){return String(this.seconds).padStart(2,'0')}
 
 
   get day     (){return this.date.getDate()}

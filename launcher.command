@@ -4,7 +4,4 @@
 # et les exécutera.
 # 
 
-dossier=$(dirname $(readlink -f "${BASH_SOURCE}"))
-# main_folder=$(dirname $(readlink -f "${dossier}"))
-
-ruby "${dossier}/server.rb"
+~/Programmes/Dashboard/server.rb

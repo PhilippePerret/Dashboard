@@ -156,14 +156,12 @@ class AbstractTask extends AbstractTableClass {
   |  faut remplacer certains caractères
   */
   correct(str){
-    console.info("Instance de string ? ", str, str instanceof String, typeof str)
     if ("string" == typeof str) {
       str = str.replace(/__GUIL__/g,'"')
     }
     return str
   }
   uncorrect(str){
-    console.info("Instance de string ? ", str, str instanceof String, typeof str)
     if ("string" == typeof str) {
       str = str.replace(/"/g,'__GUIL__')
     }

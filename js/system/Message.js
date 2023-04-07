@@ -67,7 +67,7 @@ class MessageClass {
   }
 
   showText(str,type, options){
-    this.panneauMessage.className = `${type} ${this.position}`
+    this.panneauMessage.className = `${type} message`
     if ( type !== 'error' && !options.keep ) this.msgTimer = setTimeout(this.hideMessage.bind(this),20*1000)
   }
 
@@ -119,38 +119,32 @@ class MessageClass {
   }
 
   leftPosition(){
-    return MESSAGE_POSITION.left || 'none'
+    return MESSAGE_POSITION.left ? `left:${MESSAGE_POSITION.left};` : ''
   }
   rightPosition(){
-    return MESSAGE_POSITION.right || 'none'
+    return MESSAGE_POSITION.right ? `right:${MESSAGE_POSITION.right};` : ''
   }
   topPosition(){
-    return MESSAGE_POSITION.top || 'none'
+    return MESSAGE_POSITION.top ? `top:${MESSAGE_POSITION.top};` : ''
   }
   bottomPosition(){
-    return MESSAGE_POSITION.bottom || 'none'
+    return MESSAGE_POSITION.bottom ? `bottom:${MESSAGE_POSITION.bottom};` : ''
   }
 
   get stylesCSS(){
     return `
 div.message {
-  left:     ${this.leftPosition()};
-  right:    ${this.rightPosition()};
-  top:      ${this.topPosition()};
-  bottom:   ${this.bottomPosition()};
-}
-div.message {
   position: fixed;
+  ${this.leftPosition()};
+  ${this.rightPosition()};
+  ${this.topPosition()};
+  ${this.bottomPosition()};
   color: white;
   width: 400px;
   padding: 8px 12px;
   font-size: 12pt;
   z-index:5000
 }
-div.message.bottom-left{ left:0; bottom:0 }
-div.message.bottom-right { right:0; bottom:0 }
-div.message.top-right { top:0; right:0 }
-div.message.top-left { top:0; left:0 }
 div.message span.close-btn {
   position:absolute;
   right:10px;

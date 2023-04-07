@@ -54,7 +54,7 @@ class TaskEditor {
     let newData = {}
     Todo.PROPERTIES.forEach(prop => {
       let value = this.field(prop).value
-      this.task.uncorrect(value)
+      value = this.task.uncorrect(value)
       Object.assign(newData, {[prop]: value})
     })
     return newData;

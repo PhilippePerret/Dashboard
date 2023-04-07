@@ -52,6 +52,7 @@ class AbstractTask extends AbstractTableClass {
   constructor(data){
     super()
     this.data = data;
+    this.isFolded = true;
   }
 
   // --- State Methods ---
@@ -110,7 +111,11 @@ class AbstractTask extends AbstractTableClass {
     this.resetDates()
     this.checkClassesByStates()
     TaskButton.setVisibilityRunButton(this)
-    isUpdated && this.save()
+    console.info("isUpdated = ", isUpdated)
+    if ( isUpdated ) {
+      this.save()
+      this.isFolded || this.buildItsTodosAsSubTasks()
+    }
   }
 
 
@@ -197,6 +202,103 @@ class AbstractTask extends AbstractTableClass {
     return stopEvent(ev)
   }
 
+  onClickToggle(ev){
+    if ( this.isFolded ) {
+      this.unfold()
+    } else {
+      this.fold()
+    }
+    this.isFolded = !this.isFolded
+    return ev && stopEvent(ev)
+  }
+  /*
+  |  Pour déplier/replier la tâche
+  */
+  fold(){
+    this.obj.classList.toggle('unfolded')
+    this.btnFold.innerHTML = '▷'
+  }
+  unfold(){
+    this.buildItsTodosAsSubTasks()
+    this.obj.classList.toggle('unfolded')
+    this.btnFold.innerHTML = '▽'
+  }
+
+  /**
+  * Méthode de construction qui transforme la propriété 'todos' de
+  * la tâche en liste de sous-tâches (c'est-à-dire que toutes les
+  * lignes commençant par "-" sont transformées en sous tâche à
+  * cocher) 
+  */
+  buildItsTodosAsSubTasks(){
+    console.info("(re)Construction de la liste des sous-tâches")
+    this.lastIdSubtask = 0
+    this.divSubtasks.innerHTML = ""
+    String(this.data.todo).split("\n").forEach(line => {
+      line = this.correct(line)
+      if ( line.startsWith('- ') ) {
+        this.divSubtasks.appendChild(this.buildSubtask(line))
+      } else if (line.startsWith('x ')) {
+        this.divSubtasks.appendChild(this.buildSubtask(line, true))
+      } else {
+        this.divSubtasks.appendChild(DCREATE('DIV',{text:line, class:'plain'}))
+      }
+    })
+  }
+  /**
+  * Méthode inverse de la précédente, qui prend l'état déplié pour
+  * composer le texte de la propriété :todo (les tâches cochées sont
+  * remplacées par "x ma tâche" et celles qui ne sont pas encore 
+  * faites sont laissées à "- ma tâche")
+  * SAUF si la case à cocher de suppression des sous-tâches faites
+  * est cochée, dans ce cas, on détruit la sous-tâche.
+  */
+  debuildSubtasksAsTodos(){
+    const str = []
+    const deleteSubtaskDone = this.cbSupSubtasks.checked
+    DGetAll('div.subtasks > div', this.obj).forEach(div => {
+      if ( div.classList.contains('plain') ) {
+        /*
+        |  Une ligne "normale"
+        */
+        str.push(this.uncorrect(div.innerHTML))
+      } else {
+        /*
+        |  Une sous-tâche
+        */
+        var cb = DGet('input', div)
+        if ( cb.checked && deleteSubtaskDone ) { return /* supprime la tâche */ }
+        var prefix  = cb.checked ? 'x ' : '- '
+        var content = this.uncorrect(prefix + DGet('label', div).innerHTML)
+        str.push(content)
+      }
+    })
+    this.update({todo: str.join("\n")})
+  }
+
+  buildSubtask(str, checked){
+    const subtaskId = ++ this.lastIdSubtask
+    str = str.substr(1, str.length)
+    const cont  = DCreate('DIV',{class:'subtask', id: `subtask-${subtaskId}`})
+    const cb    = DCreate('INPUT',{type:'checkbox', id:`subtask-${subtaskId}-cb`})
+    listen(cb, 'change', this.onClickSubtask.bind(this, cb))
+    cont.appendChild(cb)
+    cb.checked = !!checked
+    cont.appendChild(DCreate('LABEL',{text:str, for:`subtask-${subtaskId}-cb`}))
+    return cont
+  }
+  /**
+  * Méthode appelée quand on clique sur la case à cocher d'une sous-
+  * tâche (en mode déplié de la tâche). On reconstruit la propriété
+  * :todo de la tâche
+  */
+  onClickSubtask(cb, ev){
+    console.log("click sur ", cb)
+    this.debuildSubtasksAsTodos()
+    return true
+  }
+
+
   onClickPin(){
     if ( this.isPinned ) {
       TaskConteneur.moveTask(this, 'pinned', 'main')
@@ -257,9 +359,10 @@ class AbstractTask extends AbstractTableClass {
   */
 
   /**
-  * Affichage de la tâche dans le div +ctype+
+  * Construction de la tâche dans le div +ctype+
+  * 
   */
-  display(ctype){
+  build(ctype){
     if ( !ctype ) {
       if ( this.isCurrent ) {
         ctype = 'main'
@@ -268,22 +371,43 @@ class AbstractTask extends AbstractTableClass {
       }
     }
     const conteneur = TaskConteneur.conteneur(ctype)
-    const div = DCreate('DIV', {class:'task'})
+    const div = DCreate('DIV', {class:'task unfold'})
     this.obj = div
+
+    // - Le résumé -
     const resu = DCreate('SPAN', {class:'resume', text: this.correct(this.resume)})
+    // - Bouton pour déplié/replié
+    this.btnFold = DCreate('SPAN', {class:'btn-fold', text:'▷'})
+    listen(this.btnFold,'click', this.onClickToggle.bind(this))
 
     // - Les dates -
     this.spanStart = DCreate('SPAN',{class:'date start-at', text:this.hstart_at })
     this.spanEnd   = DCreate('SPAN',{class:'date end-at', text:  this.hend_at })
 
+    // - Le bloc de sous-tâches (et ses boutons) -
+    this.blocSubtasks = DCreate('DIV',{class:'bloc-subtasks'})
+    // - Les sous-tâches en mode ouvert -
+    const sub = DCreate('DIV', {class:'subtasks'})
+    this.divSubtasks = sub
+    // - Boutons pour bloc sous-tâche -
+    this.btnsSubtasks = DCreate('DIV', {class:'btns-subtasks'})
+    const spanCb = DCreate('INPUT',{type:'checkbox', label:'Supprimer les sous-tâches faites', checked:true, class:'cb-sup-subtasks-done'})
+    this.cbSupSubtasks = DGet('input[type="checkbox"]', spanCb)
+    this.btnsSubtasks.appendChild(spanCb)
+    
+    this.blocSubtasks.appendChild(this.divSubtasks)
+    this.blocSubtasks.appendChild(this.btnsSubtasks)
+
     div.appendChild(this.spanEnd)
     div.appendChild(this.spanStart)
+    div.appendChild(this.btnFold)
     div.appendChild(resu)
+    div.appendChild(this.blocSubtasks)
     conteneur.appendTask(this)
 
     this.checkClassesByStates()
 
-    listen(div,'click',this.onClickTask.bind(this))
+    listen(resu,'click',this.onClickTask.bind(this))
     listen(this.obj,'dblclick', this.onDblClick.bind(this))
   }
 

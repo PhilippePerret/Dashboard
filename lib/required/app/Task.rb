@@ -8,6 +8,7 @@ class << self
   # Chargement de toutes les tâches courantes (sans filtre)
   # 
   def load(params)
+    @all_tasks = nil
     # puts "Longueur de la donnée tâches à remonter : #{get_all_tasks.inspect.length}"
     WAA.send({class:'Todo',method:'onLoad',data:{
       ok: true,

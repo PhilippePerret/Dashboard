@@ -12,6 +12,33 @@ div.task.selected {
 div.task.outdated {
   background-color:#FFC7CF; 
 }
+
+/* plié  */
+div.task:not(.unfolded) {} 
+div.task:not(.unfolded) div.bloc-subtasks {display:none;} 
+/* déplié  */
+div.task.unfolded {}
+div.task.unfolded div.bloc-subtasks{ display: block; }
+
+div.task.unfolded .resume {
+  display:block;
+  margin-bottom:0.5em;
+  font-weight:bold;
+}
+div.task span.btn-fold {
+  float: left;
+  font-size: 10pt;
+  margin-right:0.5em;
+  vertical-align:middle;
+}
+
+div.task div.btns-subtasks {
+  margin-top:1em;
+  text-align:right;
+  font-family: Arial Narrow;
+  font-size: 14pt;
+}
+
 div.task div.buttons {
   float: right;
   clear:both;

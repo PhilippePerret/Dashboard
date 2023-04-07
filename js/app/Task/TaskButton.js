@@ -13,7 +13,7 @@ class TaskButton {
   * *donc sans le 'add'
   */
   static get ButtonTypes() {
-    return this._btntypes || ( this._btntypes = ['sup','mod','pin','acc','run'])
+    return this._btntypes || ( this._btntypes = ['sup','mod','pin','acc','run','tog'])
   }
   static prepare(){
     this.observeButtons('main')
@@ -102,11 +102,12 @@ class TaskButton {
   |  Toutes les actions sur les tâches
   */
   run_add(){Todo.createNew()}
-  run_acc(){ this.task.onClickDone.call(this.task)}
-  run_mod(){ this.task.onClickEdit.call(this.task)}
-  run_pin(){ this.task.onClickPin .call(this.task)}
-  run_sup(){ this.task.onClickSup .call(this.task)}
-  run_run(){ this.task.onCLickRun .call(this.task)}
+  run_acc(){ this.task.onClickDone    .call(this.task)}
+  run_mod(){ this.task.onClickEdit    .call(this.task)}
+  run_pin(){ this.task.onClickPin     .call(this.task)}
+  run_sup(){ this.task.onClickSup     .call(this.task)}
+  run_run(){ this.task.onCLickRun     .call(this.task)}
+  run_tog(){ this.task.onClickToggle  .call(this.task)}
 
   /**
   * @return [Todo] La tâche sélectionnée (courante)

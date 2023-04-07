@@ -51,7 +51,7 @@ class << self
   JAVASCRIPT
   def get_hero_number(driver)
     sleep 3
-    Timeout.timeout(30) do
+    Timeout.timeout(120) do
       while true
         response = driver.execute_script(HERO_NUMBER_SCRIPT)
         return response if response != ""

@@ -58,7 +58,7 @@ static displayTodayTasks(){
   TaskFilter.applyFilter('current')
 }
 static displayAllTask(){
-  this.items.forEach( todo => todo.display('main') )
+  this.items.forEach( todo => todo.build('main') )
 }
 
 

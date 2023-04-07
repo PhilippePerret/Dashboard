@@ -41,7 +41,16 @@ function DGetAll(selector, container){
 
 function DCreate(tagName,attrs){
   attrs = attrs || {}
-  var o = document.createElement(tagName);
+  const isCheckboxSpan = tagName.toLowerCase() == 'input' && attrs.type.toLowerCase() == 'checkbox' && attrs.label
+  var o ;
+  if ( isCheckboxSpan ) {
+    o = DCreateCheckbox(attrs)
+    delete attrs.label
+    delete attrs.type
+    delete attrs.checked
+  } else {
+    o = document.createElement(tagName);
+  }
   for(var attr in attrs){
     var value = attrs[attr]
     switch (attr) {
@@ -61,6 +70,29 @@ function DCreate(tagName,attrs){
     }
   }
   return o;
+}
+
+/**
+* Construction d'un Checkbox
+* 
+* @note
+*   Pour utiliser cette méthode, appeler DGet avec le tagname
+*   'INPUT' et le type 'checkbox' et une propriété :label.
+*   Par exemple :
+*     DGet('INPUT', {type:'checkbox', label:"Case à cocher", checked:true})
+* 
+*/
+function DCreateCheckbox(attrs){
+  window.lastIdCb || (window.lastIdCb = 0)
+  const cbid = `cb-${++ window.lastIdCb}`
+  const o = document.createElement('SPAN', {id:`span-cb-${window.lastIdCb}`});
+  const cb = DCreate('INPUT',{type:'checkbox', id: cbid})
+  cb.checked = !!attrs.checked
+  const label = DCreate('LABEL',{for:cbid, text:attrs.label})
+  o.appendChild(cb)
+  o.appendChild(label)
+
+  return o
 }
 
 class DOM {

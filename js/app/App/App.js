@@ -33,6 +33,7 @@ class App {
 
 
   static getKDPResult(retour){
+    console.log("Retour = ", retour)
     this.kdpTimer && clearTimeout(this.kdpTimer)
     if (undefined == retour) {
       DGet('span#kdp-nombre-ventes').innerHTML = `…`
@@ -43,9 +44,12 @@ class App {
         /*
         |  Affichage du nombre de ventes et on lance le prochain
         */
-        DGet('span#kdp-nombre-ventes').innerHTML = `${retour.msg}`
+        const oldNombreVentes = Number(retour.oldNombreVentes)
+        const newNombreVentes = Number(retour.newNombreVentes)
+        DGet('span#kdp-nombre-ventes').innerHTML = `${newNombreVentes}`
         DGet('span#kdp-time').innerHTML = DateUtils.currentTime()
         this.kdpTimer = setTimeout(this.getKDPResult.bind(this), 60 * 1000 /* toutes les minutes */)
+        console.log("nombreVentes = ", newNombreVentes, DateUtils.currentTime())
       } else {
         /*
         |  Erreur:

@@ -10,15 +10,21 @@
  *    action(str)       Une action en cours
  * 
  * 
- * Pour afficher les messages à un endroit particulier, utiliser, par
- * exemple dans la préparation de l'UI :
- * 
- *  Message.position = center|bottom-left|bottom-right|top-left|top-right
- * 
- *  Par défaut, le message est centré (Message.position = center)
+ * Pour afficher les messages à un endroit particulier, régler la
+ * table MESSAGE_POSITION ci-dessous
  * 
  */
 
+/*
+|  Pour le placement du message dans la fenêtre
+*/
+const MESSAGE_POSITION = { bottom: '40px', left: '10px' }
+
+function say(msg, options){
+  options = options || {}
+  Object.assign(options, {message: msg})
+  WAA.send({class:'Methods',method:'say', data:options})
+}
 
 function message(str, options){
   new MessageClass(str, options).showMessage()
@@ -88,9 +94,11 @@ class MessageClass {
       , class:'close-btn'
     })
     this.divContent  = DCreate('DIV', {text:this.content,style:'font-family:"Arial Narrow",Geneva,Helvetica;font-size:14pt;'})
+    this.constructor.lastId || (this.constructor.lastId = 0)
+    this.id = ++this.constructor.lastId
     const o = DCreate('DIV', {
-        id:     'message'
-      , class:  `hidden ${this.position}`
+        id:     `message-${this.id}`
+      , class:  `message hidden`
       , inner:  [this.divContent, this.closeBox]
     })
     document.body.appendChild(o)
@@ -103,16 +111,6 @@ class MessageClass {
     this.closeBox.addEventListener('click', this.hideMessage.bind(this))
   }
 
-  setPosition(v){ 
-    v = v || this.position 
-    this.panneauMessage.className = v
-  }
-  get position(){return this._position || 'center'}
-  set position(v){
-    this._position = v
-    if (this.panneauMessage) this.setPosition(v)
-  }
-
   get panneauMessage(){ return this._msgpanel }
 
   grave_balise_styles(){
@@ -120,9 +118,28 @@ class MessageClass {
     document.head.appendChild(script)
   }
 
+  leftPosition(){
+    return MESSAGE_POSITION.left || 'none'
+  }
+  rightPosition(){
+    return MESSAGE_POSITION.right || 'none'
+  }
+  topPosition(){
+    return MESSAGE_POSITION.top || 'none'
+  }
+  bottomPosition(){
+    return MESSAGE_POSITION.bottom || 'none'
+  }
+
   get stylesCSS(){
     return `
-div#message {
+div.message {
+  left:     ${this.leftPosition()};
+  right:    ${this.rightPosition()};
+  top:      ${this.topPosition()};
+  bottom:   ${this.bottomPosition()};
+}
+div.message {
   position: fixed;
   color: white;
   width: 400px;
@@ -130,28 +147,24 @@ div#message {
   font-size: 12pt;
   z-index:5000
 }
-div#message.center {
-  left: calc(50% - 200px);
-  top: 100px;
-}
-div#message.bottom-left{ left:0; bottom:0 }
-div#message.bottom-right { right:0; bottom:0 }
-div#message.top-right { top:0; right:0 }
-div#message.top-left { top:0; left:0 }
-div#message span.close-btn {
+div.message.bottom-left{ left:0; bottom:0 }
+div.message.bottom-right { right:0; bottom:0 }
+div.message.top-right { top:0; right:0 }
+div.message.top-left { top:0; left:0 }
+div.message span.close-btn {
   position:absolute;
   right:10px;
   top:10px;
   font-size:10pt;
   cursor:pointer;
 }
-div#message.error {
+div.message.error {
   background-color: red;
 }
-div#message.notice {
+div.message.notice {
   background-color: #38389d;
 }
-div#message.doaction {
+div.message.doaction {
   background-color: orange;
 }
     `

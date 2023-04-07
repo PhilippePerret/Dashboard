@@ -147,8 +147,27 @@ class AbstractTask extends AbstractTableClass {
     this.data[property] = newValue
     switch(property){
     case 'resume': 
-      DGet('.resume',this.obj).innerHTML = newValue
+      DGet('.resume',this.obj).innerHTML = this.correct(newValue)
     }
+  }
+
+  /*
+  |  Pour que toutes les valeurs passent du serveur au client, il
+  |  faut remplacer certains caractères
+  */
+  correct(str){
+    console.info("Instance de string ? ", str, str instanceof String, typeof str)
+    if ("string" == typeof str) {
+      str = str.replace(/__GUIL__/g,'"')
+    }
+    return str
+  }
+  uncorrect(str){
+    console.info("Instance de string ? ", str, str instanceof String, typeof str)
+    if ("string" == typeof str) {
+      str = str.replace(/"/g,'__GUIL__')
+    }
+    return str
   }
 
   setSelected(){
@@ -247,14 +266,13 @@ class AbstractTask extends AbstractTableClass {
       if ( this.isCurrent ) {
         ctype = 'main'
       } else {
-        // Pour le moment on ne l'affiche pas
         return
       }
     }
     const conteneur = TaskConteneur.conteneur(ctype)
     const div = DCreate('DIV', {class:'task'})
     this.obj = div
-    const resu = DCreate('SPAN', {class:'resume', text: this.resume})
+    const resu = DCreate('SPAN', {class:'resume', text: this.correct(this.resume)})
 
     // - Les dates -
     this.spanStart = DCreate('SPAN',{class:'date start-at', text:this.hstart_at })

@@ -40,7 +40,11 @@ class TaskEditor {
   setValues(){
     this.field('displayed-id').innerHTML = this.task.id
     Todo.PROPERTIES.forEach(prop => {
-      this.field(prop).value = this.task.data[prop] || ''
+      let value = '';
+      if ( this.task.data[prop] ) {
+        value = this.task.correct(this.task.data[prop])
+      }
+      this.field(prop).value = value
     })
   }
   /**
@@ -49,7 +53,9 @@ class TaskEditor {
   getValues(){
     let newData = {}
     Todo.PROPERTIES.forEach(prop => {
-      Object.assign(newData, {[prop]: this.field(prop).value})
+      let value = this.field(prop).value
+      this.task.uncorrect(value)
+      Object.assign(newData, {[prop]: value})
     })
     return newData;
   }

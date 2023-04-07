@@ -6,8 +6,11 @@ start: '2023-04-03'
 end: '2023-04-18'
 priority: 1
 todo: |-
+  - Faire apparaitre le message autre part (en bas)
+  - Quand une tâche est mise à plus tard (start dans le futur) il faut la retirer de la liste des tâches courantes (je croyais que c'était fait…)
   - Gestionnaire de keypress dans l'éditeur de tâches
   - bouton pour faire un résumé oral de la journée à faire
+  - on peut "ouvrir" une tâche, c'est-à-dire en voir tous les détails. Notamment, les lignes commençant par des "- " dans les sous-tâches sont transformées en checkboxes de sous-tâches à cocher
   - (puisque ouvert tous les jours) système de vérification quotidienne
   - [éditeur] Raccourci Enter/Escape pour Enregistrer/Annuler
   - implémenter une aide pour l'interface
@@ -15,4 +18,5 @@ todo: |-
 action: "~/Programmes/Dashboard/"
 atype: open_edi
 created_at: '2023-04-04 07:15:23 +0200'
-updated_at: '2023-04-05 10:01:19 +0200'
+updated_at: '2023-04-07 05:41:28 +0200'
+duree: ''

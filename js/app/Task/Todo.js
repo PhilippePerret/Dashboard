@@ -37,7 +37,8 @@ static loadAll(){
   })
 }
 static onLoad(retour){
-  // console.log("retour = ", retour)
+  console.log("retour = ", retour)
+  // return
   this.reset()
   Categorie.reset()
   if ( retour.ok ) {

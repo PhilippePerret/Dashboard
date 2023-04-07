@@ -8,6 +8,7 @@ class << self
   # Chargement de toutes les tâches courantes (sans filtre)
   # 
   def load(params)
+    # puts "Longueur de la donnée tâches à remonter : #{get_all_tasks.inspect.length}"
     WAA.send({class:'Todo',method:'onLoad',data:{
       ok: true,
       msg: nil,
@@ -57,8 +58,10 @@ class << self
 
 
   def get_all_tasks
-    Dir["#{folder}/*.yaml"].map do |fpath|
-      YAML.load_file(fpath, **options_yaml)
+    @all_tasks ||= begin
+      Dir["#{folder}/*.yaml"].map do |fpath|
+        YAML.load_file(fpath, **options_yaml)
+      end
     end
   end
 

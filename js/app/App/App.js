@@ -48,7 +48,7 @@ class App {
         const newNombreVentes = Number(retour.newNombreVentes)
         DGet('span#kdp-nombre-ventes').innerHTML = `${newNombreVentes}`
         DGet('span#kdp-time').innerHTML = DateUtils.currentTime()
-        this.kdpTimer = setTimeout(this.getKDPResult.bind(this), 60 * 1000 /* toutes les minutes */)
+        this.kdpTimer = setTimeout(this.getKDPResult.bind(this), 5 * 60 * 1000 /* toutes les x minutes */)
         console.log("nombreVentes = ", newNombreVentes, DateUtils.currentTime())
       } else {
         /*

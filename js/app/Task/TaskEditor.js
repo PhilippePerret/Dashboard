@@ -62,6 +62,7 @@ class TaskEditor {
 
   show(){
     this.setVisibilityTryAction()
+    this.activateKeyboardShortcuts()
     this.obj.classList.remove('hidden')
     this.focusOn('resume')
   }
@@ -69,6 +70,7 @@ class TaskEditor {
     this.obj.classList.add('hidden')
     this.task = null
     delete this.task
+    this.desactivateKeyboardShortcuts()
   }
 
   /**
@@ -93,6 +95,42 @@ class TaskEditor {
     listen(this.actionField,'change', this.onChangeAction.bind(this))
     listen(this.field('duree'),'change',this.onChangeDuree.bind(this))
     listen(this.field('unite-duree'),'change',this.onChangeDuree.bind(this))
+  }
+
+  /*
+  |  Activation et désactivation des raccourcis clavier pour l'éditeur
+  |  de tâches
+  */ 
+  activateKeyboardShortcuts(){
+    this.oldOnKeyPress = window.onkeypress
+    this.oldOnKeyUp    = window.onkeyup
+    this.oldOnKeyDown  = window.onkeydown
+    window.onkeypress = this.onKeyPress.bind(this)
+    window.onkeyup    = this.onKeyUp.bind(this)
+    window.onkeydown  = this.onKeyDown.bind(this)
+  }
+  desactivateKeyboardShortcuts(){
+    window.onkeypress = this.oldOnKeyPress
+    window.onkeyup    = this.oldOnKeyUp
+    window.onkeydown  = this.oldOnKeyDown
+  }
+  onKeyPress(ev){
+    return stopEvent(ev)
+  }
+  onKeyUp(ev){
+    switch(ev.key){
+    case 'Enter':
+      return this.onClickSave(ev)
+    case 'Escape':
+      return this.onClickCancel(ev)
+    default:
+      return true
+    }
+    // - si certains passent pas ici -
+    return stopEvent(ev)
+  }
+  onKeyDown(ev){
+    return true
   }
 
   prepare(){

@@ -488,7 +488,8 @@ class Todo extends AbstractTableClass {
 
     this.checkClassesByStates()
 
-    listen(resu,'click',this.onClickTask.bind(this))
+    // listen(resu,'click',this.onClickTask.bind(this))
+    listen(this.obj,'click',this.onClickTask.bind(this))
     listen(this.obj,'dblclick', this.onDblClick.bind(this))
   }
 

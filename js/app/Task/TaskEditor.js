@@ -132,6 +132,10 @@ class TaskEditor {
     return stopEvent(ev)
   }
   onKeyDown(ev){
+    if ( ev.key == 's' && ev.metaKey ){
+      stopEvent(ev)
+      return this.onClickSave(ev) // enregistrement par cmd-s
+    }
     return true
   }
 

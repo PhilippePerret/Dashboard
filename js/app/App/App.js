@@ -27,7 +27,7 @@ class App {
     Todo.loadAndDisplayAllTasks()
 
     // Pour lancer le check des résultat KPD
-    this.getKDPResult()
+    // this.getKDPResult()
 
   }
 

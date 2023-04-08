@@ -121,7 +121,8 @@ class TaskEditor {
   onKeyUp(ev){
     switch(ev.key){
     case 'Enter':
-      return this.onClickSave(ev)
+      ev.stopPropagation()
+      return true
     case 'Escape':
       return this.onClickCancel(ev)
     default:

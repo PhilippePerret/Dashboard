@@ -7,7 +7,7 @@ div.task {
   cursor:pointer;
 }
 div.task.selected {
-  background-color:#B3EDFF;
+  background-color:#B3EDFF!important;
 }
 div.task.outdated {
   background-color:#FFC7CF; 

@@ -44,6 +44,13 @@ class TaskFilter {
     }
   }
 
+  /**
+  * Méthode qui actualise la liste des tâches
+  * (utilisée par exemple après le changement d'une tâche)
+  */
+  static applyCurrentFilter(){
+    return this.applyFilter(this.filterKey)
+  }
 
   static disableOptionsWithSelected(){
     this.KeysOptionsWithSelected.forEach(key => this.option(key).disabled = true)
@@ -84,6 +91,7 @@ class TaskFilter {
   static get filterKey(){
     return this._filterkey = this.menu.value
   }
+  static set filterKey(v){ this._filterkey = v}
 
   static get menu(){
     return this._menu || (this._menu = DGet('select#task-filter'))

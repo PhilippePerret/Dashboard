@@ -171,8 +171,8 @@ class Todo extends AbstractTableClass {
     this.resetDates()
     this.checkClassesByStates()
     TaskButton.setVisibilityRunButton(this)
-    console.info("isUpdated = ", isUpdated)
     if ( isUpdated ) {
+      TaskFilter.applyCurrentFilter()
       this.save()
       this.isFolded || this.buildItsTodosAsSubTasks()
     }

@@ -115,7 +115,8 @@ class TaskEditor {
     window.onkeydown  = this.oldOnKeyDown
   }
   onKeyPress(ev){
-    return stopEvent(ev)
+    return true
+    // return stopEvent(ev)
   }
   onKeyUp(ev){
     switch(ev.key){
@@ -157,7 +158,7 @@ class TaskEditor {
       */
       this.task.data = this.getValues()
       this.task.constructor.add(this.task)
-      this.task.display(null/* pour rechercher où elle doit se mettre*/)
+      this.task.build(null/* pour rechercher où elle doit se mettre*/)
       this.task.save()
     }
     this.hide()

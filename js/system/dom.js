@@ -41,7 +41,7 @@ function DGetAll(selector, container){
 
 function DCreate(tagName,attrs){
   attrs = attrs || {}
-  const isCheckboxSpan = tagName.toLowerCase() == 'input' && attrs.type.toLowerCase() == 'checkbox' && attrs.label
+  const isCheckboxSpan = tagName.toLowerCase() == 'input' && (attrs.type && attrs.type.toLowerCase() == 'checkbox') && attrs.label
   var o ;
   if ( isCheckboxSpan ) {
     o = DCreateCheckbox(attrs)

@@ -1,13 +1,14 @@
 ---
 id: 5
-resume: Poursuivre le Dashboard
+resume: Poursuivre le DASHBOARD
 cat: ''
 start: '2023-04-03'
 end: '2023-04-18'
 priority: 1
 todo: |-
-  - corriger bug avec keyboard shorcuts
-  -  Quand une tâche est mise à plus tard (start dans le futur) il faut la retirer de la liste des tâches courantes (je croyais que c'était fait…)
+  - désactiver Enter, utiliser cmd-s pour enregistrer
+
+  - Quand une tâche est mise à plus tard (start dans le futur) il faut la retirer de la liste des tâches courantes (je croyais que c'était fait…)
   - pouvoir rejoindre KDP par un bouton
   - Gestionnaire de keypress dans l'éditeur de tâches
   -        bouton pour faire un résumé oral de la journée à faire
@@ -15,5 +16,5 @@ todo: |-
 action: "~/Programmes/Dashboard/"
 atype: open_edi
 created_at: '2023-04-04 07:15:23 +0200'
-updated_at: '2023-04-07 16:05:49 +0200'
+updated_at: '2023-04-08 06:18:55 +0200'
 duree: ''

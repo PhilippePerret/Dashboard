@@ -229,22 +229,43 @@ class AbstractTask extends AbstractTableClass {
   * la tâche en liste de sous-tâches (c'est-à-dire que toutes les
   * lignes commençant par "-" sont transformées en sous tâche à
   * cocher) 
+  * 
+  * @note
+  *   La méthode est appelée quand on veut déplier la tâche
   */
   buildItsTodosAsSubTasks(){
-    console.info("(re)Construction de la liste des sous-tâches")
+    // console.info("(re)Construction de la liste des sous-tâches")
     this.lastIdSubtask = 0
     this.divSubtasks.innerHTML = ""
+    var hasSubtasks = false 
     String(this.data.todo).split("\n").forEach(line => {
-      line = this.correct(line)
+      line = this.correct(line.trim())
       if ( line.startsWith('- ') ) {
         this.divSubtasks.appendChild(this.buildSubtask(line))
+        hasSubtasks = true
       } else if (line.startsWith('x ')) {
         this.divSubtasks.appendChild(this.buildSubtask(line, true))
+        hasSubtasks = true
       } else {
-        this.divSubtasks.appendChild(DCREATE('DIV',{text:line, class:'plain'}))
+        this.divSubtasks.appendChild(DCreate('DIV',{text:line, class:'plain'}))
       }
     })
+    /*
+    |  On règle la visibilité de la case à cocher "Supprimer les 
+    |  sous-tâches quand elles sont faites" suivant le fait qu'il y a
+    |  des sous-tâches ou non
+    */
+    this.toggleSubtasksButtons(hasSubtasks)
   }
+
+  /**
+  * Pour masque ou afficher les boutons pour les sous-tâches en 
+  * fonction du fait qu'il y en a ou non.
+  */
+  toggleSubtasksButtons(hasSubtasks){
+    this.btnsSubtasks.classList[hasSubtasks?'remove':'add']('hidden')
+  }
+
   /**
   * Méthode inverse de la précédente, qui prend l'état déplié pour
   * composer le texte de la propriété :todo (les tâches cochées sont
@@ -261,7 +282,7 @@ class AbstractTask extends AbstractTableClass {
         /*
         |  Une ligne "normale"
         */
-        str.push(this.uncorrect(div.innerHTML))
+        str.push(this.uncorrect(div.innerHTML.trim()))
       } else {
         /*
         |  Une sous-tâche
@@ -269,7 +290,7 @@ class AbstractTask extends AbstractTableClass {
         var cb = DGet('input', div)
         if ( cb.checked && deleteSubtaskDone ) { return /* supprime la tâche */ }
         var prefix  = cb.checked ? 'x ' : '- '
-        var content = this.uncorrect(prefix + DGet('label', div).innerHTML)
+        var content = this.uncorrect(prefix + DGet('label', div).innerHTML.trim())
         str.push(content)
       }
     })

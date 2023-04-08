@@ -84,11 +84,13 @@ function DCreate(tagName,attrs){
 */
 function DCreateCheckbox(attrs){
   window.lastIdCb || (window.lastIdCb = 0)
-  const cbid = `cb-${++ window.lastIdCb}`
-  const o = document.createElement('SPAN', {id:`span-cb-${window.lastIdCb}`});
-  const cb = DCreate('INPUT',{type:'checkbox', id: cbid})
+  const cbId    = attrs.id || `cb-${++ window.lastIdCb}` ;
+  const spanId  = `span-${cbId}`
+  const o = document.createElement('SPAN', {id:spanId});
+  attrs.id = spanId // pour qu'il soit appliqué après
+  const cb = DCreate('INPUT',{type:'checkbox', id: cbId})
   cb.checked = !!attrs.checked
-  const label = DCreate('LABEL',{for:cbid, text:attrs.label})
+  const label = DCreate('LABEL',{for:cbId, text:attrs.label})
   o.appendChild(cb)
   o.appendChild(label)
 

@@ -6,6 +6,7 @@ class UI {
     TaskFilter.prepare()
     TaskButton.prepare()
     this.espaceButtonTitle()
+    Toolbox.setup()
   }
 
   /**

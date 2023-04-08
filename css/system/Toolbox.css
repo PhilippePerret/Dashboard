@@ -1,0 +1,17 @@
+/*
+  Pour la boite à outils personnelle de l'utilisateur
+*/
+div#toolbox {
+  position: fixed;
+  bottom: 40px;
+  right: 6px;
+  background-color: #4BA931;
+  border-radius: 0.5em;
+  width: 300px;
+  padding: 1.2em 0.2em;
+  text-align: center;
+}
+
+div#toolbox > * {
+  margin:1em;
+}

@@ -23,6 +23,7 @@ class TaskFilter {
   * @param [String] key_filter La clé de filtre, par exemple 'current' ou 'linked'
   */
   static applyFilter(key_filter){
+    this.filterKey = key_filter
     switch(key_filter){
     case 'current':
       Todo.each( task => {task[task.isCurrent ? 'show' : 'hide'].call(task) })

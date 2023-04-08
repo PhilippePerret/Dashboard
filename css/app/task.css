@@ -1,4 +1,5 @@
 div.task {
+  position:relative;
   padding:0.5em 1em;
   border:1px solid #CCC;
   background-color:white;
@@ -11,6 +12,16 @@ div.task.selected {
 }
 div.task.outdated {
   background-color:#FFC7CF; 
+}
+div.task.linked {
+
+}
+div.task.linked:before {
+  content:'🔗';
+  position: absolute;
+  left: -9px;
+  font-size: 10pt;
+  top: 13px;
 }
 
 /* plié  */

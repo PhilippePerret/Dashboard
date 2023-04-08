@@ -23,7 +23,7 @@ class Todo extends AbstractTableClass {
   */
   static get PROPERTIES(){
     if (undefined == this._properties){
-      this._properties = ['id','resume','cat','start','end', 'duree', 'todo', 'action', 'atype', 'priority']
+      this._properties = ['id','resume','cat','start','end', 'duree', 'todo', 'action', 'atype', 'priority','prev']
     } return this._properties
   }
 
@@ -173,6 +173,7 @@ class Todo extends AbstractTableClass {
     TaskButton.setVisibilityRunButton(this)
     if ( isUpdated ) {
       TaskFilter.applyCurrentFilter()
+      this.setLinkState(!!this.prev)
       this.save()
       this.isFolded || this.buildItsTodosAsSubTasks()
     }
@@ -214,6 +215,17 @@ class Todo extends AbstractTableClass {
     case 'resume': 
       DGet('.resume',this.obj).innerHTML = this.correct(newValue)
     }
+  }
+
+  /**
+  * Réglage de l'état de liaison de la tâche
+  */
+  setLinkState(linked){
+    if ( undefined === linked) {
+      linked = (this.prev && this.prev.length)
+    }
+    this.isLinked = linked
+    this.obj.classList[this.isLinked?'add':'remove']('linked')
   }
 
   /*
@@ -271,103 +283,15 @@ class Todo extends AbstractTableClass {
     this.isFolded = !this.isFolded
     return ev && stopEvent(ev)
   }
-  /*
-  |  Pour déplier/replier la tâche
-  */
-  fold(){
-    this.obj.classList.toggle('unfolded')
-    this.btnFold.innerHTML = '▷'
-  }
-  unfold(){
-    this.buildItsTodosAsSubTasks()
-    this.obj.classList.toggle('unfolded')
-    this.btnFold.innerHTML = '▽'
-  }
 
   /**
-  * Méthode de construction qui transforme la propriété 'todos' de
-  * la tâche en liste de sous-tâches (c'est-à-dire que toutes les
-  * lignes commençant par "-" sont transformées en sous tâche à
-  * cocher) 
-  * 
-  * @note
-  *   La méthode est appelée quand on veut déplier la tâche
+  * Méthode appelée pour lier/délier une tâche à une autre
+  * (la tâche sélectionnée doit suivre celle qui sera choisie ici)
   */
-  buildItsTodosAsSubTasks(){
-    // console.info("(re)Construction de la liste des sous-tâches")
-    this.lastIdSubtask = 0
-    this.divSubtasks.innerHTML = ""
-    var hasSubtasks = false 
-    String(this.data.todo).split("\n").forEach(line => {
-      line = this.correct(line.trim())
-      if ( line.startsWith('- ') ) {
-        this.divSubtasks.appendChild(this.buildSubtask(line))
-        hasSubtasks = true
-      } else if (line.startsWith('x ')) {
-        this.divSubtasks.appendChild(this.buildSubtask(line, true))
-        hasSubtasks = true
-      } else {
-        this.divSubtasks.appendChild(DCreate('DIV',{text:line, class:'plain'}))
-      }
-    })
-    /*
-    |  On règle la visibilité de la case à cocher "Supprimer les 
-    |  sous-tâches quand elles sont faites" suivant le fait qu'il y a
-    |  des sous-tâches ou non
-    */
-    this.toggleSubtasksButtons(hasSubtasks)
+  onClickLink(ev){
+    new TaskLinker(this).treatLinking()
   }
 
-  /**
-  * Pour masque ou afficher les boutons pour les sous-tâches en 
-  * fonction du fait qu'il y en a ou non.
-  */
-  toggleSubtasksButtons(hasSubtasks){
-    this.btnsSubtasks.classList[hasSubtasks?'remove':'add']('hidden')
-  }
-
-  /**
-  * Méthode inverse de la précédente, qui prend l'état déplié pour
-  * composer le texte de la propriété :todo (les tâches cochées sont
-  * remplacées par "x ma tâche" et celles qui ne sont pas encore 
-  * faites sont laissées à "- ma tâche")
-  * SAUF si la case à cocher de suppression des sous-tâches faites
-  * est cochée, dans ce cas, on détruit la sous-tâche.
-  */
-  debuildSubtasksAsTodos(){
-    const str = []
-    const deleteSubtaskDone = this.cbSupSubtasks.checked
-    DGetAll('div.subtasks > div', this.obj).forEach(div => {
-      if ( div.classList.contains('plain') ) {
-        /*
-        |  Une ligne "normale"
-        */
-        str.push(this.uncorrect(div.innerHTML.trim()))
-      } else {
-        /*
-        |  Une sous-tâche
-        */
-        var cb = DGet('input', div)
-        if ( cb.checked && deleteSubtaskDone ) { return /* supprime la tâche */ }
-        var prefix  = cb.checked ? 'x ' : '- '
-        var content = this.uncorrect(prefix + DGet('label', div).innerHTML.trim())
-        str.push(content)
-      }
-    })
-    this.update({todo: str.join("\n")})
-  }
-
-  buildSubtask(str, checked){
-    const subtaskId = ++ this.lastIdSubtask
-    str = str.substr(1, str.length)
-    const cont  = DCreate('DIV',{class:'subtask', id: `subtask-${subtaskId}`})
-    const cb    = DCreate('INPUT',{type:'checkbox', id:`subtask-${subtaskId}-cb`})
-    listen(cb, 'change', this.onClickSubtask.bind(this, cb))
-    cont.appendChild(cb)
-    cb.checked = !!checked
-    cont.appendChild(DCreate('LABEL',{text:str, for:`subtask-${subtaskId}-cb`}))
-    return cont
-  }
   /**
   * Méthode appelée quand on clique sur la case à cocher d'une sous-
   * tâche (en mode déplié de la tâche). On reconstruit la propriété
@@ -378,7 +302,6 @@ class Todo extends AbstractTableClass {
     this.debuildSubtasksAsTodos()
     return true
   }
-
 
   onClickPin(){
     if ( this.isPinned ) {
@@ -487,10 +410,110 @@ class Todo extends AbstractTableClass {
     conteneur.appendTask(this)
 
     this.checkClassesByStates()
+    this.setLinkState(!!this.prev)
 
     // listen(resu,'click',this.onClickTask.bind(this))
     listen(this.obj,'click',this.onClickTask.bind(this))
     listen(this.obj,'dblclick', this.onDblClick.bind(this))
+  }
+
+
+  /*
+  |  Pour déplier/replier la tâche
+  */
+  fold(){
+    this.obj.classList.toggle('unfolded')
+    this.btnFold.innerHTML = '▷'
+  }
+  unfold(){
+    this.buildItsTodosAsSubTasks()
+    this.obj.classList.toggle('unfolded')
+    this.btnFold.innerHTML = '▽'
+  }
+
+  /**
+  * Méthode de construction qui transforme la propriété 'todos' de
+  * la tâche en liste de sous-tâches (c'est-à-dire que toutes les
+  * lignes commençant par "-" sont transformées en sous tâche à
+  * cocher) 
+  * 
+  * @note
+  *   La méthode est appelée quand on veut déplier la tâche
+  */
+  buildItsTodosAsSubTasks(){
+    // console.info("(re)Construction de la liste des sous-tâches")
+    this.lastIdSubtask = 0
+    this.divSubtasks.innerHTML = ""
+    var hasSubtasks = false 
+    String(this.data.todo).split("\n").forEach(line => {
+      line = this.correct(line.trim())
+      if ( line.startsWith('- ') ) {
+        this.divSubtasks.appendChild(this.buildSubtask(line))
+        hasSubtasks = true
+      } else if (line.startsWith('x ')) {
+        this.divSubtasks.appendChild(this.buildSubtask(line, true))
+        hasSubtasks = true
+      } else {
+        this.divSubtasks.appendChild(DCreate('DIV',{text:line, class:'plain'}))
+      }
+    })
+    /*
+    |  On règle la visibilité de la case à cocher "Supprimer les 
+    |  sous-tâches quand elles sont faites" suivant le fait qu'il y a
+    |  des sous-tâches ou non
+    */
+    this.toggleSubtasksButtons(hasSubtasks)
+  }
+
+  /**
+  * Pour masque ou afficher les boutons pour les sous-tâches en 
+  * fonction du fait qu'il y en a ou non.
+  */
+  toggleSubtasksButtons(hasSubtasks){
+    this.btnsSubtasks.classList[hasSubtasks?'remove':'add']('hidden')
+  }
+
+  /**
+  * Méthode inverse de la précédente, qui prend l'état déplié pour
+  * composer le texte de la propriété :todo (les tâches cochées sont
+  * remplacées par "x ma tâche" et celles qui ne sont pas encore 
+  * faites sont laissées à "- ma tâche")
+  * SAUF si la case à cocher de suppression des sous-tâches faites
+  * est cochée, dans ce cas, on détruit la sous-tâche.
+  */
+  debuildSubtasksAsTodos(){
+    const str = []
+    const deleteSubtaskDone = this.cbSupSubtasks.checked
+    DGetAll('div.subtasks > div', this.obj).forEach(div => {
+      if ( div.classList.contains('plain') ) {
+        /*
+        |  Une ligne "normale"
+        */
+        str.push(this.uncorrect(div.innerHTML.trim()))
+      } else {
+        /*
+        |  Une sous-tâche
+        */
+        var cb = DGet('input', div)
+        if ( cb.checked && deleteSubtaskDone ) { return /* supprime la tâche */ }
+        var prefix  = cb.checked ? 'x ' : '- '
+        var content = this.uncorrect(prefix + DGet('label', div).innerHTML.trim())
+        str.push(content)
+      }
+    })
+    this.update({todo: str.join("\n")})
+  }
+
+  buildSubtask(str, checked){
+    const subtaskId = ++ this.lastIdSubtask
+    str = str.substr(1, str.length)
+    const cont  = DCreate('DIV',{class:'subtask', id: `subtask-${subtaskId}`})
+    const cb    = DCreate('INPUT',{type:'checkbox', id:`subtask-${subtaskId}-cb`})
+    listen(cb, 'change', this.onClickSubtask.bind(this, cb))
+    cont.appendChild(cb)
+    cb.checked = !!checked
+    cont.appendChild(DCreate('LABEL',{text:str, for:`subtask-${subtaskId}-cb`}))
+    return cont
   }
 
   get colorClassTask(){
@@ -500,11 +523,51 @@ class Todo extends AbstractTableClass {
     else                        { return 'ok'       }
   }
 
+  // --- Volatile Data ---
+
+  get prevTasks() { 
+    if ( undefined === this._prevtasks ) {
+      this._prevtasks = this.prev ? this.constructor.get(this.prev) : null
+    }
+    return this._prevtasks
+  }
+  set prevTasks(tasks) {
+    this._prevtasks = tasks
+    this.data.prev = tasks.map(task => {return task.id})
+  }
+
+  /**
+  * La tâche suivante, si elle existe (est-ce que c'est utile ?)
+  * (en tout cas, si c'est utile, il faut définir cette donnée au
+  * chargement de toutes les tâches)
+  */
+  get nextTasks(){
+    return this._nexttasks
+  }
+  /**
+  * Méthodes qui lie/délie la tâche présente de la tâche suivante +task+
+  */
+  link(task){
+    const nexts = this.nextTasks || []
+    nexts.push(task)
+    this._nexttasks = nexts
+  }
+  unlink(task){
+    const newNexts = []
+    this.nextTasks.forEach( tk => {
+      if ( tk.id == task ) return ;
+      newNexts.push(tk)
+    })
+    this._nexttasks = newNexts
+  }
+
   // --- Data Methods ---
 
-  get id()        { return this.data.id }
+  get id()        { return this.data.id     }
+  get prev()      { return this.data.prev   }
+  set prev(v)     { this.data.prev = v ; delete this._prevtasks }
   get resume()    { return this.data.resume }
-  get categorie() { return this.data.cat }
+  get categorie() { return this.data.cat    }
 
   get end_at(){
     return this._end_at || (this._end_at = DateUtils.revdate2date(this.data.end))

@@ -15,13 +15,14 @@ class InteractiveElement {
   *           params.poursuivre     
   *             Fonction avec laquelle poursuivre (c'est à cette méthode
   *             qu'est transmis le choix de l'utilisateur true/false
-  *             en premier argument)
-  *           params.buttonOk 
-  *             Paramètres pour le bouton OK (:name)
-  *           params.buttonCancel
+  *             en premier argument). 
+  *             INUTILE si :poursuivre est défini pour chaque bouton
+  *           params.buttonOk {:name, :poursuivre}
+  *             Paramètres pour le bouton OK (:name). Si la propriété
+  *             :poursuivre est définie, la propriété :poursuivre 
+  *             générale n'est pas nécessaire.
+  *           params.buttonCancel (:name, :poursuivre, :isDefault)
   *             Idem pour le bouton Cancel
-  *             params.buttonCancel.isDefault pour en faire le bouton
-  *             par défaut.
   * 
   */  
   constructor(type, question, params){
@@ -33,16 +34,29 @@ class InteractiveElement {
   get isPrompt() { return this.type == 'prompt' }
   onClickOk(e){
     this.hide()
+
     if ( this.isPrompt ) {
-      this.params.poursuivre.call(null, true, this.promptField.value)
+      if ( this.params.buttonOk.poursuivre) {
+        this.params.buttonOk.poursuivre.call(null, this.promptField.value)
+      } else {
+        this.params.poursuivre.call(null, true, this.promptField.value)
+      }
     } else {
-      this.params.poursuivre.call(null, true)
+      if ( this.params.buttonOk.poursuivre ) {
+        this.params.buttonOk.poursuivre.call(null)
+      } else {
+        this.params.poursuivre.call(null, true)
+      }
     }
     return stopEvent(e)
   }
   onClickCancel(e){
     this.hide()
-    this.params.poursuivre.call(null, false)
+    if ( this.params.buttonCancel.poursuivre ) {
+      this.params.buttonCancel.poursuivre.call(null)
+    } else {
+      this.params.poursuivre.call(null, false)
+    }
     return stopEvent(e)
   }
   onKeyUp(e){
@@ -153,11 +167,11 @@ class InteractiveElement {
 
   defaultizeParams(params){
     params = params || {}
-    params.poursuivre         || raise("Il faut absolument définir la fonction pour suivre… (params.poursuivre")
     params.buttonOk           || Object.assign(params, {buttonOk: {name:'OK'}})
     params.buttonOk.name      || Object.assign(params.buttonOk, {name: 'OK'})
     params.buttonCancel       || Object.assign(params, {buttonCancel: {name:'Cancel'}})
     params.buttonCancel.name  || Object.assign(params.buttonCancel, {name:'Cancel'})
+    params.poursuivre || (params.buttonOk.poursuivre && params.buttonCancel.poursuivre) || raise("Il faut absolument définir la fonction pour suivre… (params.poursuivre")
     return params
   }
 }

@@ -57,11 +57,12 @@
   <footer>
     <button class="btn-add" title="Créer une nouvelle tâche">➕
     </button><button class="btn-sup" disabled title="Détruire définitivement la tâche (sans l'archiver)">🗑️
-    </button><button class="btn-mod" disabled title="Éditer (modifier) la tâche sélectionnée">🖌️
     </button><button class="btn-pin" disabled title="Épingler ou désépingler la tâche sélectionnée">📌
-    </button><button class="btn-acc" disabled title="Marquer la tâche sélectionnée comme accomplie">✅
     </button><button class="btn-run" disabled title="Accomplir la tâche sélectionnée">▶️
     </button><button class="btn-tog" disabled title="Déployer la tâche pour voir ses détails">🗃️
+    </button><button class="btn-lnk" disabled title="Pour chainer la tâche à une autre">🔗
+    </button><button class="btn-acc" disabled title="Marquer la tâche sélectionnée comme accomplie">✅
+    </button><button class="btn-mod" disabled title="Éditer (modifier) la tâche sélectionnée">🖌️
     </button>
   </footer>
 </div><!-- /conteneur tâche principa -->
@@ -80,6 +81,7 @@
   <form>
     <label class="main">Tâche #<span id="task-displayed-id"></span></label>
     <input type="hidden" id="task-id">
+    <input type="hidden" id="task-prev">
     <input type="text" id="task-resume" class="plain">
     <div id="task-dates">
       <span>Du </span><input type="text" id="task-start">
@@ -135,7 +137,8 @@
 <script type="text/javascript" src="js/app/App/ready.js"></script>
 <script type="text/javascript" src="js/app/Task/TaskEditor.js"></script>
 <script type="text/javascript" src="js/app/Task/TaskConteneur.js"></script>
-<script type="text/javascript" src="js/app/Task/TaskFilter.js"></script>
+<script type="text/javascript" src="js/app/Task/TaskFilter.js" defer></script>
+<script type="text/javascript" src="js/app/Task/TaskLinker.js" defer></script>
 <script type="text/javascript" src="js/app/Task/TaskButton.js"></script>
 <script type="text/javascript" src="js/app/Task/Categorie.js" defer></script>
 <script type="text/javascript" src="js/app/App/App.js" defer></script>

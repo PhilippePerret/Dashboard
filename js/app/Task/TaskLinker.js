@@ -35,7 +35,7 @@ class TaskLinker {
       |  la tâche précédente.
       |  Mais avant ça, il faut s'assurer que la tâche est valide
       */
-      if ( ! task.duree ) {
+      if ( ! task.data.duree ) {
         task.edit()
         return erreur("Il faut absolument définir la durée d'une tâche, pour pouvoir la lier.")
       }
@@ -89,9 +89,6 @@ class TaskLinker {
       */
       task.data.start = null
       task.data.end   = null
-      /*
-      |  
-      */
       /*
       |  On finit par enregistrer la tâche
       */

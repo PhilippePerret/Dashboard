@@ -40,8 +40,6 @@ class Task extends AbstractTableClass {
     })
   }
   static onLoad(retour){
-    console.log("retour = ", retour)
-    // return
     this.reset()
     Categorie.reset()
     if ( retour.ok ) {
@@ -568,7 +566,6 @@ class Task extends AbstractTableClass {
   * Méthodes qui lie/délie la tâche présente de la tâche suivante +task+
   */
   addNext(task){
-    console.log("Ajout de la tâche #%s, suivante de #%s", task.id, this.id)
     const nexts = this.nextTasks || []
     nexts.push(task)
     this._nexttasks = nexts

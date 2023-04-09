@@ -46,6 +46,14 @@ class TaskEditor {
       }
       this.field(prop).value = value
     })
+    /*
+    |  Pour la durée
+    */
+    if ( this.task.data.duree ) {
+      const [nombre, unite] = this.task.data.duree.split(':') 
+      this.field('duree-nombre').value  = nombre || 0
+      this.field('duree-unite').value   = unite  || ''
+    }
   }
   /**
   * Prendre les valeurs des champs
@@ -93,8 +101,8 @@ class TaskEditor {
     listen(this.btnCancel,'click',this.onClickCancel.bind(this))
     listen(this.btnTryAction,'click',this.onTryAction.bind(this))
     listen(this.actionField,'change', this.onChangeAction.bind(this))
-    listen(this.field('duree'),'change',this.onChangeDuree.bind(this))
-    listen(this.field('unite-duree'),'change',this.onChangeDuree.bind(this))
+    listen(this.field('duree-nombre'),'change',this.onChangeDuree.bind(this))
+    listen(this.field('duree-unite'),'change',this.onChangeDuree.bind(this))
   }
 
   /*
@@ -210,10 +218,22 @@ class TaskEditor {
   */
   onChangeDuree(ev){
     stopEvent(ev)
-    const dureeField  = this.field('duree')
+    let dureeNombre = Number(this.field('duree-nombre').value)
+    let dureeUnite  = this.field('duree-unite').value
+    if ( dureeUnite == "" ) { dureeUnite = null }
+    /*
+    |  Le champ final qui sera lu
+    */
+    this.field('duree').value = (dureeNombre && dureeUnite) ? `${dureeNombre}:${dureeUnite}` : ""
+    /*
+    |  Si le nombre est 0 ou qu'il n'y a pas d'unité choisie, on 
+    |  n'a rien à changer.
+    */
+    if ( !dureeNombre || !dureeUnite) return ;
+    /*
+    |  Sinon, on change la date de fin.
+    */
     const start = DateUtils.revdate2date(this.field('start').value)
-    const dureeNombre = Number(dureeField.value)
-    const dureeUnite  = this.field('unite-duree').value
     const end = new Date();
     switch(dureeUnite){
     case 'h':
@@ -285,9 +305,9 @@ class TaskEditor {
   }
 
   peupleDuree(){
-    const menu = this.field('duree')
+    const menu = this.field('duree-nombre')
     menu.innerHTML = ''
-    for(var i = 1; i < 20; ++i){
+    for(var i = 0; i < 20; ++i){
       menu.appendChild(DCreate('OPTION',{value:i, text:String(i)}))
     }
   }

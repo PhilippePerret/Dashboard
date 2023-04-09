@@ -45,9 +45,25 @@ class Task extends AbstractTableClass {
     this.reset()
     Categorie.reset()
     if ( retour.ok ) {
+      /*
+      |  Instanciation de toutes les tâches
+      |
+      |  On passe ici lorsque le chargement des tâches s'est bien
+      |  passé et qu'on doit les instancier.
+      |  On en profite aussi pour régler la propriété nextTasks des
+      |  tâches liées.
+      |
+      */
       retour.todos.forEach(dtodo => {
         const item = this.add(new Task(dtodo))
         Categorie.addTask(item)
+      })
+      /*
+      |  Traitement des liaisons (réglage de la propriété nextTasks)
+      */
+      this.each( task => {
+        task.isLinked = !!task.prev && task.prev.length
+        task.isLinked && task.prevTasks.forEach(prev => prev.addNext(task))
       })
       this.onOkLoading(true)
     } else {
@@ -551,12 +567,13 @@ class Task extends AbstractTableClass {
   /**
   * Méthodes qui lie/délie la tâche présente de la tâche suivante +task+
   */
-  link(task){
+  addNext(task){
+    console.log("Ajout de la tâche #%s, suivante de #%s", task.id, this.id)
     const nexts = this.nextTasks || []
     nexts.push(task)
     this._nexttasks = nexts
   }
-  unlink(task){
+  removeNext(task){
     const newNexts = []
     this.nextTasks.forEach( tk => {
       if ( tk.id == task ) return ;

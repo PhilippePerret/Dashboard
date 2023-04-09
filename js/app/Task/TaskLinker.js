@@ -106,7 +106,7 @@ class TaskLinker {
     |  on supprime la liaison
     */
     if ( task.prev.length == 1 ) {
-      task.prevTasks[0].unlink(task)
+      task.prevTasks[0].removeNext(task)
       task.prev = null
       task.setLinkState()
       task.save()
@@ -133,9 +133,9 @@ class TaskLinker {
       |     - On délie chaque tâche précédente
       |     - On relie celles qu'on a gardées
       */
-      task.prevTasks.forEach(tk => tk.unlink(task))
+      task.prevTasks.forEach(tk => tk.removeNext(task))
       task.prev = this.newPrev
-      task.prevTasks.forEach(tk => tk.link(task))
+      task.prevTasks.forEach(tk => tk.addNext(task))
       task.setLinkState()
     }
   }

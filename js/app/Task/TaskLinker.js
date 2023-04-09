@@ -4,6 +4,10 @@
 */
 class TaskLinker {
 
+  /**
+  * Une instance TaskLinker permet de gérer les liens d'une tâche.
+  * 
+  */
   constructor(task){
     this.task = task
   }
@@ -27,6 +31,15 @@ class TaskLinker {
     const task = this.task
     if ( undefined === doit ) {
       /*
+      |  Première entrée dans la méthode, lorsque l'on doit choisir 
+      |  la tâche précédente.
+      |  Mais avant ça, il faut s'assurer que la tâche est valide
+      */
+      if ( ! task.duree ) {
+        task.edit()
+        return erreur("Il faut absolument définir la durée d'une tâche, pour pouvoir la lier.")
+      }
+      /*
       |  On garde la trace de la clé de filtrage actuelle pour pouvoir
       |  la remettre à la fin.
       */
@@ -39,13 +52,17 @@ class TaskLinker {
       return
     } else {
       /*
+      |  On passe ici pour définir la tâche précédente de la tâche
+      |
+      */
+      /*
       |  La tâche actuellement sélectionnée
       */
-      const newPrevTask = Todo.selectedTask
+      const newPrevTask = Task.selectedTask
       /*
       |  On remet la tâche courante comme tâche sélectionnée
       */
-      Todo.selectedTask = task
+      Task.selectedTask = task
       /*
       |  On réaffiche sa liste si nécessaire
       */
@@ -67,6 +84,11 @@ class TaskLinker {
       prevs.push(newPrevTask.id)
       task.prev = prevs
       task.setLinkState(true)
+      /*
+      |  Autres modifications de la tâche
+      */
+      task.data.start = null
+      task.data.end   = null
       /*
       |  
       */
@@ -104,7 +126,7 @@ class TaskLinker {
       this.newPrev.push(this.currentPrev)
     } else if ( this.prevDup.length /* tant qu'il y a des liens */) {
       this.currentPrev = this.prevDup.pop()
-      confirmer(`Veux-tu la délier de la tâche « ${Todo.get(this.currentPrev).resume} »`, {poursuivre:this.delinker.bind(this)})
+      confirmer(`Veux-tu la délier de la tâche « ${Task.get(this.currentPrev).resume} »`, {poursuivre:this.delinker.bind(this)})
     } else {
       /*
       |  Quand on a fini

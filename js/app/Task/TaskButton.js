@@ -101,7 +101,7 @@ class TaskButton {
   /*
   |  Toutes les actions sur les tâches
   */
-  run_add(){Todo.createNew()}
+  run_add(){Task.createNew()}
   run_acc(){ this.task.onClickDone    .call(this.task)}
   run_mod(){ this.task.onClickEdit    .call(this.task)}
   run_pin(){ this.task.onClickPin     .call(this.task)}
@@ -111,10 +111,10 @@ class TaskButton {
   run_lnk(){ this.task.onClickLink    .call(this.task)}
 
   /**
-  * @return [Todo] La tâche sélectionnée (courante)
+  * @return [Task] La tâche sélectionnée (courante)
   */
   get task(){
-    return Todo.selectedTask
+    return Task.selectedTask
   }
   get obj(){
     return this._obj || (this._obj = DGet(`.btn-${this.type}`, this.conteneur))

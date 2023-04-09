@@ -24,7 +24,7 @@ class App {
     /*
     |  Affichage de ce qu'il y a à faire aujourd'hui
     */
-    Todo.loadAndDisplayAllTasks()
+    Task.loadAndDisplayAllTasks()
 
     // Pour lancer le check des résultat KPD
     // 

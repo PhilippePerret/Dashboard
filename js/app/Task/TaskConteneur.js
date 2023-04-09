@@ -18,7 +18,7 @@ class TaskConteneur {
   *   Cela permet de gérer plus facilement l'état des boutons-tâche
   *   dans le deux conteneurs
   * 
-  * @param [Todo] task Instance de la tâche à déplacer
+  * @param [Task] task Instance de la tâche à déplacer
   * @param [String] fromCType Type/id du conteneur de départ
   * @param [String] toCType Type/id du conteneur de réception
   */

@@ -39,7 +39,7 @@ class TaskEditor {
   */
   setValues(){
     this.field('displayed-id').innerHTML = this.task.id
-    Todo.PROPERTIES.forEach(prop => {
+    Task.PROPERTIES.forEach(prop => {
       let value = '';
       if ( this.task.data[prop] ) {
         value = this.task.correct(this.task.data[prop])
@@ -52,7 +52,7 @@ class TaskEditor {
   */
   getValues(){
     let newData = {}
-    Todo.PROPERTIES.forEach(prop => {
+    Task.PROPERTIES.forEach(prop => {
       let value = this.field(prop).value
       value = this.task.uncorrect(value)
       Object.assign(newData, {[prop]: value})
@@ -279,8 +279,8 @@ class TaskEditor {
   peupleTypesAction(){
     const mAType = this.field('atype')
     mAType.innerHTML = ""
-    for(var atype in Todo.ACTION_TYPES) {
-      mAType.appendChild(DCreate('OPTION',{value:atype, text:Todo.ACTION_TYPES[atype]}))
+    for(var atype in Task.ACTION_TYPES) {
+      mAType.appendChild(DCreate('OPTION',{value:atype, text:Task.ACTION_TYPES[atype]}))
     }
   }
 

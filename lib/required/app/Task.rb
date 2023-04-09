@@ -10,7 +10,7 @@ class << self
   def load(params)
     @all_tasks = nil
     # puts "Longueur de la donnée tâches à remonter : #{get_all_tasks.inspect.length}"
-    WAA.send({class:'Todo',method:'onLoad',data:{
+    WAA.send({class:'Task',method:'onLoad',data:{
       ok: true,
       msg: nil,
       todos: get_all_tasks
@@ -26,7 +26,7 @@ class << self
     task.mark_done
     ok = File.exist?(task.archive_path) && not(File.exist?(task.path))
     msg = ok ? nil : "Apparemment, le déplacement vers les archives n'a pas pu se faire…"
-    WAA.send({class:"Todo.get(#{task.id})",method:'onMarkDone',data:{
+    WAA.send({class:"Task.get(#{task.id})",method:'onMarkDone',data:{
       ok: ok, 
       msg:"Pas encore fait, juste pour voir l'identifiant"
     }})
@@ -41,7 +41,7 @@ class << self
     task.save
     ok = File.exist?(task.path)
     msg = ok ? nil : "Le fichier #{task.name} est introuvable…"
-    WAA.send({class:"Todo.get(#{task.id})", method:'onSaved', data:{ok:ok, msg:msg}})
+    WAA.send({class:"Task.get(#{task.id})", method:'onSaved', data:{ok:ok, msg:msg}})
   end
 
   ##
@@ -142,13 +142,13 @@ def run
       puts msg.rouge
     end
   end
-  WAA.send({class:"Todo.get(#{self.id})",method:'onRan',data:{ok:ok,msg:msg}})
+  WAA.send({class:"Task.get(#{self.id})",method:'onRan',data:{ok:ok,msg:msg}})
 end
 
 def remove
   File.delete(path)
   ok = not(File.exist?(path))
-  WAA.send(class:"Todo.get(#{self.id})",method:'onRemoved', data:{
+  WAA.send(class:"Task.get(#{self.id})",method:'onRemoved', data:{
     ok: ok,
     msg: ok ? nil : "Le fichier #{self.name.inspect} aurait dû être détruit…"
   })

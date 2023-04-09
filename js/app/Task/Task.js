@@ -2,7 +2,7 @@
 /**
 * La class abstraite pour les tâches quelconque
 */
-class Todo extends AbstractTableClass {
+class Task extends AbstractTableClass {
 
   static get ACTION_TYPES(){
     if (undefined == this._actionTypes) {
@@ -19,7 +19,7 @@ class Todo extends AbstractTableClass {
   }
 
   /**
-  * Listes des propriétés d'une tâche Todo
+  * Listes des propriétés d'une tâche Task
   */
   static get PROPERTIES(){
     if (undefined == this._properties){
@@ -46,7 +46,7 @@ class Todo extends AbstractTableClass {
     Categorie.reset()
     if ( retour.ok ) {
       retour.todos.forEach(dtodo => {
-        const item = this.add(new Todo(dtodo))
+        const item = this.add(new Task(dtodo))
         Categorie.addTask(item)
       })
       this.onOkLoading(true)
@@ -175,7 +175,7 @@ class Todo extends AbstractTableClass {
       TaskFilter.applyCurrentFilter()
       this.setLinkState(!!this.prev)
       this.save()
-      this.isFolded || this.buildItsTodosAsSubTasks()
+      this.isFolded || this.buildItsTasksAsSubTasks()
     }
   }
 
@@ -299,7 +299,7 @@ class Todo extends AbstractTableClass {
   */
   onClickSubtask(cb, ev){
     console.log("click sur ", cb)
-    this.debuildSubtasksAsTodos()
+    this.debuildSubtasksAsTasks()
     return true
   }
 
@@ -426,7 +426,7 @@ class Todo extends AbstractTableClass {
     this.btnFold.innerHTML = '▷'
   }
   unfold(){
-    this.buildItsTodosAsSubTasks()
+    this.buildItsTasksAsSubTasks()
     this.obj.classList.toggle('unfolded')
     this.btnFold.innerHTML = '▽'
   }
@@ -440,7 +440,7 @@ class Todo extends AbstractTableClass {
   * @note
   *   La méthode est appelée quand on veut déplier la tâche
   */
-  buildItsTodosAsSubTasks(){
+  buildItsTasksAsSubTasks(){
     // console.info("(re)Construction de la liste des sous-tâches")
     this.lastIdSubtask = 0
     this.divSubtasks.innerHTML = ""
@@ -481,7 +481,7 @@ class Todo extends AbstractTableClass {
   * SAUF si la case à cocher de suppression des sous-tâches faites
   * est cochée, dans ce cas, on détruit la sous-tâche.
   */
-  debuildSubtasksAsTodos(){
+  debuildSubtasksAsTasks(){
     const str = []
     const deleteSubtaskDone = this.cbSupSubtasks.checked
     DGetAll('div.subtasks > div', this.obj).forEach(div => {
@@ -527,7 +527,11 @@ class Todo extends AbstractTableClass {
 
   get prevTasks() { 
     if ( undefined === this._prevtasks ) {
-      this._prevtasks = this.prev ? this.constructor.get(this.prev) : null
+      if ( this.prev ) {
+        this._prevtasks = this.prev.map(tkid => Task.get(tkid))    
+      } else {
+        this._prevtasks = null
+      }
     }
     return this._prevtasks
   }

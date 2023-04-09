@@ -26,16 +26,16 @@ class TaskFilter {
     this.filterKey = key_filter
     switch(key_filter){
     case 'current':
-      Todo.each( task => {task[task.isCurrent ? 'show' : 'hide'].call(task) })
+      Task.each( task => {task[task.isCurrent ? 'show' : 'hide'].call(task) })
       break
     case 'outdated':
-      Todo.each( task => {task[task.isOutDated ? 'show' : 'hide'].call(task) })
+      Task.each( task => {task[task.isOutDated ? 'show' : 'hide'].call(task) })
       break
     case 'same-categorie':
       console.warn("Je dois apprendre à filtrer les tâches de la même catégorie")
       break
     case 'future':
-      Todo.each( task => {task[task.isFuture ? 'show' : 'hide'].call(task) })
+      Task.each( task => {task[task.isFuture ? 'show' : 'hide'].call(task) })
       break
     case 'linked':
       console.warn("Je dois apprendre à filtrer les tâches liées à la courante")
@@ -67,7 +67,7 @@ class TaskFilter {
   *   L'affichage des tâches correspondantes
   */
   static onFilterChange(ev){
-    Todo.unselectTask()
+    Task.unselectTask()
     this.applyFilter(this.filterKey)
     return stopEvent(ev)
   }

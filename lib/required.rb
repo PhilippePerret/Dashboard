@@ -9,6 +9,7 @@ require_relative 'required/constants'
 
 
 def require_folder(path)
+  return unless File.exist?(path)
   Dir["#{path}/**/*.rb"].each{|m|require(m)}
 end
 
@@ -18,3 +19,4 @@ require toolbox_module if File.exist?(toolbox_module)
 
 require_folder(File.join(LIB_FOLDER,'required','system'))
 require_folder(File.join(LIB_FOLDER,'required','app'))
+require_folder(File.join(LIB_FOLDER,'required','test'))

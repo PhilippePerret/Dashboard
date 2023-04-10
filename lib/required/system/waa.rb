@@ -3,7 +3,7 @@
 
   Module WAA
   ----------
-  version 3.0
+  version 3.1
   
   Pour les applications WAA (Without Ajax Application)
   C'est le pendant de la librairie waa.js côté client
@@ -27,6 +27,13 @@ class InterruptionSilencieuse < StandardError; end
 class Waa
   
   attr_reader :browser, :driver
+
+  # true si on est en mode test
+  # Côté client, mettre 'WAA.mode_test = true' pour passer en mode
+  # test.
+  # Côté serveur, tester WAA.mode_test? pour savoir si on est en 
+  # mode test.
+  attr_accessor :mode_test
 
   def version
     @version ||= '1.0'
@@ -90,6 +97,10 @@ class Waa
   rescue Exception => e
     puts e.inspect
     puts e.backtrace.join("\n")
+  end
+
+  def mode_test?
+    self.mode_test === true
   end
 
   #
@@ -183,14 +194,24 @@ class Message
     end
   end
   
-  def data
-    @data ||= JSON.parse(@raw_data)
-  end
-
   def id;           @id           ||= data['id'] end
   def ruby_classe;  @ruby_classe  ||= data['class']   end
   def ruby_method;  @ruby_method  ||= data['method'].to_sym  end
-  def method_args;  @method_args  ||= data['data'] end
+  def method_args
+    @method_args  ||= begin
+      d = data['data']
+      if d.is_a?(Hash) && d.key?('__mode_test__')
+        WAA.mode_test = d['__mode_test__']
+        puts "Mode test : #{WAA.mode_test.inspect}".bleu
+      end
+
+      d
+    end
+  end
+
+  def data
+    @data ||= JSON.parse(@raw_data)
+  end
 
 end #/class Message
 

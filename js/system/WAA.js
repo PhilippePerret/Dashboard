@@ -3,7 +3,7 @@
 
   WAA.js
   ------
-  version 3.1
+  version 3.2
   
   Librairie permettant de gérer la WAA application. De façon simple,
   elle reçoit et elle transmet les données au script (ruby) qui a
@@ -13,9 +13,28 @@
   WAA.state = 1   au démarrage
   WAA.state = 2   quand l'application est prête
 
-  Pour les applications de la suite Score, ajouter :
-  <script type="text/javascript" src="../lib/js/WAA.js"></script>
+  @usage
+  ------
 
+    Pour envoyer un message au serveur :
+
+      WAA.send({
+          class:'LeModule::LaClasse'
+        , method:'la_method'
+        , data:{... les données ...}
+      })
+
+    LeModule::LaClasse#la_method doit être une méthode ruby qui
+    reçoit un seul argument : les données +data+
+
+  @test
+
+    Pour passer en mode test, il faut utiliser :
+
+      WAA.mode_test = true
+
+    Cela envoie chaque fois la donnée mode_test = true au serveur
+    qui peut alors gérer les choses en conséquence.
 
 */
 class Waa {
@@ -38,6 +57,7 @@ class Waa {
     }
   }
 
+
   /**
    * Pour envoyer des données au script maitre
    * (cf. dans waa.rb le format des données)
@@ -45,11 +65,20 @@ class Waa {
   send(data_message){
     // console.log("data_message dans send: ", data_message)
     // return false
+    if (this.mode_test) { this.data_message_for_tests(data_message) }
     if(undefined == this.datastack) this.datastack = []
     if('string' != typeof data_message) data_message = JSON.stringify(data_message)
     // console.log("data_message dans send: ", data_message)
     // return false
     this.datastack.push(data_message)
+  }
+
+  /**
+  * En mode test, on ajoute une propriété pour les données
+  */
+  data_message_for_tests(dmsg){
+    dmsg.data || Object.assign(dmsg, {data: {}})
+    Object.assign(dmsg.data, {__mode_test__: true})
   }
 
   /**
@@ -125,6 +154,9 @@ class Waa {
   get state(){ return this._state || 1 }
   set state(v){ this._state = v }
 
-}
+  get mode_test() { return this._modetest || false }
+  set mode_test(v){ this._modetest = v }
+
+} // /class Waa
 
 var WAA = new Waa();

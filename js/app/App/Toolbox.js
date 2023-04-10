@@ -34,7 +34,6 @@ class Toolbox {
   * est chargé.
   */
   static onUserDataLoaded(ev){
-    console.log(Toolbox.data)
     if ( ! Toolbox.data ) return ;
     if ( Toolbox.data.buttons ) {
       Toolbox.data.buttons.forEach(domel => this.obj.appendChild(domel))

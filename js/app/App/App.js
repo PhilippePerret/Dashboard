@@ -2,8 +2,26 @@
 
 class App {
 
-  /* TODO : la remonter du serveur */
-  static get APP_VERSION(){ return '0.1.0' }
+
+  static onReady(){
+
+    console.info("WAA.mode_test = ", WAA.mode_test)
+    /*
+    |  Préparation de l'interface
+    */
+    UI.prepare()
+
+    /*
+    |  Affichage de ce qu'il y a à faire aujourd'hui
+    */
+    WAA.mode_test || Task.loadAndDisplayAllTasks()
+
+    // Pour lancer le check des résultat KPD
+    // 
+
+  }
+
+
 
   /**
   * Pour remonter une erreur depuis le serveur avec WAA.
@@ -15,21 +33,6 @@ class App {
     console.error(err.backtrace)
   }
   
-
-  static onReady(){
-    /*
-    |  Préparation de l'interface
-    */
-    UI.prepare()
-    /*
-    |  Affichage de ce qu'il y a à faire aujourd'hui
-    */
-    Task.loadAndDisplayAllTasks()
-
-    // Pour lancer le check des résultat KPD
-    // 
-
-  }
 } // /class App
 
 

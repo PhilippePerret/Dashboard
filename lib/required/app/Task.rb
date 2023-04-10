@@ -60,6 +60,7 @@ class << self
 
   def get_all_tasks
     @all_tasks ||= begin
+      puts "Chargement des tâches depuis #{folder}"
       Dir["#{folder}/*.yaml"].map do |fpath|
         YAML.load_file(fpath, **options_yaml)
       end
@@ -71,12 +72,14 @@ class << self
   end
 
   def folder
-    @folder ||= File.join(APP_FOLDER,'data','todos')
+    @folder ||= App.data_folder('todos')
   end
 
   def archives
-    @archives ||= File.join(APP_FOLDER,'data','xarchives')
+    @archives ||= App.data_folder('xarchives')
   end
+
+
 end #/<< self
 
 ###################       INSTANCE      ###################

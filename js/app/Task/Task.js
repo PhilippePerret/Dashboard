@@ -73,7 +73,10 @@ class Task extends AbstractTableClass {
   static displayTodayTasks(){
     this.displayAllTask()
     TaskFilter.applyFilter('current')
+    // On indique que l'application est prête
+    App.isReady = true
   }
+
   static displayAllTask(){
     this.items.forEach( todo => todo.build('main') )
   }
@@ -588,10 +591,10 @@ class Task extends AbstractTableClass {
   get categorie() { return this.data.cat    }
 
   get end_at(){
-    return this._end_at || (this._end_at = DateUtils.revdate2date(this.data.end))
+    return this._end_at || (this._end_at = this.data.end && DateUtils.revdate2date(this.data.end))
   }
   get start_at(){
-    return this._start_at || (this._start_at = DateUtils.revdate2date(this.data.start))
+    return this._start_at || (this._start_at = this.data.start && DateUtils.revdate2date(this.data.start))
   }
   resetDates(){ 
     this._start_at = null

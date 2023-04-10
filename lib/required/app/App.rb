@@ -19,7 +19,7 @@ class << self
   def main_data_folder
     @main_data_folder ||= begin
       if WAA.mode_test?
-        mkdir(File.join(APP_FOLDER,'tmp','tests'))
+        mkdir(File.join(APP_FOLDER,'tmp','tests','data'))
       else
         mkdir(File.join(APP_FOLDER,'data'))
       end

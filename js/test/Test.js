@@ -23,7 +23,88 @@
 //   'task_creation'
 //   ]
 
+
+
+/**
+* @public
+* 
+* Pour attendre, avant de poursuivre, que la fonction +callback+
+* retourne true.
+*/
+function waitFor(callback){
+  return new Waiter(callback).run()
+}
+
+/**
+* @public
+* 
+* Pour attendre un certain nombre de secondes
+*/
+function wait(nombre_secondes){
+  console.info("%c J'attends %s secondes…", 'color:blue;', nombre_secondes)
+  return new Promise((ok,ko) => {setTimeout(ok, nombre_secondes * 1000)})
+}
+
+function next(){Test.next()}
+function assert(e,a,m){Test.assert(e,a,m)}
+function refute(e,a,m){Test.refute(e,a,m)}
+function add_failure(m){Test.add_failure(m)}
+function add_success(m){Test.add_success(m)}
+
+
 class Test {
+
+  /**
+  * @public
+  * 
+  * Pour ajouter un succès
+  * 
+  */
+  static add_success(msg){
+    this.success.push({file: this.currentTestFile, msg: msg})
+  }
+
+  /**
+  * @public
+  * 
+  * Pour ajouter un échec
+  * 
+  */
+  static add_failure(msg){
+    this.failures.push({file: this.currentTestFile, msg: msg})
+    console.error('.')
+    // console.error(`[%s] %s`, this.currentTestFile, msg)
+  }
+
+  /**
+  * @public
+  * 
+  * Test d'égalité (assertion)
+  * 
+  */
+  static assert(expected, actual, err_msg) {
+    if ( expected == actual ) {
+      this.add_success()
+    } else {
+      err_msg = eval('`' + err_msg + '`', this)
+      this.add_failure(err_msg || `${actual} devrait être égal à ${expected}`)
+    }
+  }
+
+  /**
+  * @public
+  * 
+  * Test d'inégalité (assertion)
+  * 
+  */
+  static refute(not_expected, actual, err_msg){
+    if ( not_expected != actual ) {
+      this.add_success()
+    } else {
+      err_msg = eval('`' + err_msg + '`', this)
+      this.add_failure(err_msg || `${actual} ne devrait pas être égal à ${expected}`)
+    }
+  }
 
   static get timeout(){return this._timeout || 10 /* secondes */}
   static set timeout(v){this._timeout = v}
@@ -58,7 +139,14 @@ class Test {
     }
   }
 
+  static resetCounts(){
+    this.success  = []
+    this.failures = []
+  }
+
   static startRun(){
+    this.resetCounts()
+    this.tests_count = this.testList.length
     this.test_names = this.shuffleTestNameList(this.testList)
     this.run_next_test()
   }
@@ -76,11 +164,31 @@ class Test {
     this.run_next_test()
   }
 
+  /**
+  * Rapport final
+  * ------------
+  */
   static finDesTest(){
-    console.log("%c--- Fin des tests ---",'font-weight:bold;color:#5B5;')
+    const nb_success  = this.success.length
+    const nb_failures = this.failures.length
+    const nb_tests    = this.tests_count
+    const color = nb_failures ? '#C55' : '#5B5'
+
+    console.log('%c-------------- FIN DES TESTS -------------',`font-weight:bold;color:${color};`)
+    if ( nb_failures ) {
+      /*
+      |  On reprend les messages d'erreur
+      */
+      this.failures.forEach(failure => {
+        console.error(failure.msg)
+      })
+    }
+    const msg = `%c-----------------------\nSuccès : ${nb_success} - échecs : ${nb_failures} (nombre fichiers tests : ${nb_tests})` 
+    console.log(msg,`font-weight:bold;color:${color};`)
   }
 
   static loadAndRun(test_name){
+    this.currentTestFile = test_name // pour les messages
     const script = DCreate('SCRIPT', {type:'text/javascript', src:`js/test/tests/${test_name}.js`})
     script.addEventListener('load',this.onRunTest.bind(this, test_name))
     document.head.appendChild(script)
@@ -99,25 +207,6 @@ class Test {
   }
 }
 
-/**
-* @public
-* 
-* Pour attendre, avant de poursuivre, que la fonction +callback+
-* retourne true.
-*/
-function waitFor(callback){
-  return new Waiter(callback).run()
-}
-
-/**
-* @public
-* 
-* Pour attendre un certain nombre de secondes
-*/
-function wait(nombre_secondes){
-  console.info("%c J'attends %s secondes…", 'color:blue;', nombre_secondes)
-  return new Promise((ok,ko) => {setTimeout(ok, nombre_secondes * 1000)})
-}
 
 
 class Waiter {

@@ -13,7 +13,7 @@ class Task extends AbstractTableClass {
         'url_kpd':  'URL Kindle Direct Publishing (KDP)',
         'open_edi': "Ouvrir dossier dans EDI",
         'rcode':    'Code ruby à évaluer', 
-        'bcode':    'Code bash à évalue', 
+        'bcode':    'Code bash à évaluer', 
       }
     } return this._actionTypes
   }
@@ -134,16 +134,16 @@ class Task extends AbstractTableClass {
 
   // --- State Methods ---
 
-  get isCurrent()   { return this.start_at < TODAY_END }
-  get isFuture()    { return this.start_at > TODAY_END }
+  get isCurrent()   { return this.start && this.start_at < TODAY_END }
+  get isFuture()    { return this.start && this.start_at > TODAY_END }
   get isOutDated()  { return this.end_at && this.end_at < TODAY_START }
-  get endIsNear()   { return DateUtils.dayCountBetween(TODAY_END, this.end_at) < 2 }
+  get endIsNear()   { return this.end_at && DateUtils.dayCountBetween(TODAY_END, this.end_at) < 2 }
 
 
   // --- Helpers Methods ---
 
-  get hstart_at(){return DateUtils.date2hdatemin(this.start_at,false) /* false pour court */}
-  get hend_at  (){return DateUtils.date2hdatemin(this.end_at  ,false) /* id. */}
+  get hstart_at(){return this.start ? DateUtils.date2hdatemin(this.start_at,false) /* false pour court */ : '---'}
+  get hend_at  (){return this.end   ? DateUtils.date2hdatemin(this.end_at  ,false) /* id. */ : '---'}
 
   // --- Fonctional Methods ---
 
@@ -584,17 +584,20 @@ class Task extends AbstractTableClass {
 
   // --- Data Methods ---
 
-  get id()        { return this.data.id     }
-  get prev()      { return this.data.prev   }
+  get id()        { return this.data.id       }
+  get start()     { return this.data.start    }
+  get end()       { return this.data.end      }
+  get prev()      { return this.data.prev     }
   set prev(v)     { this.data.prev = v ; delete this._prevtasks }
-  get resume()    { return this.data.resume }
-  get categorie() { return this.data.cat    }
+  get resume()    { return this.data.resume   }
+  get categorie() { return this.data.cat      }
+  get priority()  { return this.data.priority }
 
   get end_at(){
-    return this._end_at || (this._end_at = this.data.end && DateUtils.revdate2date(this.data.end))
+    return this._end_at || (this._end_at = this.end && DateUtils.revdate2date(this.end))
   }
   get start_at(){
-    return this._start_at || (this._start_at = this.data.start && DateUtils.revdate2date(this.data.start))
+    return this._start_at || (this._start_at = this.start && DateUtils.revdate2date(this.start))
   }
   resetDates(){ 
     this._start_at = null

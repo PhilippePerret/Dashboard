@@ -78,6 +78,7 @@ class Task extends AbstractTableClass {
   }
 
   static displayAllTask(){
+    TaskConteneur.Today.flush()
     this.items.forEach( todo => todo.build('main') )
   }
 
@@ -392,7 +393,7 @@ class Task extends AbstractTableClass {
       }
     }
     const conteneur = TaskConteneur.conteneur(ctype)
-    const div = DCreate('DIV', {class:'task unfold'})
+    const div = DCreate('DIV', {id: `task-${this.id}`, class:'task unfold'})
     this.obj = div
 
     // - Le résumé -

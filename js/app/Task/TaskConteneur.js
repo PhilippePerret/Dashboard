@@ -47,6 +47,13 @@ class TaskConteneur {
     this.id = id
   }
 
+  /**
+  * Pour vider le conteneur de son contenu
+  */
+  flush(){
+    this.taskList.innerHTML = ''
+  }
+
 
   prepare(){
     /*

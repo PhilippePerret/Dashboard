@@ -86,7 +86,7 @@ class InteractiveElement {
   }
 
   build(){
-    const o = DCreate('DIV', {class:'hidden', style:this.divStyle})
+    const o = DCreate('DIV', {class:'inter-conteneur hidden', style:this.divStyle})
     this.obj = o
     this.msgField   = DCreate('DIV', {class:'inter-message', text: this.question, style:this.msgFieldStyle})
     /*

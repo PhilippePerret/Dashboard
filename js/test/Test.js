@@ -88,7 +88,9 @@ class Test {
     if ( expected == actual ) {
       this.add_success()
     } else {
-      err_msg = eval('`' + err_msg + '`', this)
+      const act = actual   // version raccourcie
+      const exp = expected // idem
+      err_msg = eval('`' + err_msg + '`')
       this.add_failure(err_msg || `${actual} devrait être égal à ${expected}`)
     }
   }
@@ -166,9 +168,13 @@ class Test {
   */
   static preRequired(){
     if ( this.testList.includes('required') ) {
-      this.loadRequiresModule()
       /* - on doit supprimer le module required.js - */
       this.testList.splice(this.testList.indexOf('required'),1)
+      if ( this.testList.length ) {
+        this.loadRequiresModule()
+      } else {
+        return erreur("Aucun test n'est à jouer.")
+      }
     } else {
       this.startRun()
     }
@@ -222,7 +228,7 @@ class Test {
         console.error(failure.msg)
       })
     }
-    const msg = `%c-----------------------\nSuccès : ${nb_success} - échecs : ${nb_failures} (nombre fichiers de tests : ${nb_tests})` 
+    const msg = `%c------------------------------------------\nSuccès : ${nb_success} - échecs : ${nb_failures} (nombre fichiers de tests : ${nb_tests})` 
     console.log(msg,`font-weight:bold;color:${color};`)
   }
 
@@ -234,7 +240,8 @@ class Test {
   }
 
   static onRunTest(test_name, ev){
-    console.info("- test %s chargé", test_name)
+    // En fait, quand on arrive là, tout le code a déjà été 
+    // joué.
   }
 
   static shuffleTestNameList(array){

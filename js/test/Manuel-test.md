@@ -121,9 +121,37 @@ wait(3)
 	.then(() => {
     // On a trouvé le div, on peut ajouter un succès
   	add_succcess("mon div#mon_div a été trouvé")
-  	// Et passer au fichier de tests suivant
-  	next()
+  	// Autre test
+  	//
+  	// puis on attend quelques secondes avant de passer
+  	// au fichier test suivant
+  	wait(4).then(next)
 	})
+})
+~~~
+
+Noter qu’on peut avoir des tests plus clair (et plus modulables) en se servant du fait que les méthodes `wait` et `waitFor` retourne des promesses :
+
+~~~javascript
+wait(3)
+.then( _ => {
+  // un test de quelque chose
+  //
+  // On attend par exemple l'existence d'un élément à l'écran
+  return waitFor(existence)
+})
+.then( _ => {
+  // un autre test
+  
+  return wait(3)
+})
+.then( _ => {
+  // Un autre test
+  // Pour utiliser les promesses d'attente, mais sans attendre
+  return wait(0)
+})
+.then( _ => {
+  // etc.
 })
 ~~~
 
@@ -133,7 +161,7 @@ wait(3)
 
 Le testeur de *WAA* voulant rester simple, on ne trouve que ces méthodes pour gérer les assertions et comptages d’erreurs et de succès :
 
-### [Test.]assert
+### assert
 
 Vérifie une égalité :
 
@@ -161,7 +189,7 @@ Test.assert(4, 2 + 3, "Le  nombre ${actual} devrait valoir ${expected}")
 
 
 
-### [Test.]refute
+### refute
 
 Vérifie une différence :
 
@@ -172,7 +200,7 @@ Vérifie une différence :
 Par exemple :
 
 ~~~javascript
-[Test.]refute(5, 2 + 2, "2 + 2 ne doit pas être égal à 5")
+refute(5, 2 + 2, "2 + 2 ne doit pas être égal à 5")
 ~~~
 
 Sans message d’erreur fourni, le retour serait :
@@ -187,7 +215,7 @@ Pour reprendre les valeurs `not_expected` et `actual` dans le message, on utilis
 assert(4, 2 + 3, "Le  nombre ${actual} ne devrait surtout pas valoir ${not_expected} !")
 ~~~
 
-### [Test.]add_success
+### add_success
 
 On peut ajouter un succès grâce à cette méthode
 
@@ -195,12 +223,12 @@ On peut ajouter un succès grâce à cette méthode
 
 Si un argument est fourni, ce sera le message de victoire produit. Pour le moment, il n’est pas utilisé.
 
-### [Test.]add_failure
+### add_failure
 
 Pour ajouter une erreur.
 
 ~~~javascript
-[Test.]add_failure("Cette opération produit une erreur")
+add_failure("Cette opération produit une erreur")
 ~~~
 
 Sans message fourni, le retour serait :

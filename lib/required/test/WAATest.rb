@@ -34,7 +34,7 @@ class << self
     now = Time.now + 2 * 3600 * 24
     task25_data['start'] = "#{now.year}-#{now.month.to_s.rjust(2,'0')}-#{now.day.to_s.rjust(2,'0')}"
     File.write(task25_path, task25_data.to_yaml)
-    WAA.send({class:'Test',method:'runTestChargement',data:{}})
+    WAA.send({class:'Test',method:data['poursuivre'],data:{}})
   end
 
   def degel(folder_name)

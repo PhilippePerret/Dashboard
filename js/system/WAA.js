@@ -109,11 +109,23 @@ class Waa {
     // Classe définie par le message
     // 
     let classe = eval(data_message.class)
+    if ( ! classe ) { 
+      const err_msg = `La classe "${data_message.class}" est inconnue.\nJe dois m'arrêter là.`
+      console.error(err_msg)
+      return erreur(err_msg) 
+    }
     // 
     // Appeler la méthode définie par le message, avec les 
     // données définies (if any)
     // 
-    classe[data_message.method].call(classe, data_message.data)
+    if ( 'function' == typeof classe[data_message.method] ) {
+      classe[data_message.method].call(classe, data_message.data)
+    } else {
+      const err_msg = `La méthode #${data_message.method} de la classe ${data_message.class} est inconnue…\nJe dois m'arrêter là.`
+      console.error(err_msg)
+      console.log("Classe Test : ", Test)
+      return erreur(err_msg)
+    }
     /*
     |  Cas spécial des tests InsideTest
     |  --------------------------------

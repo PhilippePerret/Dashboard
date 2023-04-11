@@ -26,17 +26,19 @@ class TaskFilter {
     this.filterKey = key_filter
     switch(key_filter){
     case 'current':
-      Task.each( task => {task[task.isCurrent ? 'show' : 'hide'].call(task) })
+      Task.each( tk => {tk[tk.isCurrent ? 'show' : 'hide'].call(tk) })
       break
     case 'outdated':
-      Task.each( task => {task[task.isOutDated ? 'show' : 'hide'].call(task) })
+      Task.each( tk => {tk[tk.isOutDated ? 'show' : 'hide'].call(tk) })
       break
     case 'same-categorie':
       console.warn("Je dois apprendre à filtrer les tâches de la même catégorie")
       break
     case 'future':
-      Task.each( task => {task[task.isFuture ? 'show' : 'hide'].call(task) })
+      Task.each( tk => {tk[tk.isFuture ? 'show' : 'hide'].call(tk) })
       break
+    case 'all':
+      Task.each(tk => tk.show.call(tk) )
     case 'linked':
       console.warn("Je dois apprendre à filtrer les tâches liées à la courante")
       break

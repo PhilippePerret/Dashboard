@@ -18,6 +18,10 @@ $(document).ready(e => {
 }
 ~~~
 
+### Revenir au mode production
+
+Pour revenir au mode production après avoir jouer la suite de test, il est certainement nécessaire de relancer toute l’application (c’est-à-dire en la quittant d’abord).
+
 ### Définir les tests à jouer
 
 Les tests à jouer ***peuvent*** être définis dans la constante **`TEST_FILES`** en haut du fichier `js/test/Test.js` de l’application WAA.

@@ -5,6 +5,7 @@ class UI {
     TaskConteneur.prepare()
     TaskFilter.prepare()
     TaskButton.prepare()
+    TaskSearch.prepare()
     this.espaceButtonTitle()
     Toolbox.setup()
   }

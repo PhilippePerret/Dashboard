@@ -44,23 +44,3 @@ div.explication {padding:1em;}
 
 .fright {float:right;}
 .fleft {float:left;}
-
-span#kdp-resultats {
-  float:left;
-  font-size:20pt;
-  font-weight:bold;
-  color:white;
-  margin-top: 6px;
-  margin-left: 12px;
-}
-span#kdp-resultats span#kdp-time {
-  margin-left:1em;
-  font-size:12pt;
-  vertical-align:middle;
-}
-span#kdp-resultats span#kdp-time:before {
-  content: "(à ";
-}
-span#kdp-resultats span#kdp-time:after {
-  content: ")";
-}

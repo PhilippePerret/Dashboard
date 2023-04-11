@@ -288,6 +288,7 @@ class TaskEditor {
   }
 
   peupleCategories(){
+    if ( !Categorie.items ) { Categorie.reset() }
     const mCate = this.field('cat')
     mCate.innerHTML = ''
     mCate.appendChild(DCreate('OPTION',{value:'',text:'Catégorie…'}))

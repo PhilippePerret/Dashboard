@@ -51,6 +51,8 @@ function refute(e,a,m){Test.refute(e,a,m)}
 function add_failure(m){Test.add_failure(m)}
 function add_success(m){Test.add_success(m)}
 
+function clickOn(domElement){return Test.clickOn(domElement)}
+
 
 class Test {
 
@@ -106,6 +108,20 @@ class Test {
     }
   }
 
+  /**
+  * @public
+  * 
+  * Pour cliquer sur un élément d'interface
+  * 
+  */
+  static clickOn(domElement){
+    if ( 'function' == typeof domElement.click ) {
+      domElement.click()
+    } else {
+      console.warn("Je dois apprendre à cliquer sur un élément d'interface qui ne répond pas à click().")
+    }
+  }
+
   static get timeout(){return this._timeout || 10 /* secondes */}
   static set timeout(v){this._timeout = v}
 
@@ -126,14 +142,14 @@ class Test {
       WAA.send({class:'WAATest',method:'load_tests'})
     } else {
       this.testList = TEST_FILES
-      this.startRun()
+      this.preRequired()
     }
   }
   static onLoadTests(retour){
     // console.log("Les tests sont", retour.tests)
     this.testList = retour.tests
     if ( this.testList.length ) {
-      this.startRun()
+      this.preRequired()
     } else {
       erreur("Aucun test n'est à jouer.")
     }
@@ -142,6 +158,29 @@ class Test {
   static resetCounts(){
     this.success  = []
     this.failures = []
+  }
+
+  /**
+  * Si la liste des tests contient 'required', c'est un fichier
+  * requis qu'il faut charger avant de lancer les tests.
+  */
+  static preRequired(){
+    if ( this.testList.includes('required') ) {
+      this.loadRequiresModule()
+      /* - on doit supprimer le module required.js - */
+      this.testList.splice(this.testList.indexOf('required'),1)
+    } else {
+      this.startRun()
+    }
+  }
+
+  /**
+  * Chargement du module required.js avec de jouer les tests
+  */
+  static loadRequiresModule(){
+    const script = DCreate('SCRIPT', {src:'./js/test/tests/required.js'})
+    document.head.appendChild(script)
+    listen(script, 'load', this.startRun.bind(this))
   }
 
   static startRun(){
@@ -183,7 +222,7 @@ class Test {
         console.error(failure.msg)
       })
     }
-    const msg = `%c-----------------------\nSuccès : ${nb_success} - échecs : ${nb_failures} (nombre fichiers tests : ${nb_tests})` 
+    const msg = `%c-----------------------\nSuccès : ${nb_success} - échecs : ${nb_failures} (nombre fichiers de tests : ${nb_tests})` 
     console.log(msg,`font-weight:bold;color:${color};`)
   }
 

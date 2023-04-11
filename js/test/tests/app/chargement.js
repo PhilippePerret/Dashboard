@@ -2,9 +2,11 @@
 let expected, actual ;
 let exp, act ;
 
+/**
+* Ce test est dans une fonction car on doit au préalable réinitialiser
+* les tâches pour avoir les 5 tâches de démarrage.
+*/
 Test.runTestChargement = () => {
-
-  console.info("J'entre bien dans cet test.")
 
   // Chargement des tâches en essai dans le dossier
   Task.loadAndDisplayAllTasks()
@@ -111,5 +113,8 @@ Test.runTestChargement = () => {
   })
 } 
 
-
-WAA.send({class:'WAATest', method:'customInit'})
+/**
+* Ré-initialisation des tâches de démarrage des tests avant de 
+* procéder au test.
+*/
+WAA.send({class:'WAATest', method:'customInit', data:{poursuivre:'runTestChargement'}})

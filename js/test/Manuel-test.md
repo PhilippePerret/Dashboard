@@ -22,7 +22,9 @@ $(document).ready(e => {
 
 Les tests à jouer ***peuvent*** être définis dans la constante **`TEST_FILES`** en haut du fichier `js/test/Test.js` de l’application WAA.
 
-***Mais*** si cette constantes n’est pas définie, l’application *WAA* lira simplement les tests du dossier `./js/test/tests` s’il existe.
+> Penser à ajouter au début le fichier [`required`](#required) s’il existe, pour qu’il soit chargé aux tout débuts des tests.
+
+***Mais*** si cette constantes n’est pas définie, l’application *WAA* lira les tests du dossier `./js/test/tests` s’il existe.
 
 > Noter qu’on ne met que l’affixe du fichier, pas son extension.
 >
@@ -34,7 +36,8 @@ Par exemple :
 // dans js/test/Test.js
 
 const TEST_FILES = [
-  'app/premier_test'
+    'required'
+  , 'app/premier_test'
 ]
 ~~~
 
@@ -51,6 +54,12 @@ Pour la définition ci-dessus, on doit donc trouver le fichier :
 ~~~
 ./js/test/tests/app/premier_test.js
 ~~~
+
+<a name="required"></a>
+
+### Éléments requis (constantes…)
+
+Si le dossier `./js/test/tests` contient un module `required.js`, celui-ci sera chargé tout au début des tests. Il sert à définir des constantes, des méthodes utilitaires, etc.
 
 ## Fabrication d’un test
 

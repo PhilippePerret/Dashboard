@@ -18,10 +18,10 @@ header span#csv-file-name {
   margin-left:2em;
 }
 
-div#ui-fields {
+footer#main {
   width:80%;
 }
-div#ui-fields {
+footer#main {
   position:fixed;
   text-align:right;
   bottom:0;
@@ -29,7 +29,7 @@ div#ui-fields {
   z-index:100;
   background-color:black;
 }
-div#ui-fields button {
+footer#main button {
   font-size: 20pt;
   padding: 0.2em 1em;
 }

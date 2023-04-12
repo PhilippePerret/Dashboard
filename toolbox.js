@@ -16,15 +16,19 @@ Toolbox.onToggleCheckKDP = function(ev){
 // Les objets
 const btnGotoKDP = DCreate('BUTTON',{text:"Rejoindre KDP"})
 const cbCheckKDP = DCreate('INPUT', {type:'checkbox', id:'cb-check-kdp', label:'Vérifier les ventes KDP'})
-const styleSpanKDP = 'float:left;font-size:20pt;font-weight:bold;color:white;margin-top: 6px;margin-left: 12px;'
+
+/*
+|  Les résultat KDP, affichés en bas de fenêtre (footer#main)
+*/
+const styleSpanKDP = 'float:left;font-size:16pt;font-weight:bold;color:white;margin-top: 6px;margin-left: 12px;'
 const spanKDP = DCreate('SPAN', {id:'kdp-resultats', style:styleSpanKDP})
-;spanKDP.appendChild(DCreate('SPAN',{text:'DKP : '}))
+;spanKDP.appendChild(DCreate('SPAN',{text:'KDP : '}))
 ;spanKDP.appendChild(DCreate('SPAN',{id:'kdp-nombre-ventes', text:'---'}))
 spanKDP.appendChild(DCreate('SPAN',{text:' / '}))
 spanKDP.appendChild(DCreate('SPAN',{id:'kdp-moyenne-ventes',text:'---'}))
 const styleSpanTime = 'margin-left:1em;font-size:12pt;vertical-align:middle;'
-spanKDP.appendChild(DCreate('DIV',{id:'kdp-time',text:'', style:styleSpanTime}))
-
+spanKDP.appendChild(DCreate('SPAN',{id:'kdp-time',text:'', style:styleSpanTime}))
+DGet('footer#main').appendChild(spanKDP)
 
 // Les observers
 listen(btnGotoKDP,'click',Toolbox.gotoKDP.bind(Toolbox))
@@ -33,7 +37,6 @@ listen(DGet('input',cbCheckKDP),'change', Toolbox.onToggleCheckKDP.bind(Toolbox)
 Toolbox.data = {
   buttons: [
       cbCheckKDP
-    , spanKDP
     , btnGotoKDP
   ]
 }

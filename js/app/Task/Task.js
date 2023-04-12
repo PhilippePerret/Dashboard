@@ -135,7 +135,7 @@ class Task extends AbstractTableClass {
 
   // --- State Methods ---
 
-  get isCurrent()   { return this.start && this.start_at < TODAY_END }
+  get isCurrent()   { return !this.isLinked && this.start && this.start_at < TODAY_END }
   get isFuture()    { return this.start && this.start_at > TODAY_END }
   get isOutDated()  { return this.end_at && this.end_at < TODAY_START }
   get endIsNear()   { return this.end_at && DateUtils.dayCountBetween(TODAY_END, this.end_at) < 2 }

@@ -85,7 +85,7 @@ class KDP {
     return this._spanmoy || (this._spanmoy = DGet('span#kdp-moyenne-ventes'))
   }
   static get spanTime(){
-    return this._spantime || (this._spantime = DGet('div#kdp-time'))
+    return this._spantime || (this._spantime = DGet('#kdp-time'))
   }
 
   /**

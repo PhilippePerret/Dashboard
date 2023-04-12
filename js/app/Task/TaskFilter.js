@@ -40,7 +40,7 @@ class TaskFilter {
     case 'all':
       Task.each(tk => tk.show.call(tk) )
     case 'linked':
-      console.warn("Je dois apprendre à filtrer les tâches liées à la courante")
+      this.displayLinkedTaskOfSelected()
       break
     default:
       console.error("Je ne connais pas la clé de filtre des tâches '%s'", key_filter)
@@ -98,5 +98,42 @@ class TaskFilter {
 
   static get menu(){
     return this._menu || (this._menu = DGet('select#task-filter'))
+  }
+
+
+
+  // @private
+
+  /**
+  * @private
+  * 
+  * Méthode affichant les tâches liées à la tâche sélectionnée
+  */
+  static displayLinkedTaskOfSelected(){
+    const selected = Task.selectedTask
+    if ( ! selected ) {
+      return erreur("Il faut sélectionner la tâche dont il faut voir les tâches liées.")
+    }
+    if ( selected.prevTasks.length + selected.nextTasks.length == 0) {
+      return erreur ("La tâche sélectionnée n'est liée à aucunee autre tâche.")
+    }
+
+    // TODO Noter qu'avec cette formule on ne traite pas les tâches
+    // sur des branches différentes
+    this.displayPrevTasksOf(selected)
+    this.displayNextTasksOf(selected)
+
+  }
+  static displayPrevTasksOf(task){
+    task.prevTasks.forEach( tk => {
+      tk.show()
+      if ( tk.prevTasks.length ) { this.displayPrevTasksOf(tk) }
+    })
+  }
+  static displayNextTasksOf(task){
+    task.nextTasks.forEach( tk => {
+      tk.show()
+      if ( tk.nextTasks.length ) { this.displayNextTasksOf(tk) }
+    })
   }
 }

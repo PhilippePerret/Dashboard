@@ -1,7 +1,7 @@
 div.task-conteneur {
   width:700px;
   display:inline-block;
-  padding:2em;
+  padding:2.5em 12px;
   border:1px solid #555;
   position: relative;
   vertical-align:top;
@@ -57,8 +57,6 @@ div.task-conteneur footer > button:disabled {
 } 
 
 div#container-tasks-main {
-  padding-bottom:3em;
-  padding-top:3em;
 }
 div#container-tasks-done {
   opacity: 0.4;

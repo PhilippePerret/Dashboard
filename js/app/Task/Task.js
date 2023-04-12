@@ -70,6 +70,13 @@ class Task extends AbstractTableClass {
     }
   }
 
+  static reset(){
+    super.reset()
+    TaskConteneur.Today.flush()
+    TaskConteneur.Done.flush()
+    TaskConteneur.Pinned.flush()
+  }
+
   static displayTodayTasks(){
     this.displayAllTask()
     TaskFilter.applyFilter('current')
@@ -78,7 +85,6 @@ class Task extends AbstractTableClass {
   }
 
   static displayAllTask(){
-    TaskConteneur.Today.flush()
     this.items.forEach( todo => todo.build('main') )
   }
 
@@ -237,13 +243,22 @@ class Task extends AbstractTableClass {
 
   /**
   * Réglage de l'état de liaison de la tâche
+  * 
+  * ATTENTION : il y a deux cas :
+  *   1.  c'est la première. Dans ce cas isLinked n'est pas mis à 
+  *       true (pour qu'elle soit affichée)
+  *   2.  Ce n'est pas la première. Dans ce cas, isLinked est mis à
+  *       true, ce qui empêchera son affichage dans les tâches 
+  *       courante.
   */
   setLinkState(linked){
     if ( undefined === linked) {
       linked = (this.prev && this.prev.length)
     }
-    this.isLinked = linked
-    this.obj.classList[this.isLinked?'add':'remove']('linked')
+    if ( this.data.prev ) {
+      this.isLinked = linked
+    }
+    this.obj.classList[linked?'add':'remove']('linked')
   }
 
   /*
@@ -548,7 +563,7 @@ class Task extends AbstractTableClass {
       if ( this.prev ) {
         this._prevtasks = this.prev.map(tkid => Task.get(tkid))    
       } else {
-        this._prevtasks = null
+        this._prevtasks = []
       }
     }
     return this._prevtasks
@@ -564,7 +579,7 @@ class Task extends AbstractTableClass {
   * chargement de toutes les tâches)
   */
   get nextTasks(){
-    return this._nexttasks
+    return this._nexttasks || []
   }
   /**
   * Méthodes qui lie/délie la tâche présente de la tâche suivante +task+
@@ -572,6 +587,7 @@ class Task extends AbstractTableClass {
   addNext(task){
     const nexts = this.nextTasks || []
     nexts.push(task)
+    this.setLinkState(true)
     this._nexttasks = nexts
   }
   removeNext(task){
@@ -580,6 +596,7 @@ class Task extends AbstractTableClass {
       if ( tk.id == task ) return ;
       newNexts.push(tk)
     })
+    this.setLinkState(!!newNexts.length)
     this._nexttasks = newNexts
   }
 

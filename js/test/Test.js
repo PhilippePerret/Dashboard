@@ -19,10 +19,12 @@
 * 
 */
 // const TEST_FILES = [
-//   'premier_chargement',
-//   'task_creation'
-//   ]
-
+//     'premier_chargement'
+//   , 'task_creation'
+// ]
+const TEST_FILES = [
+    "task/linked"
+  ]
 
 
 /**
@@ -41,7 +43,7 @@ function waitFor(callback){
 * Pour attendre un certain nombre de secondes
 */
 function wait(nombre_secondes){
-  console.info("%c J'attends %s secondes…", 'color:blue;', nombre_secondes)
+  nombre_secondes > 1 && console.info("%c J'attends %s secondes…", 'color:blue;', nombre_secondes)
   return new Promise((ok,ko) => {setTimeout(ok, nombre_secondes * 1000)})
 }
 
@@ -52,6 +54,82 @@ function add_failure(m){Test.add_failure(m)}
 function add_success(m){Test.add_success(m)}
 
 function clickOn(domElement){return Test.clickOn(domElement)}
+
+
+/**
+* Pour tester les messages (cf. manuel-test)
+*/
+class Message {
+  /**
+  * @public
+  */
+  static assert_contains(msg){
+    assert(true, this.contains(msg), `Le message devrait contenir “${msg}”. Il contient “${this.getContents().join("\n")}”…`)
+  }
+  /**
+  * @public
+  */
+  static assert_contains_error(msg){
+    assert(true, this.contains(msg,'error'), `La page devrait afficher un message d'erreur contenant “${msg}”.`)
+  }
+
+  static contains(msg, type){
+    const regexp = new RegExp(msg, 'i')
+    const contents = this.getContents(type || 'notice')
+    // console.log("contents" , contents) // pour afficher "les" contenus
+    var istr, len, str;
+    for(istr = 0, len = contents.length; istr < len; ++istr){
+      if ( regexp.exec(contents[istr]) ) return true
+    }
+    return false // pas trouvé
+  }
+  static getContents(type){
+    const contents = []
+    DGetAll(`div.${type}.message > div`).forEach( div => contents.push(div.innerHTML) )
+    return contents
+  }
+}
+
+class IMessage {
+
+  /**
+  * Pour obtenir l'instance IMessage du conteneur de message interactif
+  * qui affiche le message +msg+
+  * 
+  * @return [IMessage] toujours l'instance, même lorsque le message
+  * n'a pas été trouvé. Tester <instance>.exists pour savoir s'il existe
+  */
+  static getWithMessage(msg){
+    const regexp = new RegExp(msg, 'i')
+    var conteneur = null ;
+    DGetAll('div.inter-conteneur').forEach(cont => {
+      if ( conteneur ) return ; // pour accélérer
+      const divMessage = DGet('div.inter-message', cont)
+      if ( regexp.exec(divMessage.innerHTML) ) { conteneur = cont }
+    })
+    return new IMessage(conteneur, msg)
+  }
+
+  constructor(conteneur, message){
+    this.conteneur = conteneur
+    this.message   = message
+  }
+
+  /* @return true si le message interactif existe */
+  get exists(){ return !!this.conteneur }
+  get errorMsgNotExist(){return `Le message interactif contenant « ${this.message} » n'existe pas.`}
+
+  get btnOK(){
+    if ( ! this.exists ) { throw this.errorMsgNotExist }
+    return DGet('div .btn-ok', this.conteneur)
+  }
+
+  get btnCancel(){
+    if ( ! this.exists ) { throw this.errorMsgNotExist }
+    return DGet('div .btn-cancel', this.conteneur)
+  }
+
+}
 
 
 class Test {
@@ -85,6 +163,12 @@ class Test {
   * 
   */
   static assert(expected, actual, err_msg) {
+    /*
+    |  En javascript, les comparaisons sont difficiles…
+    */
+    if ( 'object' == typeof expected )  expected = JSON.stringify(expected)
+    if ( 'object' == typeof actual )    actual = JSON.stringify(actual)
+      
     if ( expected == actual ) {
       this.add_success()
     } else {
@@ -134,6 +218,8 @@ class Test {
   }
 
   /**
+   * @entry
+   * 
   * Méthode à employer pour jouer les tests
   * 
   * Elle installe aussi tous les tests à jouer
@@ -144,6 +230,7 @@ class Test {
       WAA.send({class:'WAATest',method:'load_tests'})
     } else {
       this.testList = TEST_FILES
+      this.testList.includes('required') || this.testList.unshift('required')
       this.preRequired()
     }
   }
@@ -230,6 +317,14 @@ class Test {
     }
     const msg = `%c------------------------------------------\nSuccès : ${nb_success} - échecs : ${nb_failures} (nombre fichiers de tests : ${nb_tests})` 
     console.log(msg,`font-weight:bold;color:${color};`)
+    /*
+    |  Un message final pour l'utilisateur
+    */
+    if ( nb_failures ) {
+      erreur("Des erreurs ont été rencontrées (afficher la console développement pour les voir — Cmd+Alt+i).")
+    } else {
+      message("Tous les tests ont été joués avec succès.")
+    }
   }
 
   static loadAndRun(test_name){

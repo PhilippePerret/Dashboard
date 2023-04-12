@@ -18,6 +18,22 @@ $(document).ready(e => {
 }
 ~~~
 
+### Empêcher le comportement par défaut de l’application
+
+Si l’on veut empêcher les opérations d’une méthode qui pourrait être par exemple `App.onReady` — qui chargerait des éléments côté serveur — il suffit d’utiliser la constante `WAA.mode_test` qui est mise à true quand les tests sont lancés. Par exemple :
+
+~~~javascript
+class App {
+  static onReady(){
+    UI.prepare() // Sera toujours fait, même pour les tests
+ 		// À ne faire qu'en mode normal :   
+    WAA.mode_test || this.chargerElements()
+  }
+}
+~~~
+
+
+
 ### Revenir au mode production
 
 Pour revenir au mode production après avoir jouer la suite de test, il est certainement nécessaire de relancer toute l’application (c’est-à-dire en la quittant d’abord).
@@ -241,3 +257,50 @@ Sans message fourni, le retour serait :
 Une erreur a été produite.
 ~~~
 
+---
+
+<a name="message"></a>
+
+## Pour les messages
+
+> Il s’agit des messages de notice ou d’erreur, pas des [messages interactifs](#interactive-messages) qui permettent de demander des choses à l’utilisateur.
+
+#### Message.assert_contains(`msg` )
+
+Pour tester que le message `msg` est bien affiché (note : fonctionne par expression régulière insensible à la casse).
+
+#### Message.assert_contains_error(`msg`)
+
+Produit un succès si la page affiche le message d’erreur `err_msg` (note : fonctionne par expression régulière insensible à la casse).
+
+---
+
+<a name="interative-messages"></a>
+
+## Messages interactif
+
+> Il s’agit des messages qui permettent de demander des choses à l’utilisateur (substituts des `prompt` et `confirm` natifs), pas des [messages notices](#message) qui servent simplement à afficher des notifications ou des erreurs.
+
+On obtient l’instance du message interactif voulu par la méthode :
+
+~~~javascript
+const iM = IMessage.getWithMessage("Un bout du message affiché")
+~~~
+
+On peut s’assurer que ce message existe avec :
+
+~~~javascript
+iM.exists // => true s'il a été trouvé
+~~~
+
+On peut ensuite cliquer sur son bouton OK ou Cancel par :
+
+~~~javascript
+clickOn(iM.btnOK)
+
+// ou 
+
+clickOn(iM.btnCancel)
+~~~
+
+Noter que ces deux méthodes produiront une erreur si le message interactif n’existe pas.

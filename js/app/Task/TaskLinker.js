@@ -64,10 +64,6 @@ class TaskLinker {
       */
       Task.selectedTask = task
       /*
-      |  On réaffiche sa liste si nécessaire
-      */
-      TaskFilter.applyFilter(this.currentFilterKey)
-      /*
       |  La tâche ne peut pas être liée à elle-même
       */
       if ( newPrevTask == this ) {
@@ -90,9 +86,19 @@ class TaskLinker {
       task.data.start = null
       task.data.end   = null
       /*
+      |  On définit la tâche suivante de la tâche précédente
+      */
+      newPrevTask.addNext(task)
+      /*
       |  On finit par enregistrer la tâche
       */
       task.save()
+      /*
+      |  On réaffiche la liste (qui doit normalement faire disparaitre
+      |  la tâche liée, sauf si c'est l'affichage des tâches liées à
+      |  la précédente ou la courante)
+      */
+      TaskFilter.applyFilter(this.currentFilterKey)
     }
   }
 

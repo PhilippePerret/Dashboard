@@ -16,12 +16,18 @@ class App {
     */
     WAA.mode_test || Task.loadAndDisplayAllTasks()
 
-    // Pour lancer le check des résultat KPD
-    // 
-
   }
 
+  /**
+  * Pour repartir à zéro
+  * 
+  * Pour le moment, utilisé seulement par les tests
+  */
+  static resetAll(){
+    Task.reset()
+    Categorie.reset()
 
+  }
 
   /**
   * Pour remonter une erreur depuis le serveur avec WAA.
@@ -34,5 +40,3 @@ class App {
   }
   
 } // /class App
-
-

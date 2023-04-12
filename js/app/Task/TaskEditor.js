@@ -3,7 +3,9 @@
 class TaskEditor {
 
   static editTask(task){
+    this.ready = false
     this.editor.edit(task)
+    this.ready = true
   }
 
   static get editor(){
@@ -65,6 +67,17 @@ class TaskEditor {
       value = this.task.uncorrect(value)
       Object.assign(newData, {[prop]: value})
     })
+    /*
+    |  Pour la durée
+    */
+    const duree_nombre = Number(this.field('duree-nombre').value) || null
+    const duree_unite  = this.field('duree-unite').value || null
+    if ( duree_nombre && duree_unite ) {
+      newData.duree = `${duree_nombre}:${duree_unite}`  
+    }
+    /*
+    |  On retourne les données
+    */
     return newData;
   }
 
@@ -79,6 +92,7 @@ class TaskEditor {
     this.task = null
     delete this.task
     this.desactivateKeyboardShortcuts()
+    TaskEditor.ready = false
   }
 
   /**

@@ -5,6 +5,9 @@
 
 const newTaskResume = "Tester la création d'une tâche"
 
+/**
+* Cette méthode est appelée lorsque tout est chargé dans l'application
+*/
 Test.testCreationTask = () => {
   DGet('#task-resume',editor).value = newTaskResume
   // DGet('#task-cat').value = '__new__cate__'

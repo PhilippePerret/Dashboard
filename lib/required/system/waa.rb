@@ -33,7 +33,46 @@ class Waa
   # test.
   # Côté serveur, tester WAA.mode_test? pour savoir si on est en 
   # mode test.
-  attr_accessor :mode_test
+  attr_reader :mode_test
+  
+  ##
+  # Fixe le mode d'utilisation de l'application
+  # 
+  # Cette méthode est appelée à chaque appel javascript venant du
+  # client. On passe en mode test lorsque les arguments contiennent
+  # __mode_test__ true.
+  # 
+  def mode_test=(value)
+    # En cas de changement de mode
+    # 
+    if not(@is_mode_test === nil) && value != @is_mode_test
+      if value === false
+        unset_mode_test
+      else
+        set_mode_test
+      end
+      WaaApp::Server.on_toggle_mode_test
+    end
+    @is_mode_test = value
+    puts "Mode test : #{value.inspect}".bleu
+  end
+  def unset_mode_test
+    File.delete(mode_test_path) if File.exist?(mode_test_path)
+  end
+  def set_mode_test
+    File.write(mode_test_path,Time.now.to_i.to_s)
+  end
+  def mode_test_path
+    @mode_test_path ||= File.join(TMP_FOLDER,'.MODE_TEST')
+  end
+
+  ##
+  # @return true si on est en mode test, c'est-à-dire si le fichier
+  # tmp/.MODE_TEST existe.
+  def mode_test?
+    File.exist?(mode_test_path) == true
+  end
+
 
   def version
     @version ||= '1.0'
@@ -99,10 +138,6 @@ class Waa
     puts e.backtrace.join("\n")
   end
 
-  def mode_test?
-    self.mode_test === true
-  end
-
   #
   # Méthode qui regarde essaie de récupérer une donnée s'il y en a
   # 
@@ -143,9 +178,6 @@ class Waa
       if browser == :firefox
         # options = Selenium::WebDriver::Firefox::Options.new(profile: profile)
         opts = Selenium::WebDriver::Firefox::Options.new(
-          # args: ['-devtools'], # -headless, -devtools, -jsconsole
-          # args: ['-devtools'], # -headless, -devtools, -jsconsole
-          # args: ['-jsconsole'], # ce n'est pas console des devtools
           # prefs: {
           #   'devtools.debugger.start-panel-collapsed': true,
           #   'devtools.toolbox.zoomValue': 4,
@@ -153,9 +185,6 @@ class Waa
           #   'devtools.chrome.enabled': true
           # },
           profile: 'aScenario'
-          # à essayer :
-          # devtools.debugger.ui.editor-wrapping true/false
-          # devtools.debugger.ui.panes-visible-on-startup
         )
       else
         opts = {}
@@ -198,14 +227,8 @@ class Message
   def ruby_classe;  @ruby_classe  ||= data['class']   end
   def ruby_method;  @ruby_method  ||= data['method'].to_sym  end
   def method_args
-    @method_args  ||= begin
-      d = data['data']
-      if d.is_a?(Hash) && d.key?('__mode_test__')
-        WAA.mode_test = d['__mode_test__']
-        puts "Mode test : #{WAA.mode_test.inspect}".bleu
-      end
-
-      d
+    @method_args  ||= data['data'].tap do |d|
+      WAA.mode_test = d['__mode_test__'] == true if d.is_a?(Hash)
     end
   end
 

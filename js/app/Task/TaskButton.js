@@ -106,7 +106,7 @@ class TaskButton {
   run_mod(){ this.task.onClickEdit    .call(this.task)}
   run_pin(){ this.task.onClickPin     .call(this.task)}
   run_sup(){ this.task.onClickSup     .call(this.task)}
-  run_run(){ this.task.onCLickRun     .call(this.task)}
+  run_run(){ this.task.onClickRun     .call(this.task)}
   run_tog(){ this.task.onClickToggle  .call(this.task)}
   run_lnk(){ this.task.onClickLink    .call(this.task)}
 

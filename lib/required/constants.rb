@@ -2,22 +2,22 @@
 
 LIB_FOLDER = File.dirname(__dir__)
 APP_FOLDER = File.dirname(LIB_FOLDER)
+TMP_FOLDER = mkdir(File.join(APP_FOLDER,'tmp'))
 
 #
 # Dossier dans lequel on a ouvert le Terminal
 # 
-# Note : le texte a pu aussi être défini par argument
-# 
 CURRENT_FOLDER = File.expand_path('.')
 
+
+YAML_OPTIONS = {symbolize_names:true, permitted_classes: [Date, Time, Symbol]}
 
 #
 # Constantes à définir dynamiquement (à chaque chargement de l'app
 # au départ — mais pas au rechargement de la page HTML dans le 
-# browser)
+# browser). Elles seront accessibles par javascript.
 #
 DYNAMIC_JS_CONSTANTES = [
-  ['INSIDE_TESTS'   , Proc.new{ test? ? true : false } ],
   ['APP_FOLDER'     , APP_FOLDER],
   ['CURRENT_FOLDER' , CURRENT_FOLDER]
 ]

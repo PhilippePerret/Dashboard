@@ -258,7 +258,7 @@ class Task extends AbstractTableClass {
     if ( this.data.prev ) {
       this.isLinked = linked
     }
-    this.obj.classList[linked?'add':'remove']('linked')
+    this.obj && this.obj.classList[linked?'add':'remove']('linked')
   }
 
   /*

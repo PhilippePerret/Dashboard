@@ -1,5 +1,7 @@
 .DS_Store
 
 data/todos/
+data/xbackups/
+data/xarchives/
 
 tmp/

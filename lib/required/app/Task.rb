@@ -1,5 +1,7 @@
 require 'date'
 require 'osascript'
+require 'zip'
+
 module Dashboard
 class Task
 class << self
@@ -62,17 +64,48 @@ class << self
     @all_tasks ||= begin
       puts "Chargement des tâches depuis #{folder}"
       Dir["#{folder}/*.yaml"].map do |fpath|
-        YAML.load_file(fpath, **options_yaml)
+        YAML.load_file(fpath, **YAML_OPTIONS)
       end
     end
   end
 
-  def options_yaml
-    @options_yaml ||= {permitted_classes: [Date, Time, Symbol], symbolize_names:true}
+
+  #
+  # === BACKUPS ===
+  # 
+
+  def make_backup
+    backup_name = "backup-#{Time.now.strftime('%y-%m-%d-%H-%M')}.zip"
+    backup_path = File.join(backups_folder, backup_name)
+    #
+    # On zippe toutes les données
+    # 
+    Zip::File.open(backup_path, Zip::File::CREATE) do |zipfile|
+      Dir["#{folder}/*.yaml"].each do |fpath|
+        zipfile.add(File.basename(fpath), fpath)
+      end
+    end
+    #
+    # Confirmation
+    # 
+    if File.exist?(backup_path)
+      puts "Backup des données réelles effectué avec succès.".vert
+    else
+      puts "Bizarrement, je n'ai pas pu faire le backup des données…".rouge
+    end
   end
+
+
+  #
+  # === PATH ===
+  # 
 
   def folder
     @folder ||= App.data_folder('todos')
+  end
+
+  def backups_folder
+    @backups_folder ||= App.data_folder('xbackups')
   end
 
   def archives
@@ -158,7 +191,7 @@ def remove
 end
 
 def data
-  @data ||= YAML.load_file(path, **self.class.options_yaml)
+  @data ||= YAML.load_file(path, **YAML_OPTIONS)
 end
 
 def archive_path

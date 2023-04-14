@@ -26,6 +26,7 @@
 
 begin
   require_relative 'lib/required'
+  WaaApp::Server.on_start_up
   WAA.goto File.join(__dir__,'main.html')
   WAA.run
 rescue Exception => e

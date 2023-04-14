@@ -15,9 +15,6 @@ var exp, act ;
 
 App.resetAll()
 
-
-console.info("Je suis prêt.")
-
 console.info("Je crée une tâche")
 clickOn(btnPlus)
 waitFor(Editor.ready)
@@ -60,9 +57,6 @@ waitFor(Editor.ready)
   clickOn(btnLink)
   // Un message d'erreur précise qu'il faut définir la durée
   Message.assert_contains_error("Il faut absolument définir la durée")
-//   return wait(1)
-// })
-// .then( _ => {
 
   const task1 = Task.get(1)
   const task2 = Task.get(2)
@@ -79,6 +73,8 @@ waitFor(Editor.ready)
   // Les nouvelles données de la tâche doivent être bonnes
   exp = '4:d' ; act = task2.data.duree
   assert(exp, act, "La durée de la tâche #2 devrait être ${exp}. Elle vaut ${act}.")
+  // On resélectionne la deuxième tâche
+  clickOn_task(2)
   // On reclique sur le bouton pour lier
   clickOn(btnLink)
   // On clique sur la première tâche
@@ -117,11 +113,38 @@ waitFor(Editor.ready)
   Task.assert_isDisplayed(1)  
   Task.assert_isDisplayed(2)  
   console.info("Les deux tâches sont affichées")
-  return wait(0)
+  return wait(1)
 })
 .then( _ => {
-  console.warn("On doit tester la mise en route d'une tâche liées (et son réglage) quand la tâche précédente est marquée accomplie.")
+  /*
+  |  On repasse à l'affichage des tâches courantes
+  */
+  Task.display_list('current')
+  Task.assert_isDisplayed(1)  
+  Task.refute_isDisplayed(2)
+  /*
+  |  On sélectionne la première tâche et on la marque faite
+  |  Ça doit activer la tâche 2
+  */
+  clickOn_task(1)
+  clickOn(btnDone)
   return wait(1)
+})
+.then( _ => {
+  const task2 = Task.get(2)
+  /* - le start de #2 doit être défini - */
+  exp = DateUtils.date2revdate() ; act = task2.data.start
+  assert(exp,act,"La tâche 2 devrait avoir sa date de démarrage mise à ${exp}. Elle vaut ${act}.")
+  /* - le end de #2 doit être défini - */
+  exp = NOW.plus(4,'jours').asRevdate ; act = task2.data.end
+  assert(exp,act,"La tâche 2 devrait avoir ${exp} comme date de fin. Sa fin est réglée à ${act}.")
+  //
+  /* - La #2 doit être affichée */
+  Task.assert_isDisplayed(2,'main')
+  Task.refute_isDisplayed(1,'main')
+
+  // - la tâche 1 doit être affichée dans la liste Done -
+  Task.assert_isDisplayed(1,'done')
 })
 .then(next)
 

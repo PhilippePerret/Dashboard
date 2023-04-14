@@ -26,19 +26,24 @@ class TaskFilter {
     this.filterKey = key_filter
     switch(key_filter){
     case 'current':
+      Task.unselectTask()
       Task.each( tk => {tk[tk.isCurrent ? 'show' : 'hide'].call(tk) })
       break
     case 'outdated':
+      Task.unselectTask()
       Task.each( tk => {tk[tk.isOutDated ? 'show' : 'hide'].call(tk) })
       break
     case 'same-categorie':
       console.warn("Je dois apprendre à filtrer les tâches de la même catégorie")
       break
     case 'future':
+      Task.unselectTask()
       Task.each( tk => {tk[tk.isFuture ? 'show' : 'hide'].call(tk) })
       break
     case 'all':
+      Task.unselectTask()
       Task.each(tk => tk.show.call(tk) )
+      break
     case 'linked':
       this.displayLinkedTaskOfSelected()
       break
@@ -69,7 +74,6 @@ class TaskFilter {
   *   L'affichage des tâches correspondantes
   */
   static onFilterChange(ev){
-    Task.unselectTask()
     this.applyFilter(this.filterKey)
     return stopEvent(ev)
   }

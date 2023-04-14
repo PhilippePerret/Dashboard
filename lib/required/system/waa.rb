@@ -28,52 +28,6 @@ class Waa
   
   attr_reader :browser, :driver
 
-  # true si on est en mode test
-  # Côté client, mettre 'WAA.mode_test = true' pour passer en mode
-  # test.
-  # Côté serveur, tester WAA.mode_test? pour savoir si on est en 
-  # mode test.
-  attr_reader :mode_test
-  
-  ##
-  # Fixe le mode d'utilisation de l'application
-  # 
-  # Cette méthode est appelée à chaque appel javascript venant du
-  # client. On passe en mode test lorsque les arguments contiennent
-  # __mode_test__ true.
-  # 
-  def mode_test=(value)
-    # En cas de changement de mode
-    # 
-    if not(@is_mode_test === nil) && value != @is_mode_test
-      if value === false
-        unset_mode_test
-      else
-        set_mode_test
-      end
-      WaaApp::Server.on_toggle_mode_test
-    end
-    @is_mode_test = value
-    puts "Mode test : #{value.inspect}".bleu
-  end
-  def unset_mode_test
-    File.delete(mode_test_path) if File.exist?(mode_test_path)
-  end
-  def set_mode_test
-    File.write(mode_test_path,Time.now.to_i.to_s)
-  end
-  def mode_test_path
-    @mode_test_path ||= File.join(TMP_FOLDER,'.MODE_TEST')
-  end
-
-  ##
-  # @return true si on est en mode test, c'est-à-dire si le fichier
-  # tmp/.MODE_TEST existe.
-  def mode_test?
-    File.exist?(mode_test_path) == true
-  end
-
-
   def version
     @version ||= '1.0'
   end
@@ -223,14 +177,10 @@ class Message
     end
   end
   
-  def id;           @id           ||= data['id'] end
-  def ruby_classe;  @ruby_classe  ||= data['class']   end
-  def ruby_method;  @ruby_method  ||= data['method'].to_sym  end
-  def method_args
-    @method_args  ||= data['data'].tap do |d|
-      WAA.mode_test = d['__mode_test__'] == true if d.is_a?(Hash)
-    end
-  end
+  def id;           @id           ||= data['id']            end
+  def ruby_classe;  @ruby_classe  ||= data['class']         end
+  def ruby_method;  @ruby_method  ||= data['method'].to_sym end
+  def method_args;  @method_args  ||= data['data']          end
 
   def data
     @data ||= JSON.parse(@raw_data)

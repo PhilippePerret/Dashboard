@@ -6,6 +6,7 @@
 /* - Bouton pour créer une nouvelle tâche - */
 const btnPlus = DGet('div#container-tasks-main footer button.btn-add')
 const btnLink = DGet('div#container-tasks-main footer button.btn-lnk')
+const btnDone = DGet('div#container-tasks-main footer button.btn-acc')
 
 
 const UNITES_DUREES = {

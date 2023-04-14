@@ -6,6 +6,14 @@ module Dashboard
 class Task
 class << self
 
+  # Appelée au changement de mode_test
+  def reset_all
+    @all_tasks = nil
+    @folder         = nil
+    @backups_folder = nil
+    @archives       = nil
+  end
+
   ##
   # Chargement de toutes les tâches courantes (sans filtre)
   # 
@@ -70,6 +78,7 @@ class << self
   end
 
 
+
   #
   # === BACKUPS ===
   # 
@@ -102,17 +111,17 @@ class << self
   #
   # === PATH ===
   # 
-
+  
   def folder
-    @folder ||= App.data_folder('todos')
+    App.data_folder('todos')
   end
 
   def backups_folder
-    @backups_folder ||= App.data_folder('xbackups')
+    @backups_folder ||= File.join(APP_FOLDER,'data','xbackups')
   end
 
   def archives
-    @archives ||= App.data_folder('xarchives')
+    App.data_folder('xarchives')
   end
 
 
@@ -127,6 +136,7 @@ def initialize(id, data = nil)
 end
 
 def mark_done
+  @data = nil # sinon, problème avec tests
   now = Time.now
   now2revdata = "#{now.year}-#{now.month}-#{now.day}"
   new_data = data.merge(done: now2revdata)
@@ -136,9 +146,9 @@ def mark_done
 end
 
 def save
+  @data = nil # sinon, problème avec tests
   data.key?('created_at') || data.merge!('created_at' => Time.now.to_s)
   data.merge!('updated_at' => Time.now.to_s)
-  # File.write(path, data.to_yaml)
   File.write(path, YAML.dump(data))
 end
 
@@ -198,10 +208,10 @@ def data
 end
 
 def archive_path
-  @archive_path ||= File.join(self.class.archives,name)
+  File.join(self.class.archives,name)
 end
 def path
-  @path ||= File.join(self.class.folder,name)
+  File.join(self.class.folder,name)
 end
 def name
   @name ||= "todo-#{id}.yaml"

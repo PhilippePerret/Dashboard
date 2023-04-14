@@ -224,14 +224,26 @@ class Test {
   * 
   * Elle installe aussi tous les tests à jouer
   */
-  static run(){
-    this.mode_test = true
-    if ( 'undefined' === typeof TEST_FILES || TEST_FILES.length == 0 ) {
-      WAA.send({class:'WAATest',method:'load_tests'})
-    } else {
-      this.testList = TEST_FILES
-      this.testList.includes('required') || this.testList.unshift('required')
-      this.preRequired()
+  static run(retour){
+    if ( undefined == retour ) {
+      /*
+      |  Avant toute chose on indique à l'application qu'on est en
+      |  mode test.
+      |
+      |  @note
+      |     On appellera unset_mode_test en fin de test.
+      |
+      */
+      WAA.send({class:'WaaApp::Server',method:'set_mode_test',data:{poursuivre:{class:'Test',method:'run'}}})
+    } else {    
+      this.mode_test = true
+      if ( 'undefined' === typeof TEST_FILES || TEST_FILES.length == 0 ) {
+        WAA.send({class:'WAATest',method:'load_tests'})
+      } else {
+        this.testList = TEST_FILES
+        this.testList.includes('required') || this.testList.unshift('required')
+        this.preRequired()
+      }
     }
   }
   static onLoadTests(retour){
@@ -325,6 +337,7 @@ class Test {
     } else {
       message("Tous les tests ont été joués avec succès.")
     }
+      WAA.send({class:'WaaApp::Server',method:'unset_mode_test',data:{}})
   }
 
   static loadAndRun(test_name){

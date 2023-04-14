@@ -90,6 +90,29 @@ class DateUtils {
     return pars.join(' ')
   }
 
+  /**
+  * @return Une [Date] date qui se situe à +nombre+ +unite+ de la
+  * date en question.
+  * @param nombre [Number] un nombre positif ou négatif
+  * @param unite [String] l'unité, parmi 'd','day','jour','j', 'm','mois','month','y','year','annee'
+  */
+  plus(nombre,unite){
+    const d = new Date(this.date)
+    switch(unite){
+    case'j':case'd':case'jour':case'day':case'jours':case'days':
+      return d.setDate( this.day + nombre )
+    case'm':case'month':case'mois':case'months':
+      return d.setMonth( this.month + nombre )
+    case'y':case'year':case'annee':case'annees':case'years':
+      return d.setFullYear( this.year + nombre )
+    default:
+      throw `Je ne connais pas l'unité ${unite}…`
+    }
+  }
+  moins(nombre,unite){
+    return this.plus(- nombre, unite)
+  }
+
   get date2hdatemin_long(){
     return this.date2hdatemin(true)
   }

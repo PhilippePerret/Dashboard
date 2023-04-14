@@ -30,19 +30,21 @@ class << self
   #   Le chemin d'accès tient compte du mode test.
   # 
   def data_folder(key)
+    unless main_data_folder.match?(/tmp/)
+      puts "main_data_folder = #{main_data_folder.inspect}"
+      puts "Il devrait être le dossier temporaire".rouge
+      exit
+    end
     File.join(main_data_folder, key)
   end
 
   def main_data_folder
-    @main_data_folder ||= begin
-      if WAA.mode_test?
-        mkdir(File.join(APP_FOLDER,'tmp','tests','data'))
-      else
-        mkdir(File.join(APP_FOLDER,'data'))
-      end
+    if WaaApp::Server.mode_test?
+      mkdir(File.join(APP_FOLDER,'tmp','tests','data'))
+    else
+      mkdir(File.join(APP_FOLDER,'data'))
     end
   end
-
 
 
   private

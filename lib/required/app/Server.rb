@@ -12,9 +12,9 @@ class Server
   # Méthode appelée quand on passe en mode test
   # 
   def self.on_toggle_mode_test
-    if WAA.mode_test?
+    if WaaApp::Server.mode_test?
       puts "L'application passe en mode test.".bleu
-      Task.make_backup
+      Dashboard::Task.make_backup
     else
       puts "L'application repasse en mode production.".bleu
     end

@@ -3,6 +3,14 @@
 class TaskSearch {
 
   static prepare(){
+    /*
+    |  On vide toujours le champ de recherche (rechargement forcé de
+    |  la page)
+    */
+    this.field.value = ""
+    /*
+    |  Observeurs d'évènements
+    */
     listen(this.field,'keyup',this.onKeyUp.bind(this))
   }
 

@@ -7,6 +7,7 @@ class TaskConteneur {
     this.Done   = this.table['done']    = new TaskConteneur('done')
     this.Pinned = this.table['pinned']  = new TaskConteneur('pinned')
     this.Pinned.prepare() // notamment le footer
+    /* - on rend tous les conteneur classables - */
     DGetAll('.task-list').forEach(div => $(div).sortable({axis:'y'}))
   }
 

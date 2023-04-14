@@ -76,7 +76,19 @@ class TaskFilter {
 
 
   static prepare(){
+    /*
+    |  On remet toujours le menu des tâches affichées aux tâches
+    |  courantes (rechargement forcé de la page)
+    */
+    this.menu.selectedIndex = 0
+    /*
+    |  Observers d'évènements
+    */
     listen(this.menu,'change', this.onFilterChange.bind(this))
+    /*
+    |  Désactivation des items qui ne doivent être accessibles que
+    |  lorsqu'une tâche est sélectionnée.
+    */
     this.option('same-categorie').disabled = true
     this.option('linked').disabled = true
   }

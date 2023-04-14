@@ -82,7 +82,10 @@ class << self
     # 
     Zip::File.open(backup_path, Zip::File::CREATE) do |zipfile|
       Dir["#{folder}/*.yaml"].each do |fpath|
-        zipfile.add(File.basename(fpath), fpath)
+        zipfile.add("todos/#{File.basename(fpath)}", fpath)
+      end
+      Dir["#{archives}/*.yaml"].each do |fpath|
+        zipfile.add("xarchives/#{File.basename(fpath)}", fpath)
       end
     end
     #

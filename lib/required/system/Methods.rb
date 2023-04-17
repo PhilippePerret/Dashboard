@@ -6,7 +6,7 @@ class << self
   # dire quelque chose à l'ordinateur
   # 
   def say(data)
-    `say "#{data['message']}"`
+    `say  -v Aurélie "#{data['message']}"`
   end
 
 end #/<< self

@@ -30,11 +30,11 @@ class << self
   #   Le chemin d'accès tient compte du mode test.
   # 
   def data_folder(key)
-    unless main_data_folder.match?(/tmp/)
-      puts "main_data_folder = #{main_data_folder.inspect}"
-      puts "Il devrait être le dossier temporaire".rouge
-      exit
-    end
+    # unless main_data_folder.match?(/tmp/)
+    #   puts "main_data_folder = #{main_data_folder.inspect}"
+    #   puts "Il devrait être le dossier temporaire".rouge
+    #   exit
+    # end
     File.join(main_data_folder, key)
   end
 
@@ -75,7 +75,7 @@ class << self
       #
       # Un premier appel ne peut pas être en mode test
       # 
-      WAA.unset_mode_test if WAA.mode_test?
+      WaaApp::Server.unset_mode_test if WaaApp::Server.mode_test?
       #
       # On fait un backup des données
       # 

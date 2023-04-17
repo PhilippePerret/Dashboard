@@ -11,7 +11,7 @@ $(document).ready(e => {
   *   Il est inutile d'excommenter App.onReady puisque le mode
   *   test s'en charge.
   */
-  Test.run()
+  // Test.run()
   
   App.onReady()
 

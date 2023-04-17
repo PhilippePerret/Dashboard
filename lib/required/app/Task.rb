@@ -146,7 +146,7 @@ def mark_done
 end
 
 def save
-  @data = nil # sinon, problème avec tests
+  @data = nil if data_read_from_file? # sinon, problème avec tests
   data.key?('created_at') || data.merge!('created_at' => Time.now.to_s)
   data.merge!('updated_at' => Time.now.to_s)
   File.write(path, YAML.dump(data))
@@ -203,8 +203,15 @@ def remove
   })
 end
 
+def data_read_from_file?
+  @is_data_read_from_file === true
+end
+
 def data
-  @data ||= YAML.load_file(path, **YAML_OPTIONS)
+  @data ||= begin
+    @is_data_read_from_file = true # pour les tests, pour savoir s'il faut initialiser @data
+    YAML.load_file(path, **YAML_OPTIONS)
+  end
 end
 
 def archive_path

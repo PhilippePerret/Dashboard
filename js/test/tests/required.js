@@ -75,7 +75,7 @@ Task.taskForReal = function(tk){
 }
 Task.assert_isDisplayed = function(tk, cont){
   tk = this.taskForReal(tk)
-  assert(false, tk.obj.classList.contains('hidden'), `La tâche ${tk.id} devrait être affichée…`)
+  assert(false, tk.obj.classList.contains('hidden'), `La tâche #${tk.id} devrait être affichée…`)
   if ( cont ) {
     refute(null, DGet(`#task-${tk.id}`, DGet(`div#container-tasks-${cont}`)), `La tâche ${tk.id} devrait être affichée dans le conteneur '${cont}'…`)
   }
@@ -87,10 +87,49 @@ Task.refute_isDisplayed = function(tk,cont){
     if ( latache /* elle existe dans le conteneur */ ) {
       // => on continue pour vérifier son état hidden
     } else {
-      add_success(`La tâche #${tk.id} n'est pas affichée dans le conteneur '${cont}'.`)
+      return add_success(`La tâche #${tk.id} n'est pas affichée dans le conteneur '${cont}'.`)
     }
   }
   refute(false, tk.obj.classList.contains('hidden'), `La tâche #${tk.id} ne devrait pas être affichée…`)
+}
+
+// Produit un succès si la tâche concernée suit la tâche +tk+
+Task.prototype.follows = function(tk) {
+  tk = Task.taskForReal(tk)
+  const ok = this.prev.includes(tk.id)
+  if ( ok ) {
+    add_success(`La tâche #${this.id} suit bien la tâche #${tk.id}…`)
+  } else {
+    refute(false, ok, `La tâche #${this.id} devrait suivre la tâche #${tk.id}…`)
+  }
+}
+Task.prototype.refute_follows = function(tk) {
+  tk = Task.taskForReal(tk)
+  const ok = ! this.prev.includes(tk.id)
+  if ( ok ) {
+    add_success(`Oui, la tâche #${this.id} ne suit pas la tâche #${tk.id}…`)
+  } else {
+    refute(false, ok, `La tâche #${this.id} ne devrait pas suivre la tâche #${tk.id}…`)
+  }
+}
+// Produit un succès si la tâche concernée est suivie par la tâche +tk+
+Task.prototype.isFollowedBy = function(tk){
+  tk = Task.taskForReal(tk)
+  const ok = tk.prev.includes(this.id)
+  if ( ok ) {
+    add_success(`La tâche #${this.id} est bien suivie par la tâche #${tk.id}…`)
+  } else {
+    refute(false, ok, `La tâche #${this.id} devrait être suivie par la tâche #${tk.id}…`)
+  }
+}
+Task.prototype.refute_isFollowedBy = function(tk){
+  tk = Task.taskForReal(tk)
+  const ok = !tk.prev.includes(this.id)
+  if ( ok ) {
+    add_success(`Oui, la tâche #${this.id} n'est pas suivie par la tâche #${tk.id}…`)
+  } else {
+    refute(false, ok, `La tâche #${this.id} ne devrait pas être suivie par la tâche #${tk.id}…`)
+  }
 }
 
 /**

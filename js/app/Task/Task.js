@@ -241,6 +241,8 @@ class Task extends AbstractTableClass {
     }
   }
 
+  // --- Link Methods ---
+
   /**
   * Réglage de l'état de liaison de la tâche
   * 
@@ -259,6 +261,18 @@ class Task extends AbstractTableClass {
       this.isLinked = linked
     }
     this.obj && this.obj.classList[linked?'add':'remove']('linked')
+  }
+
+  /**
+  * Méthode appelée quand on marque la tâche faite ou qu'on la 
+  * détruit, qui démarre les tâches suivantes (sauf si ces suivantes
+  * dépendent d'autres tâches non achevées)
+  * 
+  */
+  startNextTasks(){
+    this.nextTasks.forEach(task => {
+      
+    })
   }
 
   /*
@@ -304,7 +318,7 @@ class Task extends AbstractTableClass {
 
   onClickTask(ev){
     this.setSelected()
-    return stopEvent(ev)
+    // return stopEvent(ev) // non, si ça bloque tout clique à l'intérieur
   }
 
   onClickToggle(ev){
@@ -331,8 +345,9 @@ class Task extends AbstractTableClass {
   * :todo de la tâche
   */
   onClickSubtask(cb, ev){
-    console.log("click sur ", cb)
+    // console.log("click sur ", cb)
     this.debuildSubtasksAsTasks()
+    ev && stopEvent(ev)
     return true
   }
 
@@ -353,6 +368,10 @@ class Task extends AbstractTableClass {
     try {
       this.isDone = true
       TaskConteneur.moveTask(this, this.ctype, 'done')
+      /*
+      |  Si la tâche est liée à une suivante, il faut activer la suivante
+      */
+      this.nextTasks.length && this.startNextTasks()
     } catch(err) {
       console.error(err)
       erreur("Une erreur est survenue, consulter la console.")
@@ -383,6 +402,13 @@ class Task extends AbstractTableClass {
   onRemoved(retour){
     if ( retour.ok ) {
       message("Tâche détruite avec succès.")
+      /*
+      |  Si la tâche est liée à une suivante, il faut activer la suivante
+      */
+      this.nextTasks.length && this.startNextTasks()
+      /*
+      |  Détruire vraiment la tâche
+      */
       this.constructor.removeTask(this)
     } else {
       erreur(retour.msg)
@@ -428,7 +454,7 @@ class Task extends AbstractTableClass {
     this.divSubtasks = sub
     // - Boutons pour bloc sous-tâche -
     this.btnsSubtasks = DCreate('DIV', {class:'btns-subtasks'})
-    const spanCb = DCreate('INPUT',{type:'checkbox', label:'Supprimer les sous-tâches faites', checked:true, class:'cb-sup-subtasks-done'})
+    const spanCb = DCreate('INPUT',{type:'checkbox', label:'Supprimer les sous-tâches quand on les marque faites', checked:false, class:'cb-sup-subtasks-done'})
     this.cbSupSubtasks = DGet('input[type="checkbox"]', spanCb)
     this.btnsSubtasks.appendChild(spanCb)
     

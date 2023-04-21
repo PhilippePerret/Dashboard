@@ -86,6 +86,7 @@ class << self
   def make_backup
     backup_name = "backup-#{Time.now.strftime('%y-%m-%d-%H-%M')}.zip"
     backup_path = File.join(backups_folder, backup_name)
+    File.delete(backup_path) if File.exist?(backup_path)
     #
     # On zippe toutes les données
     # 
@@ -113,15 +114,15 @@ class << self
   # 
   
   def folder
-    App.data_folder('todos')
+    mkdir(App.data_folder('todos'))
   end
 
   def backups_folder
-    @backups_folder ||= File.join(APP_FOLDER,'data','xbackups')
+    @backups_folder ||= mkdir(File.join(APP_FOLDER,'data','xbackups'))
   end
 
   def archives
-    App.data_folder('xarchives')
+    mkdir(App.data_folder('xarchives'))
   end
 
 

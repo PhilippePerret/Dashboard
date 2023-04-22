@@ -104,8 +104,9 @@ class DateUtils {
   * date en question.
   * @param nombre [Number] un nombre positif ou négatif
   * @param unite [String] l'unité, parmi 'd','day','jour','j', 'm','mois','month','y','year','annee'
+  * @para  [Boolean] asDateUtils Si true, on renvoie une instance DateUtils, sinon, une instance Date
   */
-  plus(nombre,unite){
+  plus(nombre,unite, asDateUtils){
     const d = new Date(this.date)
     nombre = Number(nombre)
     switch(unite){
@@ -121,11 +122,11 @@ class DateUtils {
     default:
       throw `Je ne connais pas l'unité ${unite}…`
     }
-    return d
+    return asDateUtils ? new DateUtils(d) : d
   }
-  moins(nombre,unite){
+  moins(nombre,unite, asDateUtils){
     nombre = Number(nombre)
-    return this.plus(- nombre, unite)
+    return this.plus(- nombre, unite, asDateUtils)
   }
 
   get date2hdatemin_long(){

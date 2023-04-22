@@ -47,6 +47,12 @@ function wait(nombre_secondes){
   return new Promise((ok,ko) => {setTimeout(ok, nombre_secondes * 1000)})
 }
 
+function action(msg){console.log('%c -> ' + msg,'color:blue;')}
+function expect(msg){console.log('%c '+ msg,'color:orange;')}
+function notice(msg){console.log('%c ('+ msg +')','color:grey;opacity:0.5;font-style:italic')}
+function result(msg){console.log('%c = ' + msg, 'color:green;')}
+
+
 function next(){Test.next()}
 function assert(e,a,m){Test.assert(e,a,m)}
 function refute(e,a,m){Test.refute(e,a,m)}

@@ -104,12 +104,10 @@ class Task extends AbstractTableClass {
   }
 
   /**
-  * Destruction d'une tâche
+  * Destruction d'une tâche (dans la classe seulement)
   */
   static removeTask(task){
-    delete this.table[task.id]
-    this.items.splice(task.index,1)
-    task.obj.remove()
+    super.remove(task)
   }
 
   static set selectedTask(task){
@@ -267,6 +265,7 @@ class Task extends AbstractTableClass {
   }
 
   /**
+  * @sync
   * 
   * Méthode appelée quand on marque la tâche faite ou qu'on la 
   * détruit, qui démarre les tâches suivantes (sauf si ces suivantes
@@ -281,7 +280,7 @@ class Task extends AbstractTableClass {
   */
   onMarkDoneOrDelete(){
     const linker = new TaskLinker(this)
-    const nexts = []
+    const nexts  = []
     this.nextTasks.forEach(task => {
       linker.unlinkWithNext(task)
       nexts.push(task.id)
@@ -409,22 +408,41 @@ class Task extends AbstractTableClass {
   // - après confirmation de la destruction -
   onConfirmSup(doIt){
     if ( doIt ) {
+      // On commence par supprimer le fichier
       WAA.send({class:'Dashboard::Task', method:'removeTask', data:{task_id: this.id}})
     } else {
       return
     }
   }
-  onRemoved(retour){
+  static afterTaskRemoved(retour){
     if ( retour.ok ) {
-      message("Tâche détruite avec succès.")
+      /*
+      |  Quand la destruction du fichier a bien pu se faire
+      */
+      const task = this.get(retour.taskId) // Elle DOIT encore exister
+      /*
+      |  On marque qu'elle est en cours de destruction pour que les
+      |  autres le sache
+      */
+      task.beingDeleted = true
+      /*
+      |  On détruit son objet DOM
+      */
+      task.obj.remove()
       /*
       |  Si la tâche est liée à une suivante, il faut activer la suivante
       */
-      this.nextTasks.length && this.onMarkDoneOrDelete()
+      task.nextTasks.length && task.onMarkDoneOrDelete()
       /*
-      |  Détruire vraiment la tâche
+      |  Si la tâche est liée à une précédente, il faut la retirer des 
+      |  next de la précédente
       */
-      this.constructor.removeTask(this)
+      // TODO
+      /*
+      |  Détruire vraiment la tâche (dans la classe (liste, etc.))
+      */
+      this.removeTask(task)
+      message("Tâche détruite avec succès.")
     } else {
       erreur(retour.msg)
     }

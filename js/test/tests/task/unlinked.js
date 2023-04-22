@@ -42,7 +42,7 @@ wait(0.5)
   return waitFor(Editor.ready)
 })
 .then( _ => {
-  console.info("Création de Tâche T1")
+  action("Création de Tâche T1")
   Editor.resume = "Tâche T1"
   Editor.dureeNombre = 4
   Editor.dureeUnite  = 'jour'
@@ -51,7 +51,7 @@ wait(0.5)
   return wait(INTERTIME)
 })
 .then( _ => {
-  console.info("Création de Tâche T2")
+  action("Création de Tâche T2")
   clickOn(btnPlus)
   return waitFor(Editor.ready)
 })
@@ -62,7 +62,7 @@ wait(0.5)
   return wait(INTERTIME)
 })
 .then( _ => {
-  console.info("Liaison de T1 et T2")
+  action("Liaison de T1 et T2")
   clickOn_task(1)
   clickOn(btnLink)
   clickOn_task(2)
@@ -73,7 +73,7 @@ wait(0.5)
   return wait(INTERTIME)
 })
 .then( _ => {
-  console.info("Création de Tâche T3")
+  action("Création de Tâche T3")
   clickOn(btnPlus)
   return waitFor(Editor.ready)
 })
@@ -86,7 +86,7 @@ wait(0.5)
   return wait(INTERTIME)
 })
 .then( _ => {
-  console.info("Création de Tâche T4")
+  action("Création de Tâche T4")
   clickOn(btnPlus)
   return waitFor(Editor.ready)
 })
@@ -97,7 +97,7 @@ wait(0.5)
   return wait(INTERTIME)
 })
 .then( _ => {
-  console.info("Liaison de T3 et T2")
+  action("Liaison de T3 et T2")
   Task.assert_isDisplayed(3)
   Task.assert_isDisplayed(2)
   clickOn_task(3)
@@ -110,7 +110,7 @@ wait(0.5)
   return wait(INTERTIME)
 })
 .then( _ => {
-  console.info("Liaison de T3 à T4")
+  action("Liaison de T3 à T4")
   Task.display_list('all')
   clickOn_task(3)
   clickOn(btnLink)
@@ -122,7 +122,7 @@ wait(0.5)
   return wait(0.5)
 })
 .then( _ => {
-  console.info("Création de Tâche T5")
+  action("Création de Tâche T5")
   clickOn(btnPlus)
   return waitFor(Editor.ready)
 })
@@ -135,7 +135,7 @@ wait(0.5)
   return wait(INTERTIME)
 })
 .then( _ => {
-  console.info("Création de Tâche T6")
+  action("Création de Tâche T6")
   clickOn(btnPlus)
   return waitFor(Editor.ready)
 })
@@ -148,7 +148,7 @@ wait(0.5)
   return wait(INTERTIME)
 })
 .then( _ => {
-  console.info("Liaison de T5 et T3")
+  action("Liaison de T5 et T3")
   clickOn_task(5)
   clickOn(btnLink)
   clickOn_task(3)
@@ -157,7 +157,7 @@ wait(0.5)
   return wait(INTERTIME)
 })
 .then( _ => {
-  console.info("Liaison de T6 et T3")
+  action("Liaison de T6 et T3")
   clickOn_task(6)
   clickOn(btnLink)
   clickOn_task(3)
@@ -166,7 +166,7 @@ wait(0.5)
   return wait(INTERTIME)
 })
 .then( _ => {
-  console.info("Liaison de T6 et T2")
+  action("Liaison de T6 et T2")
   clickOn_task(6)
   clickOn(btnLink)
   clickOn_task(2)
@@ -177,7 +177,7 @@ wait(0.5)
   return wait(INTERTIME)
 })
 .then( _ => {
-  console.info("Vérification intermédiaire")
+  notice("Vérification intermédiaire")
   /*
   |  Affichage des tâches courantes
   */
@@ -191,7 +191,7 @@ wait(0.5)
   Task.refute_isDisplayed(3)
   Task.refute_isDisplayed(5)
   Task.refute_isDisplayed(6)
-  console.info("Les tâches sont bien affichées.")
+  result("Les tâches sont bien affichées.")
   /*
   |  Les tâches utiles
   */
@@ -206,7 +206,7 @@ wait(0.5)
   Task.get(5).follows(3)
   Task.get(6).follows(2)
   Task.get(6).follows(3)
-  console.info("Les tâches sont bien liées.")
+  result("Les tâches sont bien liées.")
   /*
   |  Les données sont bien définies
   */
@@ -218,12 +218,15 @@ wait(0.5)
   return wait(INTERTIME)
 })
 .then(_=>{
-  console.log("On marque la tâche 2 accomplie")
+  action("-> On marque la tâche #2 accomplie")
+  expect("Ça doit libérer la tâche #1")
   clickOn_task(2)
   clickOn(btnDone)
   return wait(1)
 })
 .then(_ => {
+  // --- Vérification des effets de la déliaison ---
+  notice("Vérification des effets de la déliaison…")
   const tk1 = Task.get(1)
   const tk2 = Task.get(2)
   // la tâche 2 doit être dans la liste des done
@@ -243,6 +246,84 @@ wait(0.5)
   // La tâche 2 doit avoir une propriété "next" avec 1
   assert(["1","3","6"], tk2.data.next, "La tâche #2 devrait avoir un nouveau paramètre @next réglé à ${exp}. Il vaut ${act}.")
   // La tâche 1 doit avoir été bien enregistrée
+  return wait(INTERTIME)
+})
+.then( _ => {
+
+  // --- Vérifications avant de poursuivre ---
+
+  /*
+  |  Les tâches utiles
+  */
+  const tk1 = Task.get(1)
+  const tk3 = Task.get(3)
+  /*
+  |  Les liaisons sont bien définies
+  */
+  tk1.refute_follows(2)
+  tk3.refute_follows(2)
+  tk3.follows(4)
+  Task.get(5).follows(3)
+  Task.get(6).refute_follows(2)
+  Task.get(6).follows(3)
+  result("Les tâches sont bien liées.")
+  /*
+  |  Les données sont bien définies
+  */
+  refute(null, tk1.start)
+  assert(null, tk3.start)
+  return wait(INTERTIME)
+})
+.then( _ => {
+  action("On détruit T#4")
+  expect("Ça doit dégager T#3")
+  clickOn_task(4)
+  clickOn(btnDele)
+  // Confirmation
+  const iMsg = IMessage.getWithMessage("Veux-tu vraiment détruire cette tâche")
+  clickOn(iMsg.btnOK)
+  return wait(1)
+})
+.then(_ => {
+  notice("Vérification de l'effet de la déliaison…")
+  const dans_sept_jours = NOW.plus(7,'d', true).asRevdate()
+  const tk3 = Task.get(3)
+  // La tâche 4…
+  // … ne doit plus exister
+  refute(true, Task.table[4] instanceof Task, "La tâche #4 ne devrait plus exister.")
+  // La tâche 3
+  // … doit être affichée
+  Task.assert_isDisplayed(tk3)
+  // … doit avoir le start et le end bien définis
+  assert(NOW.asRevdate(), tk3.data.start, "Le @start de la tâche #3 devrait être ${exp}. Il vaut ${act}.")
+  assert(dans_sept_jours, tk3.data.end, "Le @end de la tâche #3 devrait valoir ${exp}. Il vaut ${act}.")
+  // … ne doit plus avoir de @prev
+  tk3.refute_follows(4)
+  assert([],tk3.prev,"La tâche #3 ne devrait plus avoir de @prev. Son @prev vaut ${act}.")
+  return wait(INTERTIME)
+})
+.then( _ => {
+  action("On marque T3 comme achevée")
+  expect("Ça doit dégager les Tâches #5 et #6")
+  clickOn_task(3)
+  clickOn(btnDone)
+  return wait(1)
+})
+.then( _ => {
+  notice("Vérification des effets de la déliaison…")
+  // T6, qui dépendait de T3 et T2, doit être démarrée
+  // La tâche #5…
+  const tk5 = Task.get(5)
+  // … doit être affichée
+  Task.assert_isDisplayed(5)
+  // La tâche #6…
+  const tk6 = Task.get(6)
+  // … doit être affichée
+  Task.assert_isDisplayed(6)
+  // … doit avoir le bon @start et le bon @end
+  assert(NOW.asRevdate(), tk6.data.start, 'La propriété @start de #6 devrait être ${exp}. Elle vaut ${act}.')
+  const dans_six_jours = NOW.plus(6,'d', true).asRevdate()
+  assert(dans_six_jours, tk6.data.end, 'La propriété @end de #6 devrait être ${exp}. Elle vaut ${act}.')
   return wait(INTERTIME)
 })
 .then(next)

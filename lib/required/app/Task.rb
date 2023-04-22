@@ -198,9 +198,10 @@ end
 def remove
   File.delete(path)
   ok = not(File.exist?(path))
-  WAA.send(class:"Task.get(#{self.id})",method:'onRemoved', data:{
-    ok: ok,
-    msg: ok ? nil : "Le fichier #{self.name.inspect} aurait dû être détruit…"
+  WAA.send(class:"Task",method:'afterTaskRemoved', data:{
+    ok:     ok,
+    taskId: id,
+    msg:    ok ? nil : "Le fichier #{self.name.inspect} aurait dû être détruit…"
   })
 end
 

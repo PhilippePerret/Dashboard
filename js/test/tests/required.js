@@ -7,6 +7,7 @@
 const btnPlus = DGet('div#container-tasks-main footer button.btn-add')
 const btnLink = DGet('div#container-tasks-main footer button.btn-lnk')
 const btnDone = DGet('div#container-tasks-main footer button.btn-acc')
+const btnDele = DGet('div#container-tasks-main footer button.btn-sup')
 
 
 const UNITES_DUREES = {
@@ -103,22 +104,22 @@ Task.refute_isDisplayed = function(tk,cont){
 }
 
 // Produit un succès si la tâche concernée suit la tâche +tk+
-Task.prototype.follows = function(tk) {
-  tk = Task.taskForReal(tk)
-  const ok = this.prev.includes(tk.id)
+Task.prototype.follows = function(tkid) {
+  if ( tkid instanceof Task ) { tkid = tkid.id }
+  const ok = this.prev.includes(Number(tkid)) || this.prev.includes(String(tkid))
   if ( ok ) {
-    add_success(`La tâche #${this.id} suit bien la tâche #${tk.id}…`)
+    add_success(`La tâche #${this.id} suit bien la tâche #${tkid}…`)
   } else {
-    refute(false, ok, `La tâche #${this.id} devrait suivre la tâche #${tk.id}…`)
+    refute(false, ok, `La tâche #${this.id} devrait suivre la tâche #${tkid}…`)
   }
 }
-Task.prototype.refute_follows = function(tk) {
-  tk = Task.taskForReal(tk)
-  const ok = ! this.prev.includes(tk.id)
+Task.prototype.refute_follows = function(tkid) {
+  if ( tkid instanceof Task ) { tkid = tkid.id }
+  const ok = ! (this.prev.includes(Number(tkid)) || this.prev.includes(String(tkid)))
   if ( ok ) {
-    add_success(`Oui, la tâche #${this.id} ne suit pas la tâche #${tk.id}…`)
+    add_success(`Oui, la tâche #${this.id} ne suit pas la tâche #${tkid}…`)
   } else {
-    refute(false, ok, `La tâche #${this.id} ne devrait pas suivre la tâche #${tk.id}…`)
+    refute(false, ok, `La tâche #${this.id} ne devrait pas suivre la tâche #${tkid}…`)
   }
 }
 // Produit un succès si la tâche concernée est suivie par la tâche +tk+

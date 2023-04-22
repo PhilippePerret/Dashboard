@@ -141,14 +141,16 @@ class TaskLinker {
     } else {
       tknext.save()
     }
-    /*
-    |  On doit enregistrer les deux tâches
-    */
-    tkprev.save()
-    /*
-    |  Vérifier l'état de la tâche précédente
-    */
-    tkprev.setLinkState()
+    if ( ! tkprev.beingDeleted ) {    
+      /*
+      |  On doit enregistrer les deux tâches
+      */
+      tkprev.save()
+      /*
+      |  Vérifier l'état de la tâche précédente
+      */
+      tkprev.setLinkState()
+    }
   }
 
 

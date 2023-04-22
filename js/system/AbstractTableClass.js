@@ -30,17 +30,32 @@ class AbstractTableClass {
     return item
   }
 
-  static get count(){
-    return this.items.length
+  static remove(item){
+    this.table[item.id] = undefined
+    delete this.table[item.id]
+    this.items[item.index] = undefined // il faut le laisser dedans pour ne pas modifier les index
   }
 
+  static get count(){
+    return Object.keys(this.table).length
+  }
+
+  /**
+  * @note
+  *   Penser que certains items peuvent être undefined (suite à leur
+  *   suppression)
+  */
   static each(methode){
-    this.items.forEach(methode)
+    this.items.forEach(item => {
+      if ( ! item ) return /* item détruit */
+      methode(item)
+    })
   }
 
   static map(methode){
     var res = []
     this.items.forEach( item => {
+      if ( ! item ) return /* item détruit */
       res.push(methode(item))
     })
     return res

@@ -25,10 +25,18 @@ const MOIS = {
 
 class DateUtils {
 
+  /**
+  * @return Maintenant, en instance DateUtils
+  */
+  static now(){
+    return new DateUtils(new Date())
+  }
+
   static currentTime(){
     const now = new DateUtils(new Date())
     return now.htime
   }
+
   static dayCountBetween(date1, date2){
     return Math.abs(Number(date2 - date1)) / (24*3600*1000)
   }
@@ -43,6 +51,7 @@ class DateUtils {
   static date2revdate(date){
     return new DateUtils(date).asRevdate()
   }
+  static nowAsRevdate(){return this.date2revdate(new Date())}
 
   // <Date> => "le <jour>" / "<jour> <mois>" / "<jour> <moi> <année>"
   // @reçoit une [Date] et retourne la date minimale suivant la
@@ -77,7 +86,7 @@ class DateUtils {
 
 
   constructor(date){
-    this.date = date
+    this.date = date || new Date()
   }
 
   date2hdatemin(long){
@@ -98,18 +107,24 @@ class DateUtils {
   */
   plus(nombre,unite){
     const d = new Date(this.date)
+    nombre = Number(nombre)
     switch(unite){
     case'j':case'd':case'jour':case'day':case'jours':case'days':
-      return d.setDate( this.day + nombre )
+      d.setDate( this.day + nombre )
+      break
     case'm':case'month':case'mois':case'months':
-      return d.setMonth( this.month + nombre )
+      d.setMonth( this.month + nombre )
+      break
     case'y':case'year':case'annee':case'annees':case'years':
-      return d.setFullYear( this.year + nombre )
+      d.setFullYear( this.year + nombre )
+      break
     default:
       throw `Je ne connais pas l'unité ${unite}…`
     }
+    return d
   }
   moins(nombre,unite){
+    nombre = Number(nombre)
     return this.plus(- nombre, unite)
   }
 

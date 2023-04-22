@@ -63,6 +63,10 @@ const editor = Editor.obj
 * Cf. le manuel
 */
 
+/*
+|  = = =   M É T H O D E S   U T I L E S   = = =
+*/
+
 Task.display_list = function(type){
   const menuFiltre = DGet('select#task-filter')
   menuFiltre.value = type
@@ -73,6 +77,11 @@ Task.taskForReal = function(tk){
   if ( 'number' == typeof tk ) { tk = Task.get(tk) }
   return tk
 }
+
+/*
+|  = = =   A S S E R T I O N S   = = =
+*/
+
 Task.assert_isDisplayed = function(tk, cont){
   tk = this.taskForReal(tk)
   assert(false, tk.obj.classList.contains('hidden'), `La tâche #${tk.id} devrait être affichée…`)

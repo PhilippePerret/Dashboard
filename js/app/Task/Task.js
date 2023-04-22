@@ -182,9 +182,12 @@ class Task extends AbstractTableClass {
   * Pour actualiser les données de la tâche
   * 
   * @note
-  *   Si les données ont changé, on enregistre le tâche
+  *   Si les données ont changé, on enregistre la tâche
+  * 
+  * @param [Boolean] forcer Si true, on actualise toujours, même
+  *                  si les données n'ont pas changé.
   */
-  update(newData){
+  update(newData, forcer){
     var isUpdated = false
     for(var prop in newData){
       if ( newData[prop] != this.data[prop] ) {
@@ -195,9 +198,9 @@ class Task extends AbstractTableClass {
     this.resetDates()
     this.checkClassesByStates()
     TaskButton.setVisibilityRunButton(this)
-    if ( isUpdated ) {
+    if ( isUpdated || forcer === true) {
+      this.setLinkState(this.prev && this.prev.length > 0)
       TaskFilter.applyCurrentFilter()
-      this.setLinkState(!!this.prev)
       this.save()
       this.isFolded || this.buildItsTasksAsSubTasks()
     }
@@ -264,16 +267,28 @@ class Task extends AbstractTableClass {
   }
 
   /**
+  * 
   * Méthode appelée quand on marque la tâche faite ou qu'on la 
   * détruit, qui démarre les tâches suivantes (sauf si ces suivantes
   * dépendent d'autres tâches non achevées)
   * 
+  * @note
+  *   Puisque cette tâche va être détruite ou marquée faite, on 
+  *   lui colle une nouvelle propriété, @next, qui contiendra ses
+  *   tâches suivantes (ça ne sert pas vraiment pour le moment, mais
+  *   peut-être que ça pourra servir si on invente un système d'annu-
+  *   lation)
   */
-  startNextTasks(){
+  onMarkDoneOrDelete(){
+    const linker = new TaskLinker(this)
+    const nexts = []
     this.nextTasks.forEach(task => {
-      
+      linker.unlinkWithNext(task)
+      nexts.push(task.id)
     })
-  }
+    this.data.next = nexts
+  } 
+
 
   /*
   |  Pour que toutes les valeurs passent du serveur au client, il
@@ -371,7 +386,7 @@ class Task extends AbstractTableClass {
       /*
       |  Si la tâche est liée à une suivante, il faut activer la suivante
       */
-      this.nextTasks.length && this.startNextTasks()
+      this.nextTasks.length && this.onMarkDoneOrDelete()
     } catch(err) {
       console.error(err)
       erreur("Une erreur est survenue, consulter la console.")
@@ -405,7 +420,7 @@ class Task extends AbstractTableClass {
       /*
       |  Si la tâche est liée à une suivante, il faut activer la suivante
       */
-      this.nextTasks.length && this.startNextTasks()
+      this.nextTasks.length && this.onMarkDoneOrDelete()
       /*
       |  Détruire vraiment la tâche
       */
@@ -587,7 +602,11 @@ class Task extends AbstractTableClass {
   get prevTasks() { 
     if ( undefined === this._prevtasks ) {
       if ( this.prev ) {
-        this._prevtasks = this.prev.map(tkid => Task.get(tkid))    
+        this._prevtasks = []
+        this.prev.forEach(tkid => {
+          const tk = Task.get(tkid) // elle peut ne plus exister
+          tk && this._prevtasks.push(tk)
+        })
       } else {
         this._prevtasks = []
       }
@@ -597,6 +616,18 @@ class Task extends AbstractTableClass {
   set prevTasks(tasks) {
     this._prevtasks = tasks
     this.data.prev = tasks.map(task => {return task.id})
+  }
+  /**
+  * Pour supprimer la tâche précédente +task+
+  */
+  removePrev(task){
+    const idx = this.prev.indexOf(task.id)
+    if ( idx > -1 ) {
+      this.prev.splice(idx,1)
+      delete this._prevtasks // pour forcer l'actualisation
+    } else {
+      console.warn(`La tâche #${this.id} ne possède pas de tâche précédente #${task.id}. Je ne peux pas les délier.`)
+    }
   }
 
   /**
@@ -616,11 +647,13 @@ class Task extends AbstractTableClass {
     this.setLinkState(true)
     this._nexttasks = nexts
   }
+  /**
+  * Pour supprimer la tâche suivante +task+
+  */
   removeNext(task){
     const newNexts = []
     this.nextTasks.forEach( tk => {
-      if ( tk.id == task ) return ;
-      newNexts.push(tk)
+      if ( tk.id == task.id ){return} else {newNexts.push(tk)}
     })
     this.setLinkState(!!newNexts.length)
     this._nexttasks = newNexts

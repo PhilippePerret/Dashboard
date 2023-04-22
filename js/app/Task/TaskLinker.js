@@ -12,6 +12,9 @@ class TaskLinker {
     this.task = task
   }
 
+  /**
+  * Pour traiter la liaison avec une tâche
+  */
   treatLinking(){
     const task = this.task
     /*
@@ -101,6 +104,53 @@ class TaskLinker {
       TaskFilter.applyFilter(this.currentFilterKey)
     }
   }
+
+  /**
+  * Traitement de la déliaison. Pour une raison ou pour une autre
+  * la tâche courante ne doit plus suivre la tâche +tkprev+
+  * 
+  */
+  unlinkWithNext(tknext){
+    const tkprev = this.task
+    /*
+    |  On doit retirer tkprev des prev de la tâche courante
+    */
+    tknext.removePrev(tkprev)
+    // console.log("Nouveau prev pour la suivante : ", tknext.prev, tknext)
+    /*
+    |  On doit retirer la tâche courante des nextTasks de la tâche
+    |  tkprev
+    */
+    tkprev.removeNext(tknext)
+    // console.log("Nouveau nextTask pour la précédente : ", tkprev.nextTasks, tkprev)
+    /*
+    |  Si la tâche suivante (tknext) n'a plus de tâche précédente, 
+    |  elle doit être démarrée. On doit dont régler ses dates en 
+    |  fonction de sa durée.
+    */
+    if ( tknext.prev.length == 0 ) {
+      // console.log("La tâche #%s n'a plus de tâche précédente", tknext.id)
+      const now = DateUtils.now()
+      const newData = {}
+      Object.assign(newData, {
+          start: now.asRevdate()
+        , end:   new DateUtils(now.plus(...tknext.data.duree.split(':'))).asRevdate()
+      })
+      // console.log("Nouvelles données pour #%s", tknext.id, newData)
+      tknext.update(newData, true) // sauvera la tâche et gèrera son affichage
+    } else {
+      tknext.save()
+    }
+    /*
+    |  On doit enregistrer les deux tâches
+    */
+    tkprev.save()
+    /*
+    |  Vérifier l'état de la tâche précédente
+    */
+    tkprev.setLinkState()
+  }
+
 
   delinker(delier){
     const task = this.task

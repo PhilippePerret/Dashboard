@@ -235,12 +235,13 @@ wait(0.5)
   tk1.refute_follows(2)
   refute(null, tk1.start)
   // La tâche 1 doit avoir des temps réglés correctement
-  const now = new Date()
-  const now_rev = DateUtils.date2revdate(now)
+  const now = new DateUtils()
+  const now_rev = now.asRevdate()
   assert(now_rev, tk1.start)
-  assert(now.plus(4,'jours').asRevdate(), tk1.end)
+  const four_days_later = new DateUtils(now.plus(4,'jours'))
+  assert(four_days_later.asRevdate(), tk1.end)
   // La tâche 2 doit avoir une propriété "next" avec 1
-  assert([1], tk2.next)
+  assert(["1","3","6"], tk2.data.next, "La tâche #2 devrait avoir un nouveau paramètre @next réglé à ${exp}. Il vaut ${act}.")
   // La tâche 1 doit avoir été bien enregistrée
   return wait(INTERTIME)
 })

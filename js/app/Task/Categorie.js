@@ -8,6 +8,7 @@
 class Categorie extends AbstractTableClass {
 
   static init(){
+    // console.log("-> Categorie.init")
     super.reset()
     // - Ce que ne fait pas reset() de AbstractTableClass
     this.tableByName = {}

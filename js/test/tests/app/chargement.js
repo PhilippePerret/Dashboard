@@ -1,5 +1,5 @@
 'use strict';
-let expected, actual ;
+
 let exp, act ;
 
 /**
@@ -18,9 +18,9 @@ Test.runTestChargement = () => {
     /*
     |  On vérifie que les tâches soient bien définies
     */
-    expected = 5
-    actual = Task.items.length
-    assert(expected, actual, "Il devrait y avoir ${expected} tâches. Il y en a ${actual}…")
+    exp = 5
+    act = Task.items.length
+    assert(exp, act, "Il devrait y avoir ${exp} tâches. Il y en a ${act}…")
 
     /*
     |  La tâche #1
@@ -104,9 +104,9 @@ Test.runTestChargement = () => {
     |  
     */
     exp = 25 ; act = Task.lastId
-    assert(exp, act, "Task.lastId devrait valoir ${expected}. Il est à ${actual}.")
+    assert(exp, act, "Task.lastId devrait valoir ${exp}. Il est à ${act}.")
 
-    next()
+    return next()
   })
   .catch(err => {
     add_failure("L'application n'est pas prête.")

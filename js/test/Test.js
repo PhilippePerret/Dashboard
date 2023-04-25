@@ -18,10 +18,14 @@
 *     Test.timeout = x // nombre de secondes max d'attente
 * 
 */
-// const TEST_FILES = [
-//     'premier_chargement'
-//   , 'task_creation'
-// ]
+const TEST_FILES = [
+    'app/common_tests'
+  // , 'app/chargement'
+  , 'task/common_tests'
+  , 'task/creation'
+  , 'task/date_et_temps'
+  , 'task/linked'
+]
 // const TEST_FILES = [
 //     "task/date_et_temps"
 //   ]

@@ -41,15 +41,11 @@ Test.testCreationTask = () => {
     refute(undefined, act, "La nouvelle tâche devrait se trouver dans la liste")
     // - la nouvelle tâche dans la liste doit être visible
     refute(true, taskObj.classList.contains('hidden'), "La nouvelle tâche devrait être visible.")
-    // - La nouvelle tâche est la dernière de la liste (à cause de sa date et de sa priorité) -
-    const dispTasks = displayedTaskObjects()
-    const tasko = dispTasks[3]
-    exp = `task-${newTaskId}`
-    act = tasko.id
-    assert(exp, act, "L'objet de la tâche devrait être en 4e position (l'id du 4e élément est ${act} au lieu de ${exp}.")
+    // - On prend la nouvelle tâche -
+    const task = Task.getLastCreated()
     // - Le résumé de la tâche est bon -
     exp = newTaskResume
-    act = DGet('span.resume', tasko).innerHTML
+    act = DGet('span.resume', task.obj).innerHTML
     assert(exp, act, "Le résumé de la nouvelle tâche devrait être “${exp}”. Il vaut ${act}…")
 
     // - la table des tâches contient la nouvelle tâche

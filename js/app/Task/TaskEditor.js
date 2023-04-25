@@ -248,7 +248,7 @@ class TaskEditor {
     |  Sinon, on change la date de fin.
     */
     const start = DateUtils.revdate2date(this.field('start').value)
-    const end = new Date();
+    const end = start;
     switch(dureeUnite){
     case 'h':
       end.setHours(end.getHours() + dureeNombre)

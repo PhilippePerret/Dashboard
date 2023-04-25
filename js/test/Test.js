@@ -22,10 +22,11 @@
 //     'premier_chargement'
 //   , 'task_creation'
 // ]
-const TEST_FILES = [
-    "task/unlinked"
-  ]
+// const TEST_FILES = [
+//     "task/date_et_temps"
+//   ]
 
+const INTERTIME = 0.2
 
 /**
 * @public

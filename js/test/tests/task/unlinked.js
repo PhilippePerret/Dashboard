@@ -30,8 +30,6 @@
 */
 var exp, act ;
 
-const INTERTIME = 0.2
-
 wait(0.5)
 .then(_ => {
   App.resetAll()

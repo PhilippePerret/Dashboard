@@ -8,6 +8,7 @@ const btnPlus = DGet('div#container-tasks-main footer button.btn-add')
 const btnLink = DGet('div#container-tasks-main footer button.btn-lnk')
 const btnDone = DGet('div#container-tasks-main footer button.btn-acc')
 const btnDele = DGet('div#container-tasks-main footer button.btn-sup')
+const btnEdit = DGet('div#container-tasks-main footer button.btn-mod')
 
 
 const UNITES_DUREES = {
@@ -142,6 +143,26 @@ Task.prototype.refute_isFollowedBy = function(tk){
   }
 }
 
+/*
+|  
+|   === Fonctional Methods === 
+|
+*/
+
+Task.getLastCreated = function(){
+  var lastone = null
+  Task.each(tk => {
+    if ( lastone ) {
+      if ( tk.data.created_at > lastone.data.created_at ) {
+        lastone = tk
+      }
+    } else {
+      lastone = tk
+    }
+  })
+  return lastone
+}
+
 /**
 * @async
 * 
@@ -173,8 +194,20 @@ class AppLoader {
   }
 }
 
+/**
+* Permet de cliquer sur la tâche d'identifiant +task_id+ (qui peut
+* être aussi l'instance tâche elle-meême)
+* 
+* @param [Integer|Task] task_id ID de la tâche ou instance Task
+* @return void
+*/
 function clickOn_task(task_id){
-  clickOn(Task.get(task_id).obj)
+  const task = (function(id){
+    if ( task_id instanceof Task ) { return id }  
+    else return Task.get(task_id)
+  })(task_id)
+  
+  clickOn(task.obj)
 }
 
 /**
@@ -192,6 +225,13 @@ function simulateNewCategorie(){
   DGet('select#task-cat').selectedIndex = DGetAll('select#task-cat option').length - 1
   DGet('select#task-cat').dispatchEvent(new Event('change'))
   return wait(1)
+}
+
+function simulateNewDuree(nombre, unite){
+  Editor.dureeNombre = nombre
+  Editor.dureeUnite  = unite
+  DGet('select#task-duree-unite').dispatchEvent(new Event('change'))
+
 }
 
 /**

@@ -30,7 +30,7 @@ class << self
     # Il faut mettre la date de la tâche 25 à plus tard
     # 
     task25_path = File.join(Dashboard::Task.folder,'todo-25.yaml')
-    task25_data = YAML.load_file(task25_path, **Dashboard::Task.options_yaml)
+    task25_data = YAML.load_file(task25_path, **YAML_OPTIONS)
     now = Time.now + 2 * 3600 * 24
     task25_data['start'] = "#{now.year}-#{now.month.to_s.rjust(2,'0')}-#{now.day.to_s.rjust(2,'0')}"
     File.write(task25_path, task25_data.to_yaml)

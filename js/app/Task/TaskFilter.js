@@ -47,6 +47,12 @@ class TaskFilter {
     case 'linked':
       this.displayLinkedTaskOfSelected()
       break
+    case 'masked':
+      Task.each( tk => {tk[tk.isMasked ? 'show' : 'hide'].call(tk) })
+      break
+    case 'undated': // sans échéances
+      Task.each( tk => {tk[tk.hasNoDeadline ? 'show' : 'hide'].call(tk) })
+      break
     default:
       console.error("Je ne connais pas la clé de filtre des tâches '%s'", key_filter)
     }

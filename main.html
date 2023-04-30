@@ -48,9 +48,11 @@
     <input type="text" id="task-filter-search" placeholder="🔍" />
     <select id="task-filter">
       <option id="task-filter-current" value="current">tâches courantes</option>
+      <option id="task-filter-all" value="all">Toutes les tâches</option>
       <option id="task-filter-outdated" value="outdated">tâches dépassées</option>
       <option id="task-filter-future" value="future">tâches futures</option>
-      <option id="task-filter-all" value="all">Toutes les tâches</option>
+      <option id="task-filter-future" value="undated">tâches sans échéances</option>
+      <option id="task-filter-future" value="masked">tâches masquées</option>
       <option disabled>--- Sélectionnée ---</option>
       <option id="task-filter-same-categorie" value="same-categorie">tâches de catégorie</option>
       <option id="task-filter-linked" value="linked">tâches liées</option>
@@ -61,6 +63,7 @@
     <button class="btn-add" title="Créer une nouvelle tâche">➕
     </button><button class="btn-sup" disabled title="Détruire définitivement la tâche (sans l'archiver)">🗑️
     </button><button class="btn-pin" disabled title="Épingler ou désépingler la tâche sélectionnée">📌
+    </button><button class="btn-msk" disabled title="Masquer (pour cette session) la tâche sélectionnée">👻
     </button><button class="btn-run" disabled title="Accomplir la tâche sélectionnée">▶️
     </button><button class="btn-tog" disabled title="Déployer la tâche pour voir ses détails">🗃️
     </button><button class="btn-lnk" disabled title="Pour chainer la tâche à une autre">🔗
@@ -68,7 +71,7 @@
     </button><button class="btn-mod" disabled title="Éditer (modifier) la tâche sélectionnée">🖌️
     </button>
   </footer>
-</div><!-- /conteneur tâche principa -->
+</div><!-- /conteneur tâche principal -->
 
 <!-- CONTENEUR DES TÂCHES ÉPINGLÉES (à faire aujourd'hui) -->
 <div id="container-tasks-pinned" class="task-conteneur" data-type="pinned">

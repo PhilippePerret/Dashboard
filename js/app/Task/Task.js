@@ -85,7 +85,7 @@ class Task extends AbstractTableClass {
   }
 
   static displayAllTask(){
-    this.items.forEach( todo => todo.build('main') )
+    this.items.forEach( tk => tk.build(tk.isPinned ? 'pinned' : 'main') )
   }
 
   /**
@@ -134,15 +134,20 @@ class Task extends AbstractTableClass {
   constructor(data){
     super()
     this.data = data;
-    this.isFolded = true;
+    this.isFolded = true
+    this._masked = false
+    this._pinned = data.pinned == true
   }
 
   // --- State Methods ---
 
-  get isCurrent()   { return !this.isLinked && this.start && this.start_at < TODAY_END }
-  get isFuture()    { return this.start && this.start_at > TODAY_END }
-  get isOutDated()  { return this.end_at && this.end_at < TODAY_START }
-  get endIsNear()   { return this.end_at && DateUtils.dayCountBetween(TODAY_END, this.end_at) < 2 }
+  get isCurrent()     { return !this.isLinked && this.start && this.start_at < TODAY_END }
+  get isFuture()      { return this.start && this.start_at > TODAY_END }
+  get isOutDated()    { return this.end_at && this.end_at < TODAY_START }
+  get isMasked()      { return this._masked == true }
+  get isPinned()      { return this._pinned == true }
+  get endIsNear()     { return this.end_at && DateUtils.dayCountBetween(TODAY_END, this.end_at) < 2 }
+  get hasNoDeadline() { return !this.start && !this.end }
 
 
   // --- Helpers Methods ---
@@ -346,6 +351,21 @@ class Task extends AbstractTableClass {
   }
 
   /**
+  * Méthode appelée quand on veut masquer la tâche provisoirement
+  * (pour cette sessions)
+  * 
+  */
+  onClickMask(ev){
+    if ( this.isMasked ) {
+      this.show()
+    } else {
+      Task.unselectTask()
+      this.hide()
+    }
+    this._masked = !this._masked
+    return ev && stopEvent(ev)
+  }
+  /**
   * Méthode appelée pour lier/délier une tâche à une autre
   * (la tâche sélectionnée doit suivre celle qui sera choisie ici)
   */
@@ -368,12 +388,18 @@ class Task extends AbstractTableClass {
   onClickPin(){
     if ( this.isPinned ) {
       TaskConteneur.moveTask(this, 'pinned', 'main')
-      this.isPinned = false
+      this._pinned = false
     } else {
       TaskConteneur.moveTask(this, this.ctype, 'pinned')
-      this.isPinned = true
+      this._pinned = true
     }
+    this.data.pinned = this._pinned
+    this.save()
   }
+
+  /**
+  * Quand on clique le bouton pour marquer la tâche comme accomplie
+  */
   onClickDone(){
     WAA.send({class:'Dashboard::Task',method:'mark_done',data:{task_id: this.id}})
   }

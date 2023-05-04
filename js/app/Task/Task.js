@@ -224,9 +224,6 @@ class Task extends AbstractTableClass {
     this.spanEnd.innerHTML = this.hend_at
   }
 
-
-
-
   // @return [String] le type actuel du conteneur
   get conteneurType(){
     if ( this.isDone ){ return 'done' }
@@ -476,6 +473,7 @@ class Task extends AbstractTableClass {
 
   get ref(){return `la tâche #${this.id}`}
 
+
   /*
   |  --- Display Methods ---
   */
@@ -485,13 +483,11 @@ class Task extends AbstractTableClass {
   * 
   */
   build(ctype){
-    if ( !ctype ) {
-      if ( this.isCurrent ) {
-        ctype = 'main'
-      } else {
-        return
-      }
-    }
+    ctype = ctype || this.ctype
+    if ( !ctype ) return
+    /*
+    |  Le conteneur de la tâche
+    */
     const conteneur = TaskConteneur.conteneur(ctype)
     const div = DCreate('DIV', {id: `task-${this.id}`, class:'task unfold'})
     this.obj = div

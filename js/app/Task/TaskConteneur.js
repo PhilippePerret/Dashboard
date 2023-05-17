@@ -73,8 +73,22 @@ class TaskConteneur {
     }
   }
 
+  /**
+  * Ajout de la tâche +task+ à la liste
+  * 
+  * @note
+  *   On passe en revue toutes les tâches pour savoir laquelle est moins prioritaire
+  */
   appendTask(task){ 
-    this.taskList.appendChild(task.obj)
+    const tasks = this.taskList.querySelectorAll('div.task')
+    let taskBefore ;
+    for (var i = 0, len = tasks.length; i < len; ++i) {
+      if ( Number(tasks[i].dataset.priority) < task.priority ) {
+        taskBefore = tasks[i]
+        break
+      }
+    }
+    this.taskList.insertBefore(task.obj, taskBefore)
     task.ctype = this.id
   }
 

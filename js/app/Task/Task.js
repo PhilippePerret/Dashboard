@@ -507,6 +507,7 @@ class Task extends AbstractTableClass {
     const conteneur = TaskConteneur.conteneur(ctype)
     const div = DCreate('DIV', {id: `task-${this.id}`, class:'task unfold'})
     this.obj = div
+    this.obj.dataset.priority = this.priority
 
     // - Le résumé -
     const resu = DCreate('SPAN', {class:'resume', text: this.correct(this.resume)})
@@ -744,7 +745,7 @@ class Task extends AbstractTableClass {
   set prev(v)     { this.data.prev = v ; delete this._prevtasks }
   get resume()    { return this.data.resume   }
   get categorie() { return this.data.cat      }
-  get priority()  { return this.data.priority }
+  get priority()  { return parseInt((this.data.priority||0),10) }
 
   get end_at(){
     return this._end_at || (this._end_at = this.end && DateUtils.revdate2date(this.end))

@@ -75,6 +75,7 @@ class Task extends AbstractTableClass {
     TaskConteneur.Today.flush()
     TaskConteneur.Done.flush()
     TaskConteneur.Pinned.flush()
+    TaskConteneur.Working.flush()
   }
 
   static displayTodayTasks(){

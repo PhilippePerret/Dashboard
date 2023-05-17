@@ -1,15 +1,30 @@
 div.task-conteneur {
   width:700px;
   display:inline-block;
-  padding:2.5em 12px;
   border:1px solid #555;
   position: relative;
   vertical-align:top;
+  margin-top: 1em;
 }
 div.task-conteneur.main {
+  float:left;
   height: 600px;
+  padding:2.5em 12px;
   max-height:600px;
   overflow:auto;
+  margin-left: 1em;
+}
+div.task-conteneur:not(.main) {
+  padding:0.5em 12px 2.5em;
+  margin-bottom: 2em;
+  margin-left: 2em;
+}
+
+.task-conteneur-title {
+  font-size: 1.5em;
+  color: #ababab;
+  font-style: italic;
+  margin-bottom: 0.5em;
 }
 
 div.task-conteneur header, 

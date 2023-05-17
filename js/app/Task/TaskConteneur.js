@@ -3,10 +3,12 @@ class TaskConteneur {
 
   static prepare(){
     this.table = {}
-    this.Today  = this.table['main']    = new MainTaskConteneur('main')
-    this.Done   = this.table['done']    = new TaskConteneur('done')
-    this.Pinned = this.table['pinned']  = new TaskConteneur('pinned')
-    this.Pinned.prepare() // notamment le footer
+    this.Today   = this.table['main']    = new MainTaskConteneur('main')
+    this.Done    = this.table['done']    = new TaskConteneur('done')
+    this.Pinned  = this.table['pinned']  = new TaskConteneur('pinned')
+    this.Working = this.table['working'] = new TaskConteneur('working')
+    this.Pinned.prepare()   // notamment le footer
+    this.Working.prepare()  // idem
     /* - on rend tous les conteneur classables - */
     DGetAll('.task-list').forEach(div => $(div).sortable({axis:'y'}))
   }
@@ -35,12 +37,14 @@ class TaskConteneur {
     return this.table[type]
   }
 
-  static get Today()  { return this._conttoday }
-  static set Today(v) { this._conttoday = v }
-  static get Done()   { return this._contdone }
-  static set Done(v)  { this._contdone = v }
-  static get Pinned() { return this._contpinned }
-  static set Pinned(v){ this._contpinned = v }
+  static get Today()    { return this._conttoday }
+  static set Today(v)   { this._conttoday = v }
+  static get Done()     { return this._contdone }
+  static set Done(v)    { this._contdone = v }
+  static get Pinned()   { return this._contpinned }
+  static set Pinned(v)  { this._contpinned = v }
+  static get Working()  { return this._contworking }
+  static set Working(v) { this._contworking = v }
 
   // --- INSTANCE CONTENEUR DE TÂCHE ---
   
@@ -65,7 +69,7 @@ class TaskConteneur {
       const footer = this.constructor.Today.footer.cloneNode(true)
       this.obj.appendChild(footer)
       DGet('.btn-add',footer).remove()
-      TaskButton.observeButtons('pinned')
+      TaskButton.observeButtons(this.id)
     }
   }
 

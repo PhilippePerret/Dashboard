@@ -136,7 +136,8 @@ class Task extends AbstractTableClass {
     this.data = data;
     this.isFolded = true
     this._masked = false
-    this._pinned = data.pinned == true
+    this._pinned  = data.pinned === true
+    this._working = data.working === true
   }
 
   // --- State Methods ---
@@ -144,8 +145,9 @@ class Task extends AbstractTableClass {
   get isCurrent()     { return !this.isLinked && this.start && this.start_at < TODAY_END }
   get isFuture()      { return this.start && this.start_at > TODAY_END }
   get isOutDated()    { return this.end_at && this.end_at < TODAY_START }
-  get isMasked()      { return this._masked == true }
-  get isPinned()      { return this._pinned == true }
+  get isMasked()      { return this._masked == true   }
+  get isPinned()      { return this._pinned == true   }
+  get isWorking()     { return this._working == true  }
   get endIsNear()     { return this.end_at && DateUtils.dayCountBetween(TODAY_END, this.end_at) < 2 }
   get hasNoDeadline() { return !this.start && !this.end }
 
@@ -226,8 +228,9 @@ class Task extends AbstractTableClass {
 
   // @return [String] le type actuel du conteneur
   get conteneurType(){
-    if ( this.isDone ){ return 'done' }
-    else if (this.isPinned){ return 'pinned' }
+    if      (this.isDone   ) { return 'done'    }
+    else if (this.isPinned ) { return 'pinned'  }
+    else if (this.isWorking) { return 'working' } // les travaux en cours
     else return 'main'
   }
   // Raccourci
@@ -385,12 +388,10 @@ class Task extends AbstractTableClass {
   onClickPin(){
     if ( this.isPinned ) {
       TaskConteneur.moveTask(this, 'pinned', 'main')
-      this._pinned = false
     } else {
       TaskConteneur.moveTask(this, this.ctype, 'pinned')
-      this._pinned = true
     }
-    this.data.pinned = this._pinned
+    this.data.pinned = this._pinned = !this.data.pinned
     this.save()
   }
 
@@ -413,6 +414,20 @@ class Task extends AbstractTableClass {
       console.error(err)
       erreur("Une erreur est survenue, consulter la console.")
     }
+  }
+
+  /**
+  * Quand on clique sur le bouton pour indiquer que la tâche doit
+  * être un travail en cours (ou ne plus l'être)
+  */
+  onClickWorking(){
+    if ( this.isWorking ) {
+      TaskConteneur.moveTask(this, 'working', 'main')
+    } else {
+      TaskConteneur.moveTask(this, this.ctype, 'working')
+    }
+    this.data.working = this._working = !this.data.working
+    this.save()
   }
   
   onClickEdit(){

@@ -168,6 +168,9 @@ class TaskEditor {
     return true
   }
 
+  /**
+  * Traitement de la touche Entrée sur tout l'éditeur
+  */
   treatEnterKey(ev){
     ev.stopPropagation()
     switch(ev.target.id){
@@ -216,7 +219,7 @@ class TaskEditor {
       */
       this.task.data = this.getValues()
       this.task.constructor.add(this.task)
-      this.task.build(null/* pour rechercher où elle doit se mettre*/)
+      this.task.build(null/* pour rechercher où elle doit se mettre */)
       this.task.save()
     }
     this.hide()

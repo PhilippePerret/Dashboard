@@ -62,6 +62,7 @@
   <footer>
     <button class="btn-add" title="Créer une nouvelle tâche">➕
     </button><button class="btn-sup" disabled title="Détruire définitivement la tâche (sans l'archiver)">🗑️
+    </button><button class="btn-wkg" disabled title="Mettre la tâche sélectionnée en travail courant">🪚
     </button><button class="btn-pin" disabled title="Épingler ou désépingler la tâche sélectionnée">📌
     </button><button class="btn-msk" disabled title="Masquer (pour cette session) la tâche sélectionnée">👻
     </button><button class="btn-run" disabled title="Accomplir la tâche sélectionnée">▶️
@@ -73,6 +74,10 @@
   </footer>
 </div><!-- /conteneur tâche principal -->
 
+<!-- CONTENEUR DES TÂCHES EN COURS DE TRAVAIL -->
+<div id="container-tasks-working" class="task-conteneur" data-type="working">
+  <div class="task-list"></div>
+</div>
 <!-- CONTENEUR DES TÂCHES ÉPINGLÉES (à faire aujourd'hui) -->
 <div id="container-tasks-pinned" class="task-conteneur" data-type="pinned">
   <div class="task-list"></div>

@@ -517,6 +517,9 @@ class Task extends AbstractTableClass {
     this.spanStart = DCreate('SPAN',{class:'date start-at', text:this.hstart_at })
     this.spanEnd   = DCreate('SPAN',{class:'date end-at', text:  this.hend_at })
 
+    // - Le bloc des actions (et ses boutons) -
+    this.blockActions = DCreate('DIV', {class:'block-actions'})
+
     // - Le bloc de sous-tâches (et ses boutons) -
     this.blocSubtasks = DCreate('DIV',{class:'bloc-subtasks'})
     // - Les sous-tâches en mode ouvert -
@@ -536,6 +539,7 @@ class Task extends AbstractTableClass {
     div.appendChild(this.btnFold)
     div.appendChild(resu)
     div.appendChild(this.blocSubtasks)
+    div.appendChild(this.blockActions)
     conteneur.appendTask(this)
 
     this.checkClassesByStates()
@@ -556,11 +560,26 @@ class Task extends AbstractTableClass {
   }
   unfold(){
     this.buildItsTasksAsSubTasks()
+    this.buildItsActionsAsSubActionst()
     this.obj.classList.toggle('unfolded')
     this.btnFold.innerHTML = '▽'
   }
 
   /**
+  * Méthode qui affiche les actions de la tâche quand on la déplie,
+  * si elle en a.
+  */
+  buildItsActionsAsSubActionst(){
+    this.blockActions.innerHTML = ''
+    if ( this.data.action ) {
+      this.blockActions.innerHTML = `ACTION ${Task.ACTION_TYPES[this.data.atype]} : ${this.data.action}`
+      this.blockActions.classList.remove('empty')
+    } else {
+      this.blockActions.classList.add('empty')
+    }
+  }
+  /**
+  * 
   * Méthode de construction qui transforme la propriété 'todos' de
   * la tâche en liste de sous-tâches (c'est-à-dire que toutes les
   * lignes commençant par "-" sont transformées en sous tâche à
@@ -601,6 +620,7 @@ class Task extends AbstractTableClass {
   toggleSubtasksButtons(hasSubtasks){
     this.btnsSubtasks.classList[hasSubtasks?'remove':'add']('hidden')
   }
+
 
   /**
   * Méthode inverse de la précédente, qui prend l'état déplié pour

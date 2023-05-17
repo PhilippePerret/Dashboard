@@ -8,7 +8,7 @@ div.task {
   cursor:pointer;
 }
 div.task.selected {
-  background-color:#B3EDFF!important;
+  background-color:#94E2FA !important;
 }
 div.task.outdated {
   background-color:#FFC7CF; 
@@ -26,10 +26,13 @@ div.task.linked:before {
 
 /* plié  */
 div.task:not(.unfolded) {} 
-div.task:not(.unfolded) div.bloc-subtasks {display:none;} 
+div.task:not(.unfolded) div.bloc-subtasks,
+div.task div.bloc-subtasks.empty
+{
+  display:none;
+} 
 /* déplié  */
 div.task.unfolded {}
-div.task.unfolded div.bloc-subtasks{ display: block; }
 
 div.task.unfolded .resume {
   display:block;
@@ -43,6 +46,19 @@ div.task span.btn-fold {
   vertical-align:middle;
 }
 
+div.task .block-actions {
+  background-color: #68b490;
+  padding: 0.5em;
+}
+div.task:not(.unfolded) .block-actions,
+div.task div.block-actions.empty
+{ display: none; }
+
+div.task.unfolded div.bloc-subtasks{ 
+  display: block; 
+  background-color: darksalmon;
+  padding: 0.5em;
+}
 div.task div.btns-subtasks {
   margin-top:1em;
   text-align:right;

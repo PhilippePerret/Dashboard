@@ -18,8 +18,9 @@ class UI {
     const tg = ev.target
     if ( tg.classList.contains('task-conteneur') || tg.tagName == 'HTML' || tg.tagName == 'BODY' ) {
       Task.unselectTask()
+      return stopEvent(ev)
     }
-    return stopEvent(ev)
+    return true
   }
 
   /**

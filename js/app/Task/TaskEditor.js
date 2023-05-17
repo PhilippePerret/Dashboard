@@ -143,8 +143,7 @@ class TaskEditor {
   onKeyUp(ev){
     switch(ev.key){
     case 'Enter':
-      ev.stopPropagation()
-      return true
+      return stopEvent(ev)
     case 'Escape':
       return this.onClickCancel(ev)
     default:
@@ -158,7 +157,39 @@ class TaskEditor {
       stopEvent(ev)
       return this.onClickSave(ev) // enregistrement par cmd-s
     }
+    switch(ev.key){
+    case 'Enter':
+      /**
+      * Touche Entrée : en fonction de l'endroit où on se trouve,
+      * on accomplit différentes choses.
+      */
+      return this.treatEnterKey(ev)
+    }
     return true
+  }
+
+  treatEnterKey(ev){
+    ev.stopPropagation()
+    switch(ev.target.id){
+    case 'task-resume':
+      this.field('start').focus()
+      this.field('start').select()
+      break
+    case 'task-start':
+      this.field('end').focus()
+      this.field('end').select()
+      break
+    case 'task-end':
+      this.field('todo').focus()
+      this.field('todo').select()
+      break
+    case 'task-todo': 
+      return true
+    case 'task-action':
+      return true
+    }
+    // console.info("ev = ", ev)
+    return stopEvent(ev)
   }
 
   prepare(){

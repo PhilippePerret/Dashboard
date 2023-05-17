@@ -219,10 +219,12 @@ class TaskEditor {
       */
       this.task.data = this.getValues()
       this.task.constructor.add(this.task)
-      this.task.build(null/* pour rechercher où elle doit se mettre */)
+      this.task.build()
       this.task.save()
     }
     this.hide()
+    /* - Pour masquer ou afficher la tâche suivant ses données - */
+    TaskFilter.applyCurrentFilter()
     return stopEvent(ev)
   }
   onClickCancel(ev){

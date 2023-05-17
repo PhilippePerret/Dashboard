@@ -85,7 +85,7 @@ class Task extends AbstractTableClass {
   }
 
   static displayAllTask(){
-    this.items.forEach( tk => tk.build(tk.isPinned ? 'pinned' : 'main') )
+    this.items.forEach( tk => tk.build() )
   }
 
   /**
@@ -229,8 +229,8 @@ class Task extends AbstractTableClass {
   // @return [String] le type actuel du conteneur
   get conteneurType(){
     if      (this.isDone   ) { return 'done'    }
+    else if (this.isWorking) { return 'working' }
     else if (this.isPinned ) { return 'pinned'  }
-    else if (this.isWorking) { return 'working' } // les travaux en cours
     else return 'main'
   }
   // Raccourci
@@ -497,8 +497,8 @@ class Task extends AbstractTableClass {
   * Construction de la tâche dans le div +ctype+
   * 
   */
-  build(ctype){
-    ctype = ctype || this.ctype
+  build(){
+    const ctype = this.ctype
     if ( !ctype ) return
     /*
     |  Le conteneur de la tâche
